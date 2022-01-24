@@ -1,6 +1,7 @@
+import { Button, Col, Row } from "antd";
 import React, { Component } from "react";
 import logo from "../../assets/images/logo.png";
-import LoginImage from "../../assets/images/logo.png";
+import LoginImage from "../../assets/images/register.gif";
 import { notifyUser } from "../../services/notification-service";
 
 class ForgotPassword extends Component {
@@ -81,66 +82,74 @@ class ForgotPassword extends Component {
   /* section skin */
   render() {
     return (
-      <section id="forgot-password" className="aligner">
-        <div className="wrap1500">
+      <section id="forgot-password" className="main-login">
+          <Row className="login">
           {/*Login section left side */}
-          <div className="login">
             {/* logo */}
-            <div className="logo">
-              <img src={logo} alt="Logo" />
-            </div>
+            <Col xs={24} sm={12}>
+              {/* logo */}
+              <div className="form-column">
+              <div className="form-column-inner">
+              <div className="logo">
+                <img src={logo} alt="Logo" />
+              </div>
             {/* logo ends */}
             {/* title */}
             <h2>Forgot Password</h2>
+            <hr class="title-hr" />
             {/* title ends */}
             {/* logi form */}
             <div className="login-form">
               <div className="row response">
-                <div className="full-width">{this.state.message}</div>
+                <div className="form-group">{this.state.message}</div>
               </div>
               {/* Email */}
-              <div className="row">
-                <div className="full-width">
-                  <i className="far fa-envelope"></i>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter Email Address..."
-                    defaultValue={this.state.success ? "" : this.state.email}
-                    onChange={this.handleChange}
-                  />
-                </div>
-              </div>
+              <Row>
+              <Col xs={24}>
+                <div className="form-group">
+                    <i className="far fa-envelope"></i>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Enter Email Address..."
+                      defaultValue={this.state.success ? "" : this.state.email}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                </Col>
+              </Row>
               {/* Email ends*/}
               {/* submit button */}
-              <div className="row">
-                <div className="full-width">
-                  <input
-                    type="submit"
-                    value={this.state.submitButtonText}
-                    onClick={this.handleSubmit}
-                  />
-                </div>
-
-              </div>
-              <div className="row" style={{ marginTop: "10px" }}>
-                <div className="full-width">
-
+              <Row>
+                <Col xs={24}>
+                  <div className="form-group">
+                    <Button type="primary" size={'large'}>submit</Button>
+                  </div>
+                </Col>
+              </Row>
+              <Row style={{ marginTop: "10px" }}>
+              <Col xs={24} style={{textAlign:"center"}}>
+                <div className="form-group">
                   <a href="/login"><span>Back to Login</span></a>
-
                 </div>
-              </div>
+                </Col>
+              </Row>
               {/* submit button ends */}
             </div>
             {/* login form ends */}
-          </div>
+         </div>
+         </div>
           {/*login section left side ends */}
+          </Col>
           {/* Image area  */}
-          <div className="image-area">
-            <img src={LoginImage} alt="forgot password" />
-          </div>
+          <Col xs={24} sm={12}>
+            <div className="login-image-area">
+              <img src={LoginImage} alt="login" />
+            </div>
+            {/* image are ends  */}
+            </Col>
           {/* image are ends  */}
-        </div>
+          </Row>
       </section>
     );
   }

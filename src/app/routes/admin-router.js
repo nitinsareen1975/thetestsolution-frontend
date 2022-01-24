@@ -1,10 +1,19 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import AdminDashboard from "../components/admin/dashboard/index.jsx";
+import AdminUsers from "../components/admin/manage-users/index.jsx";
 const routes = [
   {
     path: "",
     component: AdminDashboard
+  },
+  {
+    path: "users",
+    component: AdminUsers
+  },
+  {
+    path: "settings",
+    component: AdminUsers
   }
 ];
 

@@ -58,7 +58,7 @@ class SideBar extends Component {
             <span className="isoMenuHolder">
               {leftIcon}
               <span className="nav-text">
-                <IntlMessages id={label} />
+                {label}
               </span>
             </span>
           </Link>
@@ -74,6 +74,7 @@ class SideBar extends Component {
           theme="dark"
           mode="inline"
           selectedKeys={[this.props.history.location.pathname]}
+          inlineCollapsed={this.state.collapsed}
         >
           {this.props.options &&
             this.props.options.map(singleOption =>

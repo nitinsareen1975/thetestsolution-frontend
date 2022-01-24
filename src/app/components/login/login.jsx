@@ -4,10 +4,11 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import logo from "../../assets/images/logo.png";
-import LoginImage from "../../assets/images/logo.png";
+import LoginImage from "../../assets/images/register.gif";
 import { notifyUser } from "../../services/notification-service";
-import { Spin } from "antd";
+import { Button, Col, Form, Input, Row, Spin } from "antd";
 import { Checkbox } from 'antd';
+
 import UserRoles from "../../user-roles";
 
 class Login extends Component {
@@ -85,33 +86,34 @@ class Login extends Component {
   unsetTempData = () => {
     localStorage.removeItem("email_submitted");
     localStorage.removeItem("password_submitted");
-    //localStorage.removeItem("remember_me");
+    localStorage.removeItem("remember_me");
   };
   render() {
     const { email, password, submitted } = this.state;
     return (
       <Spin size="large" spinning={submitted}>
-        <section id="login" className="aligner">
-          <div className="wrap1500">
+        <section id="login" className="main-login" >
+          <Row className="login">
             {/*Login section left side */}
-            <div className="login">
+            <Col xs={24} sm={12}>
               {/* logo */}
+              <div className="form-column">
+              <div className="form-column-inner">
               <div className="logo">
                 <img src={logo} alt="Logo" />
               </div>
               {/* logo ends */}
               {/* title */}
-              <h2>
-                Login
-              </h2>
+              <h2>Login</h2>
+              <hr class="title-hr" />
               {/* title ends */}
               {/* logi form */}
               <form>
                 <div className="login-form">
                   {/* Email */}
                   <div className="row">
-                    <div className="full-width">
-                      <i className="far fa-envelope"></i>
+                    <div className="form-group">
+                    <i class="las la-envelope"></i>
                       <input
                         type="email"
                         placeholder="Email"
@@ -127,8 +129,8 @@ class Login extends Component {
                   {/* Email ends*/}
                   {/* password */}
                   <div className="row">
-                    <div className="full-width">
-                      <i className="fas fa-lock"></i>
+                    <div className="form-group">
+                    <i class="las la-lock"></i>
                       <input
                         type="password"
                         placeholder="Password"
@@ -139,42 +141,44 @@ class Login extends Component {
                     </div>
                   </div>
                   {/* password ends */}
-                  <div className="row" style={{marginTop:"20px" , marginBottom:"20px"}}>
-                    <div className="half-width">
-                      <Checkbox name="remember_me" onChange={this.handleChange}>Remember Me</Checkbox>
-                    </div>
-                    <div className="half-width" style={{textAlign:"right"}}>
-                      <a href="/forgot-password">
-                        Forgot password
-                      </a>
-                    </div>
-                  </div>
+                  <Row style={{marginTop:"20px" , marginBottom:"20px"}}>
+                    <Col xs={24} sm={12}>
+                        <Checkbox name="remember_me" onChange={this.handleChange}>Remember Me</Checkbox>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                      <div className="form-group" style={{textAlign:"right"}}>
+                        <a href="/forgot-password">
+                          Forgot password
+                        </a>
+                      </div>
+                    </Col>
+                  </Row>
                   {/* submit button */}
-                  <div className="row">
-                    <div className="full-width">
-                      <input
-                        type="submit"
-                        value="Login"
-                        onClick={this.handleSubmit}
-                      />
-                    </div>
-                  </div>
+                  <Row>
+                    <Col xs={24}>
+                      <Button type="primary" size={'large'}>Login</Button>
+                    </Col>
+                  </Row>
                   <div className="clear">&nbsp;</div>
 
                   <p>{this.state.loginMessage}</p>
                   <p>{/*this.props.loginErrorMessage*/}</p>
                   {/* submit button ends */}
                 </div>
-              </form>
+                </form>
               {/* login form ends */}
-            </div>
             {/*login section left side ends */}
             {/* Image area  */}
-            <div className="image-area log-imag">
+            </div>
+            </div>
+            </Col>
+            <Col xs={24} sm={12}>
+            <div className="login-image-area">
               <img src={LoginImage} alt="login" />
             </div>
             {/* image are ends  */}
-          </div>
+            </Col>
+            </Row>
         </section>
       </Spin>
     );

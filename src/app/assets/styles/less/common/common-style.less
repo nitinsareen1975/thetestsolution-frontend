@@ -1,0 +1,20 @@
+body{
+    font-family: 'Roboto', sans-serif;
+}
+.title-hr{
+    border: none !important;
+    height: 2px !important;
+    margin-bottom: 25px;
+    display: block !important;
+    background: @border-color-base;
+    position: relative;
+    &:before{
+        content: "";
+        width: 20%;
+        height: 3px;
+        position: absolute;
+        left: 0px;
+        bottom: 0px;
+        background: @primary-color;
+    }
+}

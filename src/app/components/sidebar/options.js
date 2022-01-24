@@ -1,9 +1,10 @@
 import React from "react";
 
-import {
+/* import {
   HomeSvg,
   ManageUser
-} from "../../assets/svg/sidebar-icons.jsx";
+} from "../../assets/svg/sidebar-icons.jsx"; */
+import { DashboardOutlined, UserOutlined } from '@ant-design/icons';
 
 const HomeIcon = props => < Icon component={
   HomeSvg
@@ -19,16 +20,16 @@ const ManageUserIcon = props => < Icon component={
 />;
 const adminOptions = [{
     key: "/admin/",
-    label: "admin.sidebar.Dashboard",
-    roles: ["Administrator", "SuperAdmin", "CSR"],
-    leftIcon: < HomeIcon />
+    label: "Dashboard",
+    roles: ["Admin", "SuperAdmin", "CSR"],
+    leftIcon: <DashboardOutlined />
   },
   {
     key: "/admin/users/",
     //label: "admin.sidebar.manageUserRole",
-    label: "admin.sidebar.submenu.ManageUser",
-    leftIcon: < ManageUserIcon />,
-    roles: ["Administrator", "SuperAdmin"],
+    label: "Manage Users",
+    leftIcon: <UserOutlined />,
+    roles: ["Admin", "SuperAdmin"],
     /* children: [{
         key: "/admin/users/",
         label: "admin.sidebar.submenu.ManageUser",
@@ -41,6 +42,12 @@ const adminOptions = [{
       },
 
     ] */
+  },
+  {
+    key: "/admin/settings/",
+    label: "Dashboard",
+    roles: ["Admin", "SuperAdmin", "CSR"],
+    leftIcon: <DashboardOutlined />
   }
 ];
 
