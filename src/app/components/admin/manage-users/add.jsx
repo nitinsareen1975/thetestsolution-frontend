@@ -7,6 +7,7 @@ import * as RolesActions from "../../../redux/actions/roles-actions";
 import { notifyUser } from "../../../services/notification-service";
 import { Typography, Form, Input, Select, Button, Row, Col, Spin } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
+import { PlusCircleOutlined, ArrowLeftOutlined} from '@ant-design/icons';
 const { Option } = Select;
 
 class AddUser extends React.Component {
@@ -105,6 +106,7 @@ class AddUser extends React.Component {
 							htmlType="button"
 							onClick={() => this.props.history.push("../")}
 						>
+							<ArrowLeftOutlined />
 							<IntlMessages id="admin.userlisting.back" />
 						</Button>
 					</Col>
@@ -112,7 +114,7 @@ class AddUser extends React.Component {
 				<hr />
 				<div>
 					<Spin spinning={this.state.loading}>
-						<Form layout={formLayout} onSubmit={this.handleSubmit}>
+						<Form layout="vertical" onSubmit={this.handleSubmit}>
 							<Row gutter={24}>
 								<Col xs={24} sm={24} md={8} lg={8} xl={8}>
 									<Form.Item
@@ -136,7 +138,7 @@ class AddUser extends React.Component {
 												: this.state.firstName
 										}
 									>
-										<Input maxLength={20} />
+										<Input size="large" maxLength={20} />
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={8} lg={8} xl={8}>
@@ -157,7 +159,7 @@ class AddUser extends React.Component {
 											]}
 										initialValue={this.state.lastName === null ? "" : this.state.lastName}
 										>
-											<Input maxLength={20} />
+											<Input size="large" maxLength={20} />
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={8} lg={8} xl={8}>
@@ -179,7 +181,7 @@ class AddUser extends React.Component {
 											]}
 										initialValue={this.state.userName === null ? "" : this.state.userName}
 										>
-											{this.state.userId === 0 ? <Input maxLength={80} /> : <Input disabled />}
+											{this.state.userId === 0 ? <Input size="large" maxLength={80} /> : <Input disabled />}
 									</Form.Item>
 								</Col>
 							</Row>
@@ -198,7 +200,7 @@ class AddUser extends React.Component {
 											]}
 										initialValue={this.state.contactNo === null ? "" : this.state.contactNo}
 									>
-										<Input maxLength={15} style={{ width: "100%" }} />
+										<Input size="large" maxLength={15} style={{ width: "100%" }} />
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={8} lg={8} xl={8}>
@@ -208,7 +210,7 @@ class AddUser extends React.Component {
 										name="address"
 										initialValue={this.state.address === null ? "" : this.state.address}
 									>
-										<Input />
+										<Input size="large" />
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={8} lg={8} xl={8}>
@@ -216,7 +218,7 @@ class AddUser extends React.Component {
 										{...formItemLayout}
 										label={<IntlMessages id="admin.userlisting.role" />}
 									>
-										<Select>
+										<Select size="large">
 											{this.state.allRoles.map(function (item) {
 												return <Option key={item.id}>{item.name}</Option>;
 											})}
@@ -241,12 +243,14 @@ class AddUser extends React.Component {
 											style={{ display: "inline-block", marginRight: "10px" }}
 											className="def-blue"
 											htmlType="submit"
+											size="large"
 										>
 											{this.state.userId > 0 ? (
 												<IntlMessages id="admin.userlisting.update" />
 											) : (
 												<IntlMessages id="admin.userlisting.add" />
 											)}
+											<PlusCircleOutlined />
 										</Button>
 									</Form.Item>
 								</Col>

@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { Menu, Button } from "antd";
+import Logo from "../../assets/images/logo-icon.png";
+import LogoTxt from "../../assets/images/logo-2.png";
 import {
   AppstoreOutlined,
   MenuUnfoldOutlined,
@@ -90,11 +92,13 @@ class SideBar extends Component {
     }
     return (
       <div className="menu">
-        <div>
-          <Button type="primary" onClick={this.props.onCollapse} style={{ marginBottom: 16 }}>
-            {React.createElement(this.props.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined)}
-          </Button>
+        <div className="logo">
+          <img className="logo-icon" src={Logo} />
+          <img className="logo-text" src={LogoTxt} />
         </div>
+        <Button className="menu-toggle" onClick={this.props.onCollapse}>
+          {React.createElement(this.props.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined)}
+        </Button>
         <Menu
           theme="dark"
           mode="inline"

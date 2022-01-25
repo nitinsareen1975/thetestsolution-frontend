@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import logo from "../../assets/images/logo.png";
-import LoginImage from "../../assets/images/logo.png";
+import LoginImage from "../../assets/images/register.gif";
 import { notifyUser } from "../../services/notification-service";
-import { Popover, Form } from "antd";
+import { Popover, Form, Row, Button, Col, Icon, IntlMessages  } from "antd";
 
 const validColor = '#52c41a', invalidColor = '#cb0019';
 const validIcon = 'check-circle', invalidIcon = 'exclamation-circle';
@@ -234,94 +234,112 @@ class ResetPassword extends Component {
   render() {
     const { password } = this.state;
     return (
-      <section id="reset-password" className="aligner">
-        <div className="wrap1500">
-          {/*Login section left side */}
-          <div className="login">
-            {/* logo */}
-            <div className="logo">
-              <img src={logo} alt="Logo" />
-            </div>
-            {/* logo ends */}
-            {/* title */}
-            <h2>Reset Password</h2>
-            {/* title ends */}
-            {/* logi form */}
-            <div className="login-form">
-              {/* Email */}
-              <div className="row">
-                <div className="full-width">
-                  <i className="fas fa-lock"></i>
-                  {/* <input
-                    type="password"
-                    name="npassword"
-                    placeholder="Enter New Password"
-                    value={this.state.password}
-                    onChange={this.handleChange}
-                  /> */}
-                  <Popover
-                    placement="bottomRight"
-                    content={
-                    <div>
-                        <p><Icon type={password.uppercase.iconType} theme="twoTone" twoToneColor={password.uppercase.iconColor} />&nbsp;<span style={{verticalAlign: "bottom"}}><IntlMessages id="admin.password.hint.uppercase"/></span></p>
-                        <p><Icon type={password.lowercase.iconType} theme="twoTone" twoToneColor={password.lowercase.iconColor} />&nbsp;<span style={{verticalAlign: "bottom"}}><IntlMessages id="admin.password.hint.lowercase"/></span></p>
-                        <p><Icon type={password.specialCharacter.iconType} theme="twoTone" twoToneColor={password.specialCharacter.iconColor} />&nbsp;<span style={{verticalAlign: "bottom"}}><IntlMessages id="admin.password.hint.specialCharacter"/></span></p>
-                        <p><Icon type={password.numeric.iconType} theme="twoTone" twoToneColor={password.numeric.iconColor} />&nbsp;<span style={{verticalAlign: "bottom"}}><IntlMessages id="admin.password.hint.numeric"/></span></p>
-                        <p><Icon type={password.characters.iconType} theme="twoTone" twoToneColor={password.characters.iconColor} />&nbsp;<span style={{verticalAlign: "bottom"}}><IntlMessages id="admin.password.hint.characters"/></span></p>
-                      </div>
-                    }
-                    title={<IntlMessages id="admin.password.mustinclude" />}
-                    visible={password.visibleHint}
-                    style={{width: '500px'}}
-                  >
-                    <input
-                      type="password" 
-                      name="npassword" 
-                      placeholder="Enter New Password"
-                      onChange={this.onPasswordChange} 
-                      onFocus={() => this.togglePasswordHint(true)} 
-                      onBlur={() => this.togglePasswordHint(false)}
-                      ref={(input) => { this.passwordInput = input; }}
-                    />
-                  </Popover>
-                </div>
+      <section id="reset-password" className="main-login">
+      <Row className="login">
+        <Col xs={24} lg={12}>
+              {/* logo */}
+        <div className="form-column">
+          <div className="form-column-inner">
+              <div className="logo">
+                <img src={logo} alt="Logo" />
               </div>
+              {/* logo ends */}
+              {/* title */}
+              <h2>Reset Password</h2>
+              {/* title ends */}
+              {/* logi form */}
+              <div className="login-form">
+                {/* Email */}
+                <Row>
+                  <Col xs={24}>
+                    <div className="form-group">
+                      <i className="fas fa-lock"></i>
+                      {/* <input
+                        type="password"
+                        name="npassword"
+                        placeholder="Enter New Password"
+                        value={this.state.password}
+                        onChange={this.handleChange}
+                      /> */}
+                      <Popover
+                        placement="bottomRight"
+                        content={
+                      <div>
+                          <p><Icon type={password.uppercase.iconType} theme="twoTone" twoToneColor={password.uppercase.iconColor} />&nbsp;<span style={{verticalAlign: "bottom"}}><IntlMessages id="admin.password.hint.uppercase"/></span></p>
+                          <p><Icon type={password.lowercase.iconType} theme="twoTone" twoToneColor={password.lowercase.iconColor} />&nbsp;<span style={{verticalAlign: "bottom"}}><IntlMessages id="admin.password.hint.lowercase"/></span></p>
+                          <p><Icon type={password.specialCharacter.iconType} theme="twoTone" twoToneColor={password.specialCharacter.iconColor} />&nbsp;<span style={{verticalAlign: "bottom"}}><IntlMessages id="admin.password.hint.specialCharacter"/></span></p>
+                          <p><Icon type={password.numeric.iconType} theme="twoTone" twoToneColor={password.numeric.iconColor} />&nbsp;<span style={{verticalAlign: "bottom"}}><IntlMessages id="admin.password.hint.numeric"/></span></p>
+                          <p><Icon type={password.characters.iconType} theme="twoTone" twoToneColor={password.characters.iconColor} />&nbsp;<span style={{verticalAlign: "bottom"}}><IntlMessages id="admin.password.hint.characters"/></span></p>
+                        </div>
+                      }
+                      title={<IntlMessages id="admin.password.mustinclude" />}
+                      visible={password.visibleHint}
+                      style={{width: '500px'}}
+                    >
+                      <input
+                        type="password" 
+                        name="npassword" 
+                        placeholder="Enter New Password"
+                        onChange={this.onPasswordChange} 
+                        onFocus={() => this.togglePasswordHint(true)} 
+                        onBlur={() => this.togglePasswordHint(false)}
+                        ref={(input) => { this.passwordInput = input; }}
+                      />
+                    </Popover>
+                  </div>
+                  </Col>
+              </Row>
+            
               {/* Email ends*/}
               {/* password */}
-              <div className="row">
-                <div className="full-width">
-                  <i className="fas fa-lock"></i>
-                  <input
-                    type="password"
-                    name="rpassword"
-                    placeholder="Re-enter New Password"
-                    value={this.state.rpassword}
-                    onChange={this.handleChange}
-                  />
-                </div>
-              </div>
+              <Row>
+                <Col xs={24}>
+                    <div className="form-group">
+                      <i className="fas fa-lock"></i>
+                      <input
+                        type="password"
+                        name="rpassword"
+                        placeholder="Re-enter New Password"
+                        value={this.state.rpassword}
+                        onChange={this.handleChange}
+                      />
+                    </div>
+                  </Col>
+              </Row>
               {/* password ends */}
               {/* submit button */}
-              <div className="row">
-                <div className="full-width">
+              {/* <div className="row">
+                <div className="form-group">
                   <input
                     type="submit"
                     value={this.state.submitButtonText}
                     onClick={this.handleSubmit}
                   />
                 </div>
-              </div>
+              </div> */}
+              <Row>
+                <Col xs={24}>
+                  <div className="form-group">
+                    <Button type="primary" size={'large'}>submit</Button>
+                  </div>
+                </Col>
+              </Row>
               {/* submit button ends */}
             </div>
+            </div>
+            </div>
+            </Col>
             {/* login form ends */}
-          </div>
           {/*login section left side ends */}
           {/* Image area  */}
-          <div className="image-area">
-            <img src={LoginImage} alt="reset password" />
-          </div>
+          <Col xs={24} lg={12}  className="login-img-col">
+            <div className="login-image-area">
+              <img src={LoginImage} alt="reset password" />
+            </div>
+            {/* image are ends  */}
+          </Col>
           {/* image are ends  */}
-        </div>
+        </Row>
       </section>
     );
   }

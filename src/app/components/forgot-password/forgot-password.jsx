@@ -86,7 +86,7 @@ class ForgotPassword extends Component {
           <Row className="login">
           {/*Login section left side */}
             {/* logo */}
-            <Col xs={24} sm={12}>
+            <Col xs={24} lg={12}>
               {/* logo */}
               <div className="form-column">
               <div className="form-column-inner">
@@ -142,7 +142,7 @@ class ForgotPassword extends Component {
           {/*login section left side ends */}
           </Col>
           {/* Image area  */}
-          <Col xs={24} sm={12}>
+          <Col xs={24} lg={12}  className="login-img-col">
             <div className="login-image-area">
               <img src={LoginImage} alt="login" />
             </div>

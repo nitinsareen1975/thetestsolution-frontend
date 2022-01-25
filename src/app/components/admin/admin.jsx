@@ -26,33 +26,13 @@ class AdminDash extends Component {
     return (
       <div id="components-layout-demo-custom-trigger">
         <Layout>
-          <Header
-            className="header"
-            style={{
-              background: "#fff",
-              position: "sticky",
-              zIndex: 100,
-              top: 0,
-              left: 0,
-              width: "100%",
-              padding: 0,
-              overflow: "hidden"
-            }}
-            match={this.props.match}
-            selectedtheme={this.props.theme}
-            location={this.props.location}
-            history={this.props.history}
-          //userData={this.props.userData}
-          >
-            <AdminHeader />
-          </Header>
-          <Layout>
-            <Sider
+          <Sider
               trigger={null}
               collapsible
               collapsed={this.state.collapsed}
+              className="dashboard-sidebar"
+              theme="dark"
               style={{
-                overflow: "auto",
                 height: "100vh",
                 position: "sticky",
                 top: 0,
@@ -62,6 +42,26 @@ class AdminDash extends Component {
             >
               <SideBar collapsed={this.state.collapsed} onCollapse={this.onCollapse} options={options.adminOptions} userType="admin" />
             </Sider>
+          <Layout>
+         
+          <Header
+            className="header"
+            style={{
+              background: "#fff",
+              position: "sticky",
+              zIndex: 100,
+              top: 0,
+              left: 0
+            }}
+            match={this.props.match}
+            selectedtheme={this.props.theme}
+            location={this.props.location}
+            history={this.props.history}
+          //userData={this.props.userData}
+          >
+            <AdminHeader />
+          </Header>
+            
             <Content
               style={{
                 margin: "24px 16px",

@@ -45,7 +45,8 @@ const adminOptions = [{
   {
     key: "/admin/roles",
     label: "Manage User Roles",
-    roles: ["Admin"]
+    roles: ["Admin"],
+    leftIcon: <DashboardOutlined />
   }
 ];
 

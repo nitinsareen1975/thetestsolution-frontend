@@ -70,7 +70,7 @@ class AddUser extends React.Component {
 	render() {
 		const { formLayout } = this.state;
 		const formItemLayout =
-			formLayout === "horizontal"
+			formLayout === "vertical"
 				? {
 					labelCol: { span: 4 },
 					wrapperCol: { span: 14 }
