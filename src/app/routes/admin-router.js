@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import AdminDashboard from "../components/admin/dashboard/index.jsx";
-import AdminUsers from "../components/admin/manage-users/index.jsx";
+import AdminUsers from "../components/admin/manage-users/list.jsx";
+import AddUser from "../components/admin/manage-users/add.jsx";
+import Roles from "../components/admin/manage-roles/list.jsx";
 const routes = [
   {
     path: "",
@@ -12,8 +14,12 @@ const routes = [
     component: AdminUsers
   },
   {
-    path: "settings",
-    component: AdminUsers
+    path: "users/add/",
+    component: AddUser
+  },
+  {
+    path: "roles/",
+    component: Roles
   }
 ];
 

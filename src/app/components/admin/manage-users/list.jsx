@@ -8,18 +8,15 @@ import * as paginationActions from "../../../redux/actions/pagination-actions";
 import {
   Switch,
   Table,
-  Icon,
   Input,
   Button,
   Row,
   Col,
-  Typography,
-  Tooltip
+  Typography
 } from "antd";
-import { EditCell } from "../../shared/components/helperCells";
-import * as UserService from "../../../services/user-service";
 import { notifyUser } from "../../../services/notification-service";
-import AppLocale from "../../../languageProvider";
+import { EditOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons';
+
 class ManageUsers extends Component {
   constructor(props) {
     super(props);
@@ -33,9 +30,9 @@ class ManageUsers extends Component {
         showTotal: (total, range) => {
           return (
             <span>
-              <IntlMessages id="admin.text.showing" /> {range[0]}-{range[1]}{" "}
-              <IntlMessages id="admin.text.of" /> {total}{" "}
-              <IntlMessages id="admin.text.results" />
+               Showing {range[0]}-{range[1]}{" "}
+              of {total}{" "}
+              results
             </span>
           );
         },
@@ -47,52 +44,52 @@ class ManageUsers extends Component {
     this.handleTableChange = this.handleTableChange.bind(this);
   }
   getSelectedFilterValue = (index) => {
-    return this.props.paginginfo[this.module]&& this.props.paginginfo[this.module].filter && this.props.paginginfo[this.module].filter[index] || null;
+    return this.props.paginginfo[this.module] && typeof this.props.paginginfo[this.module] !== "undefined" && this.props.paginginfo[this.module].filter && this.props.paginginfo[this.module].filter[index] || null;
   } 
 
   getHeaderKeys = () => {
     return [
       {
-        title: <IntlMessages id="admin.userlisting.firstName" />,
-        dataIndex: "firstName",
-        filteredValue : this.getSelectedFilterValue('firstName'),
-        ...this.getColumnSearchProps("firstName")
+        title: "First Name",
+        dataIndex: "firstname",
+        filteredValue : this.getSelectedFilterValue('firstname'),
+        ...this.getColumnSearchProps("firstname")
         //width: "200px"
         //sorter: true
       },
       {
-        title: <IntlMessages id="admin.userlisting.lastName" />,
-        dataIndex: "lastName",
-        filteredValue : this.getSelectedFilterValue('lastName'),
-        ...this.getColumnSearchProps("lastName")
+        title: "Last Name",
+        dataIndex: "lastname",
+        filteredValue : this.getSelectedFilterValue('lastname'),
+        ...this.getColumnSearchProps("lastname")
         // width: "200px"
       },
       {
-        title: <IntlMessages id="admin.userlisting.email" />,
-        dataIndex: "userName",
-        filteredValue : this.getSelectedFilterValue('userName'),
-        ...this.getColumnSearchProps("userName")
+        title: "Email Address",
+        dataIndex: "email",
+        filteredValue : this.getSelectedFilterValue('email'),
+        ...this.getColumnSearchProps("email")
         //width: "250px"
       },
       {
-        title: <IntlMessages id="admin.userlisting.phone" />,
-        dataIndex: "contactNo",
+        title: "Phone",
+        dataIndex: "phone",
         // width: "250px",
-        filteredValue : this.getSelectedFilterValue('contactNo'),
-        ...this.getColumnSearchProps("contactNo")
+        filteredValue : this.getSelectedFilterValue('phone'),
+        ...this.getColumnSearchProps("phone")
       },
       {
-        title: <IntlMessages id="admin.userlisting.role" />,
+        title: "Role",
         dataIndex: "role"
         // width: "200px"
       },
       {
-        title: <IntlMessages id="admin.userlisting.status" />,
+        title: "Status",
         render: (_text, record) => (
           <span>
             <Switch
-              checkedChildren={<IntlMessages id="admin.status.active" />}
-              unCheckedChildren={<IntlMessages id="admin.status.inactive" />}
+              checkedChildren={"Active"}
+              unCheckedChildren={"Inactive"}
               checked={record.isActive}
               onClick={() =>
                 this.updateUserStatus(!record.isActive, record.userId)
@@ -102,28 +99,18 @@ class ManageUsers extends Component {
         )
       },
       {
-        title: <IntlMessages id="admin.userlisting.action" />,
+        title:"Actions",
         rowKey: "action",
         // width: "200px",
         render: (_text, record) => (
           <span>
-            <EditCell
-              onEditCell={() => {
+            <Button
+              onClick={() => {
                 this.editItem(record.userId);
               }}
-            />
-
-            <button
-              className="icon"
-              onClick={() =>
-                this.props.history.push("../user/audit-logs/" + record.userId)
-              }
-            >
-              <Tooltip title={<IntlMessages id="admin.userlisting.viewlogs" />}>
-                {/* <i className="fas fa-edit"></i> */}
-                <i className="fas fa-clipboard-list"></i>
-              </Tooltip>
-            </button>
+              >
+                <EditOutlined />
+            </Button>
           </span>
         )
       }
@@ -174,7 +161,7 @@ class ManageUsers extends Component {
             size="small"
             style={{ width: 90, marginRight: 8 }}
           >
-            <IntlMessages id="admin.search" />
+            Search
           </Button>
           <Button
             disabled={selectedKeys != "" && selectedKeys !== null ? false : true}
@@ -182,13 +169,13 @@ class ManageUsers extends Component {
             size="small"
             style={{ width: 90 }}
           >
-            <IntlMessages id="admin.reset" />
+            Reset
           </Button>
         </div>
       );
     },
     filterIcon: filtered => (
-      <Icon type="search" style={{ color: filtered ? "#1890ff" : undefined }} />
+      <SearchOutlined fill={{ color: filtered ? "#1890ff" : undefined }} />
     ),
     onFilterDropdownVisibleChange: visible => {
       if (visible) {
@@ -243,10 +230,6 @@ class ManageUsers extends Component {
     this.setState({ searchText: "" });
   };
 
-  componentWillReceiveProps(newProp){
-    //console.log('componentWillReceiveProps ', newProp);
-  }
-
   async componentDidMount() {
     this.initComponent();
   }
@@ -299,9 +282,6 @@ class ManageUsers extends Component {
     this.setState({ loading: true });
     this.props
       .getUserListing({
-        orgId: this.props.userData.companyID
-          ? this.props.userData.companyID
-          : UserService.getUser().companyID,
         filters: filters,
         pagination: { page: pagination.current, pageSize: pagination.pageSize },
         sorter: sorter
@@ -323,14 +303,12 @@ class ManageUsers extends Component {
     this.setState({loading: true});
     try {
       this.props.updateStatus(userId, selected).then(response => {
-        const { language } = this.props;
-        const currentAppLocale = AppLocale[language.locale];
         if (response.data && response.data.message) {
           notifyUser(response.data.message, "success");
           this.setState({loading: false});
           this.initComponent();
         } else {
-          notifyUser(currentAppLocale.messages["admin.unknown.error"], "error");
+          notifyUser("Unknown error", "error");
           this.setState({loading: false});
         }
       });
@@ -346,7 +324,7 @@ class ManageUsers extends Component {
     let filtertag = Object.keys(this.state.filters).map(function(key1) {
       let keyLabel = _this.getHeaderKeys().find(el => el.dataIndex === key1);
       if (keyLabel.title.props && keyLabel.title.props.id) {
-        keyLabel = <IntlMessages id={keyLabel.title.props.id} />;
+        keyLabel = keyLabel.title.props.id;
       } else {
         keyLabel = key1;
       }
@@ -361,7 +339,7 @@ class ManageUsers extends Component {
               }
             >
               {keyLabel} : {_state.filters[key1].val}
-              <Icon type="close" />
+              <CloseOutlined />
             </Button>
             &nbsp;
           </span>
@@ -374,7 +352,7 @@ class ManageUsers extends Component {
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
-              <IntlMessages id="admin.userlisting.manageUsers" />
+              Manage Users
             </Typography.Title>
           </Col>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -383,7 +361,7 @@ class ManageUsers extends Component {
               onClick={() => this.editItem("new")}
               className="right-fl def-blue"
             >
-              <IntlMessages id="admin.userlisting.addnew" />
+              Add New
             </Button>
           </Col>
         </Row>
@@ -416,7 +394,7 @@ ManageUsers.propTypes = {
 };
 function mapStateToProps(state) {
     return {
-      ...state.user,
+      ...state.userConfig,
       ...state.pagination,
       ...state.language
     };  

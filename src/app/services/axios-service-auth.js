@@ -1,6 +1,7 @@
 import AxiosLib from './lib/http-axios-lib-auth';
-import config from '../../src/config';
-
+import config from '../config';
+import { configureFakeBackend } from "./fake-backend";
+configureFakeBackend();
 const _request = (method, url, data, token) => {
 	let options = {
 		method: method,
@@ -54,7 +55,7 @@ const DataAccessService = {
 			body: JSON.stringify(data)
 		};
 		return getFetchMethod(url) === 'fake' 
-		? fetch(`${config.API2}` + url, requestOptions) 
+		? fetch(`${config.AuthAPI}` + url, requestOptions) 
 		: DataAccessService1.get(url, data, token);
 	},
 	post(url, data, token) {
@@ -64,7 +65,7 @@ const DataAccessService = {
 			body: JSON.stringify(data)
 		};
 		return getFetchMethod(url) === 'fake' 
-		? fetch(`${config.API2}` + url, requestOptions) 
+		? fetch(`${config.AuthAPI}` + url, requestOptions) 
 		: DataAccessService1.post(url, data, token);
 	},
 	delete(url,data,token) {
@@ -74,7 +75,7 @@ const DataAccessService = {
 			body: JSON.stringify(data)
 		};
 		return getFetchMethod(url) === 'fake' 
-		? fetch(`${config.API2}` + url, requestOptions) 
+		? fetch(`${config.AuthAPI}` + url, requestOptions) 
 		: DataAccessService1.delete(url, undefined, token);
 	},
 	put(url, data, token) {
@@ -85,7 +86,7 @@ const DataAccessService = {
 			body: JSON.stringify(data)
 		};
 		return getFetchMethod(url) === 'fake' 
-		? fetch(`${config.API2}` + url, requestOptions) 
+		? fetch(`${config.AuthAPI}` + url, requestOptions) 
 		: DataAccessService1.put(url, data, token);
 	}
 };

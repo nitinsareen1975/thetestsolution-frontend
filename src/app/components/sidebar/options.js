@@ -19,35 +19,33 @@ const ManageUserIcon = props => < Icon component={
   }
 />;
 const adminOptions = [{
-    key: "/admin/",
+    key: "/admin",
     label: "Dashboard",
-    roles: ["Admin", "SuperAdmin", "CSR"],
+    roles: ["Admin"],
     leftIcon: <DashboardOutlined />
   },
   {
-    key: "/admin/users/",
-    //label: "admin.sidebar.manageUserRole",
+    key: "/admin/users",
     label: "Manage Users",
     leftIcon: <UserOutlined />,
-    roles: ["Admin", "SuperAdmin"],
-    /* children: [{
-        key: "/admin/users/",
-        label: "admin.sidebar.submenu.ManageUser",
-        roles: ["Administrator", "SuperAdmin"]
+    roles: ["Admin"],
+    children: [
+      {
+        key: "/admin/users",
+        label: "Manage Users",
+        roles: ["Admin"]
       },
       {
-        key: "/admin/roles/",
-        label: "admin.sidebar.submenu.ManageRole",
-        roles: ["Administrator", "SuperAdmin"]
-      },
-
-    ] */
+        key: "/admin/users/add",
+        label: "Add new user",
+        roles: ["Admin"]
+      }
+    ]
   },
   {
-    key: "/admin/settings/",
-    label: "Dashboard",
-    roles: ["Admin", "SuperAdmin", "CSR"],
-    leftIcon: <DashboardOutlined />
+    key: "/admin/roles",
+    label: "Manage User Roles",
+    roles: ["Admin"]
   }
 ];
 

@@ -8,7 +8,7 @@ const instance = token => {
 		if (token) headers['authorization'] = token ? 'Bearer ' + token : undefined;
 	}
 	var item = axios.create({
-		baseURL: Config.API2,
+		baseURL: Config.AuthAPI,
 		headers: headers,
 		transformResponse: [
 			function(data) {

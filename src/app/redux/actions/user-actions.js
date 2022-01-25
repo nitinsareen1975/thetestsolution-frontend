@@ -1,0 +1,502 @@
+import {
+  Types
+} from "../constants/user-types";
+
+import API from "../api/user-api";
+import {
+  notifyUser
+} from "../../services/notification-service"
+import UserRoles from "../../user-roles";
+import * as UserService from "./../../services/user-service";
+import config from "../../config.js"
+export function login(username, password) {
+  return async function (dispatch, _getState) {
+    try {
+      let data = {
+        username: username,
+        password: password
+      };
+      let user = await API.login(data);
+      if (user.accessToken && user.accessToken.token) {
+        var expiry = new Date();
+        expiry.setSeconds(expiry.getSeconds() + user.accessToken.expiresIn);
+        var tokenData = {
+          "token_expiry": expiry,
+          "token": user.accessToken.token,
+          "refreshToken": user.refreshToken
+        }
+        
+        // localStorage.setItem("accessToken", user.accessToken.token);
+        // localStorage.setItem("refreshToken", user.refreshToken);
+        
+       
+        //UserService.logIn(user)
+        user.redirect = UserRoles.types[user.userInformation.role].url;
+       
+        dispatch({
+          type: Types.SAVE_USER,
+          payload: user
+        });
+        dispatch({
+          type: Types.LOGIN_SUCCESS,
+          payload: true
+        });
+        /* if (themeName && themeName !== "" && themeName !== null) {
+          var theme = getCurrentTheme(themeName);
+          dispatch({
+            type: ThemeTypes.CHANGE_THEME,
+            payload: theme
+          });
+        } */
+        var userInfo = user.userInformation;
+        if(!userInfo.themeId || userInfo.themeId === null || userInfo.themeId === ""){
+          userInfo.themeId = 1;
+        }
+        userInfo.redirect = UserRoles.types[user.userInformation.role].url;
+        localStorage.setItem("user", JSON.stringify(userInfo));
+        localStorage.setItem("tokenData", JSON.stringify(tokenData));
+      } else {
+        notifyUser("Error logging in. Please try again!", 'error');
+        /* dispatch({
+          type: Types.LOGIN_FAIL,
+          payload: { errorMessage: "Error logging In", isLoggedIn: false }
+        }); */
+      }
+    } catch (e) {
+      if (e && e.response && e.response.data && e.response.data.error && e.response.data.error.length > 0) {
+        notifyUser(e.response.data.error[0].externalMessage, 'error');
+        /* dispatch({
+          type: Types.LOGIN_FAIL,
+          payload: { errorMessage: e.response.data[0].description, isLoggedIn: false }
+        }); */
+      } else {
+        notifyUser('Unknown error!', 'error');
+      }
+    }
+  };
+}
+
+export function getUserData() {
+  return async function (dispatch, getState) {
+    try {
+      /* let user = await API.getUserData({"token":localStorage.getItem('token')});
+      localStorage.setItem("token", user.token);
+      let oldUser = JSON.parse(localStorage.getItem('user'))
+      
+      if(oldUser.role !== user.role){
+          console.log("Role Mismatc");
+          LogOutUser()();
+          window.location = "/login";
+      }else{
+
+        dispatch({ type: Types.LOGIN_SUCCESS, payload: false });
+        dispatch({ type: Types.SAVE_USER, payload: user });
+      }*/
+      let oldUser = JSON.parse(localStorage.getItem('user'))
+      dispatch({
+        type: Types.LOGIN_SUCCESS,
+        payload: oldUser ? true : false
+      });
+      dispatch({
+        type: Types.VALIDATE_USER,
+        payload: oldUser
+      });
+      if (oldUser.logo && oldUser.logo !== "" && oldUser.logo !== null) {
+        dispatch({
+          type: Types.SAVE_LOGO_URL,
+          payload: config.API + '/' + oldUser.logo
+        });
+      } else {
+        dispatch({
+          type: Types.SAVE_LOGO_URL,
+          payload: ""
+        });
+      }
+
+    } catch (e) {
+      dispatch({
+        type: Types.LOGIN_FAIL,
+        payload: {
+          errorMessage: "Error logging In",
+          isLoggedIn: false
+        }
+      });
+    }
+  };
+}
+
+export function getUserListing({
+  filters,
+  pagination,
+  sorter
+}) {
+  return async function (dispatch, getState) {
+    try {
+      let resp = await API.getUserListing({
+        filters: filters,
+        pagination: pagination,
+        sorter: sorter
+      });
+      return resp;
+
+    } catch (e) {
+      /*dispatch({
+        type: Types.USER_LISTING_ERROR,
+        payload: { errorMessage: "Listing error", isLoggedIn: false }
+      });*/
+      return {
+        "error": true
+      };
+    }
+  };
+}
+
+
+export function updateUser(data) {
+  return async function (dispatch, getState) {
+    try {
+      let resp;
+      if (data.userId > 0) {
+        resp = await API.updateUser(data);
+      } else {
+        resp = await API.addUser(data);
+      }
+      return resp;
+    } catch (e) {
+      return {
+        "error": true
+      };
+    }
+  };
+}
+
+export function getUser(idx) {
+  return async function (dispatch, getState) {
+    try {
+      let resp = await API.getUser(idx);
+      return resp;
+    } catch (e) {
+      /*dispatch({
+        type: Types.USER_LISTING_ERROR,
+        payload: { errorMessage: "Listing error", isLoggedIn: false }
+      })*/
+      ;
+      return {
+        "error": true
+      };
+    }
+  };
+}
+
+export function deleteUser(idx) {
+  return async function (dispatch, getState) {
+    try {
+      let resp = await API.deleteUser(idx);
+
+      notifyUser("User Deleted.", 'info');
+
+      return resp;
+    } catch (e) {
+      /*dispatch({
+        type: Types.USER_LISTING_ERROR,
+        payload: { errorMessage: "Listing error", isLoggedIn: false }
+      })*/
+      ;
+      return {
+        "error": true
+      };
+    }
+  };
+}
+
+export function LogOutUser() {
+  return async function (dispatch, getState) {
+    try {
+      localStorage.clear("user");
+      localStorage.clear("token");
+      UserService.logOut()
+      dispatch({
+        type: Types.LOG_OUT,
+        payload: true
+      });
+      window.location = window.location.origin;
+    } catch (e) {}
+  };
+}
+
+export function forgotPassword(email) {
+  return async function (dispatch, getState) {
+    try {
+      let data = {
+        userName: email
+      };
+      let response = await API.forgotPassword(data);
+      if (response) {
+        dispatch({
+          type: Types.FORGOT_PASSWORD_RESPONSE,
+          payload: response
+        });
+      } else {
+        dispatch({
+          type: Types.FORGOT_PASSWORD_RESPONSE,
+          payload: {
+            flashText: "Error"
+          }
+        });
+      }
+    } catch (e) {
+      dispatch({
+        type: Types.FORGOT_PASSWORD_RESPONSE,
+        payload: {
+          flashText: "Error"
+        }
+      });
+    }
+  };
+}
+
+export function checkIfDetailAlreadyVerified(type) {
+  return async function (dispatch, getState) {
+    try {
+      dispatch({
+        type: Types.SAVE_ALREADY_VERIFIED,
+        payload: type
+      });
+    } catch (e) {}
+  };
+}
+
+export function getAllUserRoles() {
+  return async function (dispatch, getState) {
+    try {
+      let response = await API.getAllUserRoles({
+        filters: {},
+        pagination: {},
+        sorter: {}
+      });
+      return response.data;
+    } catch (e) {
+      return e;
+    }
+  };
+}
+
+export function getTokenExpiry() {
+  return async function (dispatch, getState) {
+    try {
+      var tokenData = JSON.parse(localStorage.getItem("tokenData"));
+      if (tokenData && tokenData.token_expiry && tokenData.token_expiry !== "") {
+        var objData = {
+          "token_expiry": tokenData.token_expiry,
+          "token": tokenData.token,
+          "refreshToken": tokenData.refreshToken
+        }
+        dispatch({
+          type: Types.TOKEN_EXPIRY_DATE,
+          payload: objData
+        });
+      } else {
+        dispatch({
+          type: Types.FLUSH_TOKEN_DATA,
+          payload: ""
+        });
+      }
+
+    } catch (e) {}
+  };
+}
+
+export function flushTimer() {
+  return async function (dispatch, getState) {
+    try {
+      dispatch({
+        type: Types.FLUSH_TOKEN_DATA,
+        payload: ""
+      });
+    } catch (e) {}
+  };
+}
+
+export function updateToken(objToken) {
+  return async function (dispatch, getState) {
+    try {
+      var refreshToken = await API.updateToken(objToken);
+      //UserService.updateToken(refreshToken);
+      var expiry = new Date();
+      expiry.setSeconds(expiry.getSeconds() + refreshToken.accessToken.expiresIn);
+      var tokenData = {
+        "token_expiry": expiry.toUTCString(),
+        "token": refreshToken.accessToken.token,
+        "refreshToken": refreshToken.refreshToken
+      }
+      localStorage.setItem("tokenData", JSON.stringify(tokenData));
+      //var tokenExpiryDate = UserService.getTokenByName("token_expiry");
+      dispatch({
+        type: Types.TOKEN_EXPIRY_DATE,
+        payload: tokenData
+      });
+    } catch (e) {
+      dispatch({
+        type: Types.FLUSH_TOKEN_DATA,
+        payload: ""
+      });
+    }
+  };
+}
+
+export function updateProfile(data) {
+  return async function (_dispatch, _getState) {
+    try {
+      return await API.updateProfile(data);
+    } catch (e) {
+      return {
+        "error": true
+      };
+    }
+  };
+}
+
+export function myAccount() {
+  return async function (_dispatch, _getState) {
+    try {
+      let resp = await API.getMyAccount();
+      return resp;
+    } catch (e) {
+      return {
+        "error": true
+      };
+    }
+  };
+}
+
+export function updateMyAccount(data) {
+  return async function (_dispatch, _getState) {
+    try {
+      let resp = await API.updateMyAccount(data);
+      return resp;
+    } catch (e) {
+      return {
+        "error": true
+      };
+    }
+  };
+}
+
+export function updatePassword(data) {
+  return async function (_dispatch, _getState) {
+    try {
+      let resp = await API.updatePassword(data);
+      return resp;
+    } catch (e) {
+      return {
+        "error": true
+      };
+    }
+  };
+}
+
+export function updateLoggedInUserAccount(data) {
+  return async function (dispatch, _getState) {
+    let currentUser = JSON.parse(localStorage.getItem('user'));
+    currentUser.firstName = data.firstName;
+    currentUser.lastName = data.lastName;
+    currentUser.email = data.email;
+    currentUser.userName = data.userName;
+    currentUser.contactNo = data.contactNo;
+    localStorage.setItem('user', JSON.stringify(currentUser));
+
+    dispatch({
+      type: Types.UPDATE_MY_ACCOUNT,
+      payload: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        contactNo: data.contactNo,
+      }
+    });
+  };
+}
+export function updateStatus(userId, status) {
+  return async function (_dispatch, _getState) {
+    try {
+      let resp = await API.updateStatus(userId, status);
+      return resp;
+    } catch (e) {
+      return {
+        "error": true
+      };
+    }
+  };
+}
+export function updateContactDetails(data) {
+  return async function (_dispatch, _getState) {
+    try {
+      let resp = await API.updateContactDetails(data);
+      return resp;
+    } catch (e) {
+      return {
+        "error": true
+      };
+    }
+  };
+}
+export function assignIdentity(data) {
+  return async function (_dispatch, _getState) {
+    try {
+      let resp = await API.assignIdentity(data);
+      return resp;
+    } catch (e) {
+      return e;
+    }
+  };
+}
+
+export function getActiveInternalUsers({
+  orgId,
+  filters,
+  pagination,
+  sorter
+}) {
+  return async function (dispatch, getState) {
+    try {
+      let resp = await API.getActiveInternalUsers({
+        orgId: orgId,
+        filters: filters,
+        pagination: pagination,
+        sorter: sorter
+      });
+      return resp;
+
+    } catch (e) {
+      /*dispatch({
+        type: Types.USER_LISTING_ERROR,
+        payload: { errorMessage: "Listing error", isLoggedIn: false }
+      });*/
+      return {
+        "error": true
+      };
+    }
+  };
+}
+
+export function hasB2B2CEmergencyContact(userId) {
+  return async function(_dispatch, _getState) {
+    try {
+      let response = await API.hasB2B2CEmergencyContact(userId);
+      return response;
+    } catch (e) {
+      return { error: true };
+    }
+  };
+}
+
+export function updateB2B2CEmergencyContact(userId, data) {
+  return async function(_dispatch, _getState) {
+    try {
+      let response = await API.updateB2B2CEmergencyContact(userId, data);
+      return response;
+    } catch (e) {
+      return { error: true };
+    }
+  };
+}

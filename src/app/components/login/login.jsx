@@ -105,7 +105,7 @@ class Login extends Component {
               {/* logo ends */}
               {/* title */}
               <h2>Login</h2>
-              <hr class="title-hr" />
+              <hr className="title-hr" />
               {/* title ends */}
               {/* logi form */}
               <form>
@@ -113,7 +113,7 @@ class Login extends Component {
                   {/* Email */}
                   <div className="row">
                     <div className="form-group">
-                    <i class="las la-envelope"></i>
+                    <i className="las la-envelope"></i>
                       <input
                         type="email"
                         placeholder="Email"
@@ -130,7 +130,7 @@ class Login extends Component {
                   {/* password */}
                   <div className="row">
                     <div className="form-group">
-                    <i class="las la-lock"></i>
+                    <i className="las la-lock"></i>
                       <input
                         type="password"
                         placeholder="Password"

@@ -1,6 +1,8 @@
 import AxiosLib from "./lib/http-axios-lib";
 import AxiosAuth from "./lib/http-axios-lib-auth";
 import config from "../config";
+import { configureFakeBackend } from "./fake-backend";
+configureFakeBackend();
 const _request = async (method, url, data, token, hitCount) => {
   if(hitCount > 2){
     window.location.href = "/login";
@@ -105,7 +107,7 @@ const DataAccessService = {
       body: JSON.stringify(data)
     };
     return getFetchMethod(url) === "fake"
-      ? fetch(`${config.API1}` + url, requestOptions)
+      ? fetch(`${config.API}` + url, requestOptions)
       : DataAccessService1.get(url, data, token);
   },
   post(url, data, token) {
@@ -115,7 +117,7 @@ const DataAccessService = {
       body: JSON.stringify(data)
     };
     return getFetchMethod(url) === "fake"
-      ? fetch(`${config.API1}` + url, requestOptions)
+      ? fetch(`${config.API}` + url, requestOptions)
       : DataAccessService1.post(url, data, token);
   },
   delete(url, data, token) {
@@ -125,7 +127,7 @@ const DataAccessService = {
       body: JSON.stringify(data)
     };
     return getFetchMethod(url) === "fake"
-      ? fetch(`${config.API1}` + url, requestOptions)
+      ? fetch(`${config.API}` + url, requestOptions)
       : DataAccessService1.delete(url, undefined, token);
   },
   put(url, data, token) {
@@ -135,7 +137,7 @@ const DataAccessService = {
       body: JSON.stringify(data)
     };
     return getFetchMethod(url) === "fake"
-      ? fetch(`${config.API1}` + url, requestOptions)
+      ? fetch(`${config.API}` + url, requestOptions)
       : DataAccessService1.put(url, data, token);
   },
   patch(url, data, token) {
@@ -145,86 +147,13 @@ const DataAccessService = {
       body: JSON.stringify(data)
     };
     return getFetchMethod(url) === "fake"
-      ? fetch(`${config.API1}` + url, requestOptions)
+      ? fetch(`${config.API}` + url, requestOptions)
       : DataAccessService1.patch(url, data, token);
   }
 };
 
 function getFetchMethod(url, data, token) {
-  /* special cases to ignore due to indexof  */
-  if(url.indexOf("/organization-types") > -1){
-    return "fake";
-  }
-  /* special cases to ignore due to indexof  */
-
-  if (url.indexOf("/api/GetOrderList") !== -1) {
-    return "real";
-  }
-  if (url.indexOf("/api/order") !== -1 || url.indexOf("/api/addorder") !== -1) {
-    return "real";
-  }
-  if (url.indexOf("/api/Product") !== -1) {
-    return "real";
-  }
-  if (url.indexOf("/api/updateproduct") !== -1) {
-    return "real";
-  }
-  if (url.indexOf("/api/addproduct") !== -1) {
-    return "real";
-  }
-  if (url.indexOf("/api/updatestatus") !== -1) {
-    return "real";
-  }
-  if (url.indexOf("/countryreport/AF") !== -1) {
-    return "real";
-  }
-  if (url.indexOf("/api/geocode") !== -1) {
-    return "real";
-  }
-  if (
-    url.indexOf("/api/ForgotPassword") !== -1 ||
-    url.indexOf("/api/GetCountryList") !== -1 ||
-    url.indexOf("/api/applypromooffer") !== -1 ||
-    url.indexOf("/api/submitorder") !== -1 ||
-    url.indexOf("/api/Users") !== -1 ||
-    url.indexOf("/api/Roles") !== -1 ||
-    url.indexOf("/api/price/getproductsprice") !== -1 ||
-    url.indexOf("/api/Price") !== -1 ||
-    url.indexOf("/api/traveler") !== -1 ||
-    url.indexOf("/api/RiskLineRegionWiseCountryList") !== -1 ||
-    url.indexOf("/api/DayPackages") !== -1 ||
-    url.indexOf("/api/Tiers") !== -1 ||
-    url.indexOf("api/TravelerExists") !== -1 ||
-    url.indexOf("/api/Country/") !== -1 ||
-    url.indexOf("/api/PromoOffers") !== -1 ||
-    url.indexOf("/api/users/travelerbasicinfo") !== -1 ||
-    url.indexOf("/api/completeproductinfo") !== -1 ||
-    url.indexOf("/api/CountryInfo") !== -1 ||
-    url.indexOf("/api/InterstedGeos/Geofence") !== -1 ||
-    url.indexOf("/api/InterstedGeos/AssetTracking") !== -1 ||
-    url.indexOf("/api/InterstedGeos/AddGeofenc") !== -1 ||
-    url.indexOf("/api/Organization/onboard") !== -1 ||
-    url.indexOf("/api/PCC/PCCList") !== -1 ||
-    url.indexOf("/api/PCC/PCCAccountList") !== -1 ||
-    url.indexOf("/api/OrganizationUsers") !== -1 ||
-    url.indexOf("/api/organization") !== -1 ||
-    url.indexOf("/api/InterstedGeoFenceRules") !== -1 ||
-    url.indexOf("/api/OrganizationUsers") !== -1 ||
-    url.indexOf("/api/AlertTypes") !== -1 ||
-    url.indexOf("/api/InterstedGeoRules") !== -1 ||
-    url.indexOf("/api/AssignLicenses") !== -1 ||
-    url.indexOf("/api/UnAssignLicense") !== -1 ||
-    url.indexOf("/api/Organization") !== -1 ||
-    url.indexOf("/api/Device") !== -1 ||
-    url.indexOf("/api/License") !== -1 ||
-    url.indexOf("/api/Users/AssignIdentity/" !== -1) ||
-    url.indexOf("/api/TravellerItinerary/" !== -1 ||
-    url.indexOf("/api/CustomAlert/") !== -1 || 
-    url.indexOf("/api/B2B2C") !== -1 || 
-    url.indexOf("/api/PlanTypes") !== -1 ||
-    url.indexOf("/api/ResellerPackages") !== -1 
-    )
-  ) {
+  if (url.indexOf("/api/ForgotPassword") !== -1) {
     return "real";
   } else {
     return "fake";

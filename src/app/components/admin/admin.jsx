@@ -15,7 +15,11 @@ class AdminDash extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      collapsed: false
     };
+  }
+  onCollapse = () => {
+    this.setState({ collapsed: !this.state.collapsed });
   }
   render() {
     const { url } = this.props.match;
@@ -46,7 +50,7 @@ class AdminDash extends Component {
             <Sider
               trigger={null}
               collapsible
-              collapsed={!this.props.sidebar}
+              collapsed={this.state.collapsed}
               style={{
                 overflow: "auto",
                 height: "100vh",
@@ -54,9 +58,9 @@ class AdminDash extends Component {
                 top: 0,
                 left: 0
               }}
-              width={300}
+              width={280}
             >
-              <SideBar options={options.adminOptions} userType="admin" />
+              <SideBar collapsed={this.state.collapsed} onCollapse={this.onCollapse} options={options.adminOptions} userType="admin" />
             </Sider>
             <Content
               style={{
