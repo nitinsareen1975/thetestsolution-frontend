@@ -10,7 +10,7 @@ import IntlMessages from "../../../services/intlMesseges";
 import { PlusCircleOutlined, ArrowLeftOutlined} from '@ant-design/icons';
 const { Option } = Select;
 
-class EditUser extends React.Component {
+class EditLab extends React.Component {
 	state = {
 		loading: true,
 		confirmDirty: false,
@@ -271,6 +271,6 @@ function mapDispatchToProps(dispatch) {
 }
 export default withRouter(
 	connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-		EditUser
+		EditLab
 	)
 );

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import logo from "../../assets/images/logo.png";
 import LoginImage from "../../assets/images/register.gif";
 import { notifyUser } from "../../services/notification-service";
-import { Popover, Form, Row, Button, Col, Icon, IntlMessages  } from "antd";
+import { Popover, Row, Button, Col } from "antd";
 
 const validColor = '#52c41a', invalidColor = '#cb0019';
 const validIcon = 'check-circle', invalidIcon = 'exclamation-circle';

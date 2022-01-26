@@ -10,7 +10,7 @@ import IntlMessages from "../../../services/intlMesseges";
 import { PlusCircleOutlined, ArrowLeftOutlined} from '@ant-design/icons';
 const { Option } = Select;
 
-class EditUser extends React.Component {
+class AddLab extends React.Component {
 	state = {
 		loading: true,
 		confirmDirty: false,
@@ -82,13 +82,7 @@ class EditUser extends React.Component {
 				<Row gutter={24}>
 					<Col xs={24} sm={24} md={12} lg={12} xl={12}>
 						<Typography.Title level={4}>
-							{this.state.userId === 0 ? (
-								<IntlMessages id="admin.manageUser.addUser" />
-							) : (
-								<div>
-									<IntlMessages id="admin.manageUser.editUser" />
-								</div>
-							)}
+							Add Lab
 						</Typography.Title>
 					</Col>
 
@@ -271,6 +265,6 @@ function mapDispatchToProps(dispatch) {
 }
 export default withRouter(
 	connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-		EditUser
+		AddLab
 	)
 );

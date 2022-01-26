@@ -3,7 +3,10 @@ import { Route, Switch } from "react-router-dom";
 import AdminDashboard from "../components/admin/dashboard/index.jsx";
 import AdminUsers from "../components/admin/manage-users/list.jsx";
 import AddUser from "../components/admin/manage-users/add.jsx";
-import Roles from "../components/admin/manage-roles/list.jsx";
+import  EditUser  from "../components/admin/manage-users/edit.jsx";
+//import Roles from "../components/admin/manage-roles/list.jsx";
+import ManageLab from "../components/admin/manage-lab/list.jsx";
+import AddLab from "../components/admin/manage-lab/add.jsx";
 const routes = [
   {
     path: "",
@@ -18,8 +21,16 @@ const routes = [
     component: AddUser
   },
   {
-    path: "Lab/add",
-    component: Roles
+    path: "users/edit/",
+    component: EditUser
+  },
+  {
+    path: "labs",
+    component: ManageLab
+  },
+  {
+    path: "labs/add/",
+    component: AddLab
   }
 ];
 

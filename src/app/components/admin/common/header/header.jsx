@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Button, Badge, Dropdown, Menu } from "antd";
 import { BellOutlined, UserOutlined } from '@ant-design/icons';
-import LanguageSwitcher from "../../../../services/languageProvider/switcher";
+//import LanguageSwitcher from "../../../../services/languageProvider/switcher";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
