@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { PlusCircleOutlined } from '@ant-design/icons';
 import * as userActions from "../../../redux/actions/user-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
 import {
@@ -362,6 +363,7 @@ class ManageUsers extends Component {
               className="right-fl def-blue"
             >
               Add New
+              <PlusCircleOutlined />
             </Button>
           </Col>
         </Row>

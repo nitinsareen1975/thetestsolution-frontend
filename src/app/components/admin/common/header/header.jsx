@@ -16,17 +16,19 @@ const AdminHeader = ({...props}) => {
           </Menu.Item>
         </Menu>
       );
-    return <Row justify="end">
+    return <Row justify="space-between">
       <Button className="menu-toggle" onClick={props.onCollapse}>
           {React.createElement(props.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined)}
         </Button>
               {/* <LanguageSwitcher /> */}
-              <div className="notifation">
-                <Badge count={5}>
-                  <BellOutlined />
-                </Badge>
-              </div>
-              <Dropdown.Button overlay={menu} placement="bottomCenter" icon={<UserOutlined />}>Hi admin</Dropdown.Button>
+        <div className="right-nav">
+          <div className="notifation">
+            <Badge count={5}>
+              <BellOutlined />
+            </Badge>
+          </div>
+          <Dropdown.Button overlay={menu} placement="bottomCenter" icon={<UserOutlined />}>Hi admin</Dropdown.Button>
+        </div>
     </Row>
 }
 export default AdminHeader;
