@@ -39,12 +39,17 @@ const adminOptions = [{
         key: "/admin/users/add",
         label: "Add new user",
         roles: ["Admin"]
+      },
+      {
+        key: "/admin/users/roles",
+        label: "Manage User Roles",
+        roles: ["Admin"]
       }
     ]
   },
   {
-    key: "/admin/roles",
-    label: "Manage User Roles",
+    key: "/admin/Lab",
+    label: "Manage Lab",
     roles: ["Admin"],
     leftIcon: <DashboardOutlined />
   }

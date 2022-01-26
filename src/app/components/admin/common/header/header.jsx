@@ -1,9 +1,12 @@
 import React from "react";
-import { Row, Col, Badge, Dropdown, Menu } from "antd";
+import { Row, Button, Badge, Dropdown, Menu } from "antd";
 import { BellOutlined, UserOutlined } from '@ant-design/icons';
 import LanguageSwitcher from "../../../../services/languageProvider/switcher";
-
-const AdminHeader = () => {
+import {
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+} from '@ant-design/icons';
+const AdminHeader = ({...props}) => {
     const menu = (
         <Menu>
           <Menu.Item key="1" icon={<UserOutlined />}>
@@ -14,6 +17,9 @@ const AdminHeader = () => {
         </Menu>
       );
     return <Row justify="end">
+      <Button className="menu-toggle" onClick={props.onCollapse}>
+          {React.createElement(props.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined)}
+        </Button>
               {/* <LanguageSwitcher /> */}
               <div className="notifation">
                 <Badge count={5}>

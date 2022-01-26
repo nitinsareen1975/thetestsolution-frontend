@@ -3,15 +3,7 @@ import { withRouter, Link } from "react-router-dom";
 import { Menu, Button } from "antd";
 import Logo from "../../assets/images/logo-icon.png";
 import LogoTxt from "../../assets/images/logo-2.png";
-import {
-  AppstoreOutlined,
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  PieChartOutlined,
-  DesktopOutlined,
-  ContainerOutlined,
-  MailOutlined,
-} from '@ant-design/icons';
+
 
 const { SubMenu } = Menu;
 
@@ -96,9 +88,7 @@ class SideBar extends Component {
           <img className="logo-icon" src={Logo} />
           <img className="logo-text" src={LogoTxt} />
         </div>
-        <Button className="menu-toggle" onClick={this.props.onCollapse}>
-          {React.createElement(this.props.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined)}
-        </Button>
+        
         <Menu
           theme="dark"
           mode="inline"

@@ -40,7 +40,7 @@ class AdminDash extends Component {
               }}
               width={280}
             >
-              <SideBar collapsed={this.state.collapsed} onCollapse={this.onCollapse} options={options.adminOptions} userType="admin" />
+              <SideBar  options={options.adminOptions} userType="admin" />
             </Sider>
           <Layout>
          
@@ -51,15 +51,16 @@ class AdminDash extends Component {
               position: "sticky",
               zIndex: 100,
               top: 0,
-              left: 0
+              left: 0,
             }}
             match={this.props.match}
             selectedtheme={this.props.theme}
             location={this.props.location}
             history={this.props.history}
           //userData={this.props.userData}
+          
           >
-            <AdminHeader />
+            <AdminHeader collapsed={this.state.collapsed} onCollapse={this.onCollapse} />
           </Header>
             
             <Content
