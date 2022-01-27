@@ -7,7 +7,7 @@ import * as RolesActions from "../../../redux/actions/roles-actions";
 import { notifyUser } from "../../../services/notification-service";
 import { Typography, Form, Input, Select, Button, Row, Col, Spin } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
-import { PlusCircleOutlined, ArrowLeftOutlined} from '@ant-design/icons';
+import { PlusCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 class AddLab extends React.Component {
@@ -141,19 +141,19 @@ class AddLab extends React.Component {
 										label={<IntlMessages id="admin.userlisting.lastName" />}
 										name="lastname"
 										rules={[
-												{
-													whitespace: true,
-													required: true,
-													message: <IntlMessages id="admin.input.required" />
-												},
-												{
-													pattern: new RegExp(/^(\S.*)[a-zA-Z-.']+$/),
-													message: <IntlMessages id="admin.lname.valid"></IntlMessages>
-												}
-											]}
+											{
+												whitespace: true,
+												required: true,
+												message: <IntlMessages id="admin.input.required" />
+											},
+											{
+												pattern: new RegExp(/^(\S.*)[a-zA-Z-.']+$/),
+												message: <IntlMessages id="admin.lname.valid"></IntlMessages>
+											}
+										]}
 										initialValue={this.state.lastName === null ? "" : this.state.lastName}
-										>
-											<Input size="large" maxLength={20} />
+									>
+										<Input size="large" maxLength={20} />
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={8} lg={8} xl={8}>
@@ -162,20 +162,20 @@ class AddLab extends React.Component {
 										label={<IntlMessages id="admin.userlisting.email" />}
 										name="email"
 										rules={[
-												{
-													type: "email",
-													message: <IntlMessages id="admin.email.valid" />
+											{
+												type: "email",
+												message: <IntlMessages id="admin.email.valid" />
 
-												},
-												{
-													whitespace: true,
-													required: true,
-													message: <IntlMessages id="admin.input.required" />
-												}
-											]}
+											},
+											{
+												whitespace: true,
+												required: true,
+												message: <IntlMessages id="admin.input.required" />
+											}
+										]}
 										initialValue={this.state.userName === null ? "" : this.state.userName}
-										>
-											{this.state.userId === 0 ? <Input size="large" maxLength={80} /> : <Input disabled />}
+									>
+										{this.state.userId === 0 ? <Input size="large" maxLength={80} /> : <Input disabled />}
 									</Form.Item>
 								</Col>
 							</Row>
@@ -186,12 +186,12 @@ class AddLab extends React.Component {
 										label={<IntlMessages id="admin.userlisting.phonenumber" />}
 										name="phone"
 										rules={[
-												{
-													whitespace: true,
-													required: true,
-													message: <IntlMessages id="admin.input.required" />
-												}
-											]}
+											{
+												whitespace: true,
+												required: true,
+												message: <IntlMessages id="admin.input.required" />
+											}
+										]}
 										initialValue={this.state.contactNo === null ? "" : this.state.contactNo}
 									>
 										<Input size="large" maxLength={15} style={{ width: "100%" }} />

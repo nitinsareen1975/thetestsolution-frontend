@@ -349,7 +349,7 @@ class ManageUsers extends Component {
     });
 
     return (
-      <div>
+      <div className="gray-bg">
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
@@ -374,7 +374,7 @@ class ManageUsers extends Component {
         <Row gutter={24}>
           <Col xs={24} style={{ overflowX: "auto" }}>
             <Table
-              bordered
+              className="theme-table"
               columns={this.getHeaderKeys()}
               rowKey={record => record.userId}
               dataSource={this.state.data}

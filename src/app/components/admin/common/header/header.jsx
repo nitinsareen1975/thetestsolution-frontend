@@ -1,7 +1,11 @@
 import React from "react";
 import { Row, Button, Badge, Dropdown, Menu } from "antd";
 import { BellOutlined, UserOutlined } from '@ant-design/icons';
+<<<<<<< HEAD
 import LanguageSwitcher from "../../../../services/languageProvider/switcher";
+=======
+// import LanguageSwitcher from "../../../../services/languageProvider/switcher";
+>>>>>>> 700e95571b1f653bc726b58b64e10fde95df6920
 import * as UserService from "../../../../services/user-service";
 import {
   MenuUnfoldOutlined,
@@ -28,7 +32,7 @@ const AdminHeader = ({...props}) => {
               <BellOutlined />
             </Badge>
           </div>
-          <Dropdown.Button overlay={menu} placement="bottomCenter" icon={<UserOutlined />}>Hi admin</Dropdown.Button>
+          <Dropdown.Button overlay={menu} trigger={['click']} placement="bottomCenter" icon={<UserOutlined />}>Hi admin</Dropdown.Button>
         </div>
     </Row>
 }
