@@ -7,6 +7,7 @@ import  EditUser  from "../components/admin/manage-users/edit.jsx";
 //import Roles from "../components/admin/manage-roles/list.jsx";
 import ManageLab from "../components/admin/manage-lab/list.jsx";
 import AddLab from "../components/admin/manage-lab/add.jsx";
+import EditLab  from "../components/admin/manage-lab/edit.jsx"
 const routes = [
   {
     path: "",
@@ -25,12 +26,16 @@ const routes = [
     component: EditUser
   },
   {
-    path: "labs",
+    path: "lab",
     component: ManageLab
   },
   {
-    path: "labs/add/",
+    path: "lab/add/",
     component: AddLab
+  },
+  {
+    path: "lab/edit/:id",
+    component: EditLab
   }
 ];
 

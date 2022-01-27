@@ -105,9 +105,9 @@ class ManageLab extends Component {
         // width: "200px",
         render: (_text, record) => (
           <span>
-            <Button style={{border:"none"}}
+            <Button
               onClick={() => {
-                this.editItem(record.userId);
+                this.editItem(record.id);
               }}
               >
                 <EditOutlined />
@@ -266,8 +266,8 @@ class ManageLab extends Component {
       });
   };
 
-  editItem = id => {
-    this.props.history.push("" + id);
+   editItem = id => {
+    this.props.history.push("./lab/edit/" + id);
   };
 
   handleTableChange = (pagination, filters, sorter, manual) => {

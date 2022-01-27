@@ -39,11 +39,6 @@ const adminOptions = [{
         key: "/admin/users/add",
         label: "Add new user",
         roles: ["Administrator"]
-      },
-      {
-        key: "/admin/users/roles",
-        label: "Manage User Roles",
-        roles: ["Administrator"]
       }
     ]
   },
@@ -51,7 +46,19 @@ const adminOptions = [{
     key: "/admin/Labs",
     label: "Manage Lab",
     roles: ["Administrator"],
-    leftIcon: <DashboardOutlined />
+    leftIcon: <DashboardOutlined />,
+    children: [
+      {
+        key: "/admin/Lab",
+        label: "Manage Lab",
+        roles: ["Administrator"]
+      },
+      {
+        key: "/admin/lab/add",
+        label: "Add New Lab",
+        roles: ["Administrator"]
+      }
+    ]
   }
 ];
 

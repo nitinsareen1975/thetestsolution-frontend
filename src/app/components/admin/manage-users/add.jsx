@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import * as userActions from "../../../redux/actions/user-actions";
 import * as RolesActions from "../../../redux/actions/roles-actions";
 import { notifyUser } from "../../../services/notification-service";
-import { Typography, Form, Input, Select, Button, Row, Col, Spin } from "antd";
+import { Typography, Form, Input, Select, Button, Row, Col, Spin, Switch, Radio } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
 import { PlusCircleOutlined, ArrowLeftOutlined} from '@ant-design/icons';
 const { Option } = Select;
@@ -77,18 +77,15 @@ class AddUser extends React.Component {
 					wrapperCol: { span: 14 }
 				}
 				: null;
+		function onChange(checked) {
+  console.log(`switch to ${checked}`);
+}
 		return (
 			<div>
 				<Row gutter={24}>
 					<Col xs={24} sm={24} md={12} lg={12} xl={12}>
 						<Typography.Title level={4}>
-							{this.state.userId === 0 ? (
-								<IntlMessages id="admin.manageUser.addUser" />
-							) : (
-								<div>
-									<IntlMessages id="admin.manageUser.editUser" />
-								</div>
-							)}
+							Add User
 						</Typography.Title>
 					</Col>
 
@@ -104,7 +101,7 @@ class AddUser extends React.Component {
 							type="primary"
 							className=""
 							htmlType="button"
-							onClick={() => this.props.history.push("../")}
+							onClick={() => this.props.history.push("./")}
 						>
 							<ArrowLeftOutlined />
 							<IntlMessages id="admin.userlisting.back" />
@@ -116,11 +113,12 @@ class AddUser extends React.Component {
 					<Spin spinning={this.state.loading}>
 						<Form layout="vertical" onSubmit={this.handleSubmit}>
 							<Row gutter={24}>
-								<Col xs={24} sm={24} md={8} lg={8} xl={8}>
+								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
 									<Form.Item
 										{...formItemLayout}
 										name="firstname"
-										label={<IntlMessages id="admin.userlisting.firstName" />}
+										label={<IntlMessages id="admin.userlisting.firstName"  />  }
+
 										rules={[
 											{
 												whitespace: true,
@@ -141,7 +139,7 @@ class AddUser extends React.Component {
 										<Input size="large" maxLength={20} />
 									</Form.Item>
 								</Col>
-								<Col xs={24} sm={24} md={8} lg={8} xl={8}>
+								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
 									<Form.Item
 										{...formItemLayout}
 										label={<IntlMessages id="admin.userlisting.lastName" />}
@@ -162,7 +160,7 @@ class AddUser extends React.Component {
 											<Input size="large" maxLength={20} />
 									</Form.Item>
 								</Col>
-								<Col xs={24} sm={24} md={8} lg={8} xl={8}>
+								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
 									<Form.Item
 										{...formItemLayout}
 										label={<IntlMessages id="admin.userlisting.email" />}
@@ -184,9 +182,7 @@ class AddUser extends React.Component {
 											{this.state.userId === 0 ? <Input size="large" maxLength={80} /> : <Input disabled />}
 									</Form.Item>
 								</Col>
-							</Row>
-							<Row gutter={24}>
-								<Col xs={24} sm={24} md={8} lg={8} xl={8}>
+								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
 									<Form.Item
 										{...formItemLayout}
 										label={<IntlMessages id="admin.userlisting.phonenumber" />}
@@ -203,7 +199,10 @@ class AddUser extends React.Component {
 										<Input size="large" maxLength={15} style={{ width: "100%" }} />
 									</Form.Item>
 								</Col>
-								<Col xs={24} sm={24} md={8} lg={8} xl={8}>
+							</Row>
+							<Row gutter={24}>
+								
+								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
 									<Form.Item
 										{...formItemLayout}
 										label={<IntlMessages id="admin.userlisting.address" />}
@@ -213,7 +212,52 @@ class AddUser extends React.Component {
 										<Input size="large" />
 									</Form.Item>
 								</Col>
-								<Col xs={24} sm={24} md={8} lg={8} xl={8}>
+								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
+									<Form.Item
+										{...formItemLayout}
+										label="City"
+										name="city"
+										initialValue={this.state.city === null ? "" : this.state.city}
+									>
+										<Input size="large" />
+									</Form.Item>
+								</Col>
+								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
+									<Form.Item
+										{...formItemLayout}
+										label="Country"
+										name="country"
+										initialValue={this.state.countryId === null ? "" : this.state.countryId}
+									>
+										<Input size="large" />
+									</Form.Item>
+								</Col>
+								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
+									 <Form.Item
+										{...formItemLayout}
+										label="Zip Code"
+										name="zipcode"
+										initialValue={this.state.zipcode === null ? "" : this.state.zipcode}
+									>
+										<Input size="large" />
+									</Form.Item>
+								</Col>
+							</Row>
+							<Row gutter={24}>
+								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
+									 <Form.Item label="Status" valuePropName="checked">
+										<Switch />
+									</Form.Item>
+								</Col>
+								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
+									<Form.Item name="radio-group" label="Read Report Test">
+										<Radio.Group>
+										<Radio value="a">Yes</Radio>
+										<Radio value="b">No</Radio>
+										</Radio.Group>
+									</Form.Item>
+								</Col>
+								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
 									<Form.Item
 										{...formItemLayout}
 										label={<IntlMessages id="admin.userlisting.role" />}
