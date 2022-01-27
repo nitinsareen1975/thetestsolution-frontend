@@ -1,8 +1,9 @@
-import { Button, Col, Row } from "antd";
+import { Button, Col, Row, Form } from "antd";
 import React, { Component } from "react";
 import logo from "../../assets/images/logo.png";
 import LoginImage from "../../assets/images/register.gif";
 import { notifyUser } from "../../services/notification-service";
+import API from "../../redux/api/user-api";
 
 class ForgotPassword extends Component {
   constructor(props) {
@@ -23,8 +24,7 @@ class ForgotPassword extends Component {
     this.setState({ [name]: value });
   }
 
-  async handleSubmit(e) {
-    e.preventDefault();
+  async handleSubmit(values) {
     let regEx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     this.setState({ submitted: true, submitButtonText: "Please wait..." });
     if (this.state.email) {
@@ -38,34 +38,31 @@ class ForgotPassword extends Component {
       } else {
         try {
           let response = await API.forgotPassword({
-            userName: this.state.email
+            email: this.state.email
           });
           this.setState(response);
-          if (response.success) {
-            notifyUser(
-              "A reset password email has been sent your email id.",
-              "success"
-            );
+          if (response.status && response.status == true) {
+            notifyUser(response.message, "success" );
+            this.setState({
+              email: "",
+              submitted: false,
+              submitButtonText: "Send"
+            });
           } else {
             notifyUser("Unknown error! Please try again.", "error");
           }
-          this.setState({
-            email: "",
-            submitted: false,
-            submitButtonText: "Send"
-          });
         } catch (e) {
           /* if(e.response.data.error && e.response.data.error != ''){
             notifyUser(e.response.data.error, 'error');
           } */
           if (e && e.response && e.response.data.errors && e.response.data.errors.length > 0) {
-            notifyUser(e.response.data.errors[0].externalMessage,"success");
-  
-          }else {
+            notifyUser(e.response.data.errors[0].externalMessage, "success");
+
+          } else {
             notifyUser("Unknown error! Please try again.", "error");
 
           }
-                 
+
           this.setState({
             email: "",
             submitted: false,
@@ -82,75 +79,73 @@ class ForgotPassword extends Component {
   /* section skin */
   render() {
     return (
-      <section id="forgot-password" className="main-login">
+      <Form onFinish={this.handleSubmit}>
+        <section id="forgot-password" className="main-login">
           <Row className="login">
-          {/*Login section left side */}
+            {/*Login section left side */}
             {/* logo */}
             <Col xs={24} lg={12}>
               {/* logo */}
               <div className="form-column">
-              <div className="form-column-inner">
-              <div className="logo">
-                <img src={logo} alt="Logo" />
-              </div>
-            {/* logo ends */}
-            {/* title */}
-            <h2>Forgot Password</h2>
-            <hr class="title-hr" />
-            {/* title ends */}
-            {/* logi form */}
-            <div className="login-form">
-              <div className="row response">
-                <div className="form-group">{this.state.message}</div>
-              </div>
-              {/* Email */}
-              <Row>
-              <Col xs={24}>
-                <div className="form-group">
-                    <i className="far fa-envelope"></i>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Enter Email Address..."
-                      defaultValue={this.state.success ? "" : this.state.email}
-                      onChange={this.handleChange}
-                    />
+                <div className="form-column-inner">
+                  <div className="logo">
+                    <img src={logo} alt="Logo" />
                   </div>
-                </Col>
-              </Row>
-              {/* Email ends*/}
-              {/* submit button */}
-              <Row>
-                <Col xs={24}>
-                  <div className="form-group">
-                    <Button type="primary" size={'large'}>submit</Button>
+                  {/* logo ends */}
+                  {/* title */}
+                  <h2>Forgot Password</h2>
+                  <hr className="title-hr" />
+                  {/* title ends */}
+                  {/* logi form */}
+                  <div className="login-form">
+                    <Row>
+                      <Col xs={24}>
+                        <div className="form-group">
+                          <i className="far fa-envelope"></i>
+                          <input
+                            type="email"
+                            name="email"
+                            placeholder="Enter Email Address..."
+                            value={this.state.success ? "" : this.state.email}
+                            onChange={this.handleChange}
+                          />
+                        </div>
+                      </Col>
+                    </Row>
+                    {/* Email ends*/}
+                    {/* submit button */}
+                    <Row>
+                      <Col xs={24}>
+                        <div className="form-group">
+                          <Button type="primary" htmlType="submit" size={'large'}>submit</Button>
+                        </div>
+                      </Col>
+                    </Row>
+                    <Row style={{ marginTop: "10px" }}>
+                      <Col xs={24} style={{ textAlign: "center" }}>
+                        <div className="form-group">
+                          <a onClick={() => this.props.history.push("/login")}><span>Back to Login</span></a>
+                        </div>
+                      </Col>
+                    </Row>
+                    {/* submit button ends */}
                   </div>
-                </Col>
-              </Row>
-              <Row style={{ marginTop: "10px" }}>
-              <Col xs={24} style={{textAlign:"center"}}>
-                <div className="form-group">
-                  <a href="/login"><span>Back to Login</span></a>
+                  {/* login form ends */}
                 </div>
-                </Col>
-              </Row>
-              {/* submit button ends */}
-            </div>
-            {/* login form ends */}
-         </div>
-         </div>
-          {/*login section left side ends */}
-          </Col>
-          {/* Image area  */}
-          <Col xs={24} lg={12}  className="login-img-col">
-            <div className="login-image-area">
-              <img src={LoginImage} alt="login" />
-            </div>
-            {/* image are ends  */}
+              </div>
+              {/*login section left side ends */}
             </Col>
-          {/* image are ends  */}
+            {/* Image area  */}
+            <Col xs={24} lg={12} className="login-img-col">
+              <div className="login-image-area">
+                <img src={LoginImage} alt="login" />
+              </div>
+              {/* image are ends  */}
+            </Col>
+            {/* image are ends  */}
           </Row>
-      </section>
+        </section>
+      </Form>
     );
   }
 }

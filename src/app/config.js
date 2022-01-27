@@ -1,6 +1,6 @@
 let AppConfig = window.AppConfig || {};
 module.exports = {
-  API: AppConfig && AppConfig.API ? AppConfig.API : "http://localhost:8081",
-  AuthAPI: AppConfig && AppConfig.AuthAPI ? AppConfig.AuthAPI : "http://dev.auth.captravelassistance.com:9003/",
-  DASHBOARD_URL: AppConfig && AppConfig.DASHBOARD_URL ? AppConfig.DASHBOARD_URL : "https://dev.api.captravelassistance.com:3000"
+  API: AppConfig && AppConfig.API ? AppConfig.API : "http://api.thetestsolutions.com:8081/api/",
+  AuthAPI: AppConfig && AppConfig.AuthAPI ? AppConfig.AuthAPI : "http://api.thetestsolutions.com:8081/auth/",
+  DASHBOARD_URL: AppConfig && AppConfig.DASHBOARD_URL ? AppConfig.DASHBOARD_URL : "http://localhost:3010"
 };
