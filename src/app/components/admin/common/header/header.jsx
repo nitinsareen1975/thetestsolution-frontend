@@ -28,7 +28,7 @@ const AdminHeader = ({...props}) => {
               <BellOutlined />
             </Badge>
           </div>
-          <Dropdown.Button overlay={menu} placement="bottomCenter" icon={<UserOutlined />}>Hi admin</Dropdown.Button>
+          <Dropdown.Button overlay={menu} trigger={['click']} placement="bottomCenter" icon={<UserOutlined />}>Hi admin</Dropdown.Button>
         </div>
     </Row>
 }
