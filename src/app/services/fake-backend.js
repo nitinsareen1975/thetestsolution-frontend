@@ -1,22 +1,58 @@
 export function configureFakeBackend() {
     let users = [
       {
-        id: 1,
-        email: "user1@mail.com",
-        firstname: "user",
-        lastname: "Test",
-        phone: "Test",
-        status: "Test",
-        role: "User"
+        "id":1,
+        "username":"admin@admin.com",
+        "firstname":"Admin",
+        "middlename":null,
+        "lastname":null,
+        "email":"admin@admin.com",
+        "password":"admin",
+        "phone":"9816311185",
+        "roles":"Administrator",
+        "gender":null,
+        "dob":null,
+        "street":null,
+        "city":null,
+        "state":null,
+        "country":null,
+        "zip":null,
+        "geo_location":"",
+        "identifier":null,
+        "identifier_state":null,
+        "identifier_country":null,
+        "identifier_type":null,
+        "ethnicity":null,
+        "pregnant":null,
+        "race":null,
+        "status":1
       },
       {
-        id: 1,
-        email: "admin@mail.com",
-        firstname: "admin",
-        lastname: "Test",
-        phone: "Test",
-        status: "Test",
-        role: "Admin"
+        "id":2,
+        "username":"user@user.com",
+        "firstname":"User",
+        "middlename":null,
+        "lastname":null,
+        "email":"user@gmail.com",
+        "password":"user",
+        "phone":"9816311185",
+        "roles":"Administrator",
+        "gender":null,
+        "dob":null,
+        "street":null,
+        "city":null,
+        "state":null,
+        "country":null,
+        "zip":null,
+        "geo_location":"",
+        "identifier":null,
+        "identifier_state":null,
+        "identifier_country":null,
+        "identifier_type":null,
+        "ethnicity":null,
+        "pregnant":null,
+        "race":null,
+        "status":1
       }
     ];
     let items = getItems(1, 41);
@@ -176,15 +212,14 @@ export function configureFakeBackend() {
             entity = pathArray[1];
           }
           
-         /*  if(url.endsWith("/forgot-password")){
+          if(url.endsWith("/forgot-password")){
             let responseJson = {
-                success: true,
-                message: 'Email sent',
-                status: 200
+                status: true,
+                message: 'Email sent successfully.'
               };
             resolve(responseJson);
             return;
-          } */
+          }
   
           if(url.endsWith("/reset-password")){
             let responseJson = {
@@ -285,7 +320,7 @@ export function configureFakeBackend() {
             // find if any user matches login credentials
             let filteredUsers = users.filter(user => {
               return (
-                user.username === params.username &&
+                user.email === params.email &&
                 user.password === params.password
               );
             });
@@ -293,15 +328,17 @@ export function configureFakeBackend() {
             if (filteredUsers.length) {
               // if login details are valid return user details and fake jwt token
               let user = filteredUsers[0];
+              user.redirect = "/"+user.username;
               let responseJson = {
-                id: user.id,
-                username: user.username,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                role: user.lastName,
-                token: user.lastName,
-                result: true,
-                redirect: "/" + user.username
+                "status":true,
+                "data":{
+                  "token":{
+                    "token":"fake-jwt-token",
+                    "token_type":"bearer",
+                    "expires_in":3600
+                  },
+                  "user": user
+                }
               };
               resolve(responseJson);
             } else {
@@ -325,6 +362,7 @@ export function configureFakeBackend() {
               let user = filteredUsers[0];
               let responseJson = {
                 id: user.id,
+                email: user.email,
                 username: user.username,
                 firstName: user.firstName,
                 lastName: user.lastName,

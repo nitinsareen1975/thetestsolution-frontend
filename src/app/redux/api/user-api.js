@@ -2,7 +2,7 @@ import Axios from "../../services/axios-service";
 import AxiosAuth from "../../services/axios-service-auth";
 
 const login = data => {
-  return AxiosAuth.post("/api/AuthV2/login", data, undefined);
+  return AxiosAuth.post("/login", data, undefined);
 };
 
 const getUserData = (data) => {
@@ -30,11 +30,11 @@ const deleteUser = data => {
 };
 
 const forgotPassword = data => {
-  return AxiosAuth.get("/api/ForgotPassword", data, undefined);
+  return AxiosAuth.post("/forgot-password", data, undefined);
 };
 
 const resetPassword = data => {
-  return AxiosAuth.post("/api/ForgotPassword", data, undefined);
+  return AxiosAuth.post("/reset-password", data, undefined);
 };
 
 const getAllUserRoles = data => {
@@ -42,7 +42,7 @@ const getAllUserRoles = data => {
 };
 
 const updateToken = data => {
-  return AxiosAuth.post("/api/AuthV2/refreshtoken", data, undefined);
+  return AxiosAuth.post("/refresh-token", data, undefined);
 };
 
 const updateProfile = data => {

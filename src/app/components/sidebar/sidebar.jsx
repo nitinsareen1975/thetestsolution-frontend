@@ -14,7 +14,7 @@ class SideBar extends Component {
   }
   componentDidMount() {
     const currentUser = JSON.parse(localStorage.getItem("user"));
-    if (currentUser.role) this.setState({ roleName: currentUser.role });
+    if (currentUser.roles) this.setState({ roleName: currentUser.roles });
   }
 
   

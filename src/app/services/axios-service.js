@@ -50,7 +50,7 @@ const refreshToken = async (method, url, data, hitCount,reject) => {
       }
       let optionsToken = {
         method: "POST",
-        url: "/api/AuthV2/refreshtoken",
+        url: "/auth/refresh-token",
         responseType: "json",
         data:objTokenData,
         headers: {

@@ -6,8 +6,8 @@ export function canAccess(permission) {
 	let status = false;
 	if(permission === '') return status;
 	let currentUser = UserService.getUser();
-	if(currentUser.role === "") return status;
-	if(permissions[permission].indexOf(currentUser.role) > -1){
+	if(currentUser.roles === "") return status;
+	if(permissions[permission].indexOf(currentUser.roles) > -1){
 		status = true;
 	} else {
 		status = false;
@@ -30,17 +30,17 @@ export function isRole(role) {
 	let status = false;
 	if(role === '') return status;
 	let currentUser = UserService.getUser();
-	if(currentUser.role === "") return status;
+	if(currentUser.roles === "") return status;
 	if(Array.isArray(role)){
 		status = false;
 		role.map(function(item){
-			if(item == currentUser.role){
+			if(item == currentUser.roles){
 				status = true;
 			}
 		});
 	} else {
-		if(currentUser.role === "") return status;
-		if(role == currentUser.role){
+		if(currentUser.roles === "") return status;
+		if(role == currentUser.roles){
 			status = true;
 		} else {
 			status = false;
