@@ -6,9 +6,11 @@ export function isLoggedIn() {
 }
 
 export function logOut() {
-	if (typeof window === 'undefined')
-		localStorage.removeItem('user');
+	localStorage.removeItem('user');
+	localStorage.removeItem('tokenData');
+	localStorage.removeItem('userLang');
 	removeCookie('token');
+	window.location = "/";
 }
 
 export function logIn(user, token, expiration) {

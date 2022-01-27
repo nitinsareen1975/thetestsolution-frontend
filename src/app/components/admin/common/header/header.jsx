@@ -1,7 +1,8 @@
 import React from "react";
 import { Row, Button, Badge, Dropdown, Menu } from "antd";
 import { BellOutlined, UserOutlined } from '@ant-design/icons';
-//import LanguageSwitcher from "../../../../services/languageProvider/switcher";
+import LanguageSwitcher from "../../../../services/languageProvider/switcher";
+import * as UserService from "../../../../services/user-service";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -10,7 +11,7 @@ const AdminHeader = ({...props}) => {
     const menu = (
         <Menu>
           <Menu.Item key="1" icon={<UserOutlined />}>
-            <a href="/login">
+            <a onClick={() => UserService.logOut()}>
                 Logout
             </a>
           </Menu.Item>

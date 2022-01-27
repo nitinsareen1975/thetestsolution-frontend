@@ -91,9 +91,9 @@ const DataAccessService = {
 	}
 };
 function getFetchMethod(url,data,token){
-	if(url.indexOf("/api/ForgotPassword") !== -1 
-	 || url.indexOf("/api/AuthV2/login") !== -1
-	 || url.indexOf("/api/AuthV2/refreshtoken") !== -1){
+	if(url.indexOf("/api/forgot-password") !== -1 
+	 || url.indexOf("/api/login") !== -1
+	 || url.indexOf("/api/reset-password") !== -1){
 		return "real";
 	} else {
 		return "fake";

@@ -44,7 +44,7 @@ export default {
       path: "/admin",
       component: Admin,
       exact: false,
-      roles: ["Admin", "Lab Admin"],
+      roles: ["Administrator", "Lab Admin"],
       status: 200
     }
   ],

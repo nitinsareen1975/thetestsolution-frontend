@@ -21,35 +21,36 @@ const ManageUserIcon = props => < Icon component={
 const adminOptions = [{
     key: "/admin",
     label: "Dashboard",
-    roles: ["Admin"],
+    roles: ["Administrator"],
     leftIcon: <DashboardOutlined />
   },
   {
     key: "/admin/users",
     label: "Manage Users",
     leftIcon: <UserOutlined />,
-    roles: ["Admin"],
+    roles: ["Administrator"],
     children: [
       {
         key: "/admin/users",
         label: "Manage Users",
-        roles: ["Admin"]
+        roles: ["Administrator"]
       },
       {
         key: "/admin/users/add",
         label: "Add new user",
-        roles: ["Admin"]
+        roles: ["Administrator"]
       },
       {
         key: "/admin/users/roles",
         label: "Manage User Roles",
-        roles: ["Admin"]
+        roles: ["Administrator"]
       }
     ]
   },
   {
     key: "/admin/Labs",
     label: "Manage Lab",
+<<<<<<< HEAD
     roles: ["Admin"],
     leftIcon: <DashboardOutlined />,
     children: [
@@ -64,6 +65,10 @@ const adminOptions = [{
         roles: ["Admin"]
       },
     ]
+=======
+    roles: ["Administrator"],
+    leftIcon: <DashboardOutlined />
+>>>>>>> 6bd28a014d4cd45ea6c5287bdcdfe38abde4d3b0
   }
 ];
 

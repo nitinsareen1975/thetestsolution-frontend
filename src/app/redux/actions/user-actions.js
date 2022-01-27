@@ -13,56 +13,44 @@ export function login(username, password) {
   return async function (dispatch, _getState) {
     try {
       let data = {
-        username: username,
+        email: username,
         password: password
       };
-      let user = await API.login(data);
-      if (user.accessToken && user.accessToken.token) {
-        var expiry = new Date();
-        expiry.setSeconds(expiry.getSeconds() + user.accessToken.expiresIn);
-        var tokenData = {
-          "token_expiry": expiry,
-          "token": user.accessToken.token,
-          "refreshToken": user.refreshToken
-        }
-        
-        // localStorage.setItem("accessToken", user.accessToken.token);
-        // localStorage.setItem("refreshToken", user.refreshToken);
-        
-       
-        //UserService.logIn(user)
-        user.redirect = UserRoles.types[user.userInformation.role].url;
-       
-        dispatch({
-          type: Types.SAVE_USER,
-          payload: user
-        });
-        dispatch({
-          type: Types.LOGIN_SUCCESS,
-          payload: true
-        });
-        /* if (themeName && themeName !== "" && themeName !== null) {
-          var theme = getCurrentTheme(themeName);
+      await API.login(data).then(response => {
+        if (response.status && response.status == true) {
+          var expiry = new Date();
+          expiry.setSeconds(expiry.getSeconds() + response.data.token.expires_in);
+          var tokenData = {
+            "token_expiry": expiry,
+            "token": response.data.token.token,
+            "refreshToken": response.data.token.token+'re'
+          }
+          response.data.user.redirect = UserRoles.types[response.data.user.roles].url;
+         
           dispatch({
-            type: ThemeTypes.CHANGE_THEME,
-            payload: theme
+            type: Types.SAVE_USER,
+            payload: response.data
           });
-        } */
-        var userInfo = user.userInformation;
-        if(!userInfo.themeId || userInfo.themeId === null || userInfo.themeId === ""){
-          userInfo.themeId = 1;
+          dispatch({
+            type: Types.LOGIN_SUCCESS,
+            payload: true
+          });
+          localStorage.setItem("user", JSON.stringify(response.data.user));
+          localStorage.setItem("tokenData", JSON.stringify(tokenData));
+        } else {
+          notifyUser("Error logging in. Please try again!", 'error');
         }
-        userInfo.redirect = UserRoles.types[user.userInformation.role].url;
-        localStorage.setItem("user", JSON.stringify(userInfo));
-        localStorage.setItem("tokenData", JSON.stringify(tokenData));
-      } else {
-        notifyUser("Error logging in. Please try again!", 'error');
-        /* dispatch({
-          type: Types.LOGIN_FAIL,
-          payload: { errorMessage: "Error logging In", isLoggedIn: false }
-        }); */
-      }
+      }).catch(e => {
+        if (e && e.response && e.response.data) {
+          var res = JSON.parse(e.response.data);
+          notifyUser(res.message, 'error');
+        } else {
+          notifyUser('Unknown error!', 'error');
+        }
+      });
+      
     } catch (e) {
+      console.log("E", e)
       if (e && e.response && e.response.data && e.response.data.error && e.response.data.error.length > 0) {
         notifyUser(e.response.data.error[0].externalMessage, 'error');
         /* dispatch({
@@ -79,19 +67,6 @@ export function login(username, password) {
 export function getUserData() {
   return async function (dispatch, getState) {
     try {
-      /* let user = await API.getUserData({"token":localStorage.getItem('token')});
-      localStorage.setItem("token", user.token);
-      let oldUser = JSON.parse(localStorage.getItem('user'))
-      
-      if(oldUser.role !== user.role){
-          console.log("Role Mismatc");
-          LogOutUser()();
-          window.location = "/login";
-      }else{
-
-        dispatch({ type: Types.LOGIN_SUCCESS, payload: false });
-        dispatch({ type: Types.SAVE_USER, payload: user });
-      }*/
       let oldUser = JSON.parse(localStorage.getItem('user'))
       dispatch({
         type: Types.LOGIN_SUCCESS,

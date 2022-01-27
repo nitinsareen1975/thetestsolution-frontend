@@ -1,53 +1,53 @@
 export default{
     userRoles: {
-        Admin:{
-            url:"/admin/",
+        Administrator:{
+            url:"/admin",
     
         },
         User:{
-            url:"/user/",
+            url:"/user",
     
         },
         Partner:{
-            url:"/reseller/",
+            url:"/reseller",
         }
     },
     types: {
         'Companion': {
-            url: "/user/"
+            url: "/user"
         },
         'CSR': {
-            url: "/admin/"
+            url: "/admin"
         },
         'Membership': {
-            url: "/user/"
+            url: "/user"
         },
         'Employee': {
-            url: "/user/"
+            url: "/user"
         },
         'Division Manager': {
-            url: "/user/"
+            url: "/user"
         },
         'Travel Manager': {
-            url: "/user/"
+            url: "/user"
         },
         'Traveler': {
-            url: "/user/"
+            url: "/user"
         },
         'Super Admin': {
-            url: "/admin/"
+            url: "/admin"
         },
         'Administrator': {
-            url: "/admin/"
+            url: "/admin"
         },
         'Admin': {
-            url: "/user/"
+            url: "/user"
         },
         'Partner': {
-            url: "/reseller/"
+            url: "/reseller"
         },
         'Hybrid Admin':{
-            url:"/hybrid/"
+            url:"/hybrid"
         }
     },
     permissions: {

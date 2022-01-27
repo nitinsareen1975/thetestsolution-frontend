@@ -18,14 +18,14 @@ export default function userReducer(state = initialState, action) {
     case Types.SAVE_USER:
       return {
         ...state,
-        userData: action.payload,
-        token: action.payload.accessToken.token,
-        redirect:action.payload.redirect
+        userData: action.payload.user,
+        token: action.payload.token.token,
+        redirect:action.payload.user.redirect
       };
     case Types.VALIDATE_USER:
       return {
           ...state,
-          userData: action.payload
+          userData: action.payload.user
         };
     case Types.LOGIN_SUCCESS:
       return { ...state, isLoggedIn: action.payload };
