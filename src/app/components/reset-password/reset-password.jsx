@@ -2,14 +2,10 @@ import React, { Component } from "react";
 import logo from "../../assets/images/logo.png";
 import LoginImage from "../../assets/images/register.gif";
 import { notifyUser } from "../../services/notification-service";
-<<<<<<< HEAD
-import { Popover, Row, Button, Col } from "antd";
-=======
 import { Popover, Row, Button, Col, Form } from "antd";
 import IntlMessages from "../../services/intlMesseges";
 import { ExclamationCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import API from "../../redux/api/user-api";
->>>>>>> 6bd28a014d4cd45ea6c5287bdcdfe38abde4d3b0
 
 const validColor = '#52c41a', invalidColor = '#cb0019';
 const validIcon = CheckCircleOutlined, invalidIcon = ExclamationCircleOutlined;

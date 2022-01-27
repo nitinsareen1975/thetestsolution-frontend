@@ -107,7 +107,7 @@ class ManageUsers extends Component {
           <span>
             <Button
               onClick={() => {
-                this.editItem(record.userId);
+                this.editItem(record.id);
               }}
               >
                 <EditOutlined />
@@ -267,7 +267,7 @@ class ManageUsers extends Component {
   };
 
   editItem = id => {
-    this.props.history.push("" + id);
+    this.props.history.push("./users/edit/" + id);
   };
 
   handleTableChange = (pagination, filters, sorter, manual) => {
@@ -359,7 +359,7 @@ class ManageUsers extends Component {
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Button
               type="primary"
-              onClick={() => this.editItem("new")}
+              onClick={() => this.editItem("users/add")}
               className="right-fl def-blue"
             >
               Add New

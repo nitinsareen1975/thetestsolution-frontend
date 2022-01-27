@@ -21,7 +21,7 @@ const routes = [
     component: AddUser
   },
   {
-    path: "users/edit/",
+    path: "users/edit/:id",
     component: EditUser
   },
   {

@@ -48,27 +48,22 @@ const adminOptions = [{
     ]
   },
   {
-    key: "/admin/Labs",
-    label: "Manage Lab",
-<<<<<<< HEAD
-    roles: ["Admin"],
-    leftIcon: <DashboardOutlined />,
-    children: [
-      {
-        key: "/admin/Labs",
-        label: "Manage labs",
-        roles: ["Admin"]
-      },
-      {
-        key: "/admin/labs/add",
-        label: "Add new Lab",
-        roles: ["Admin"]
-      },
-    ]
-=======
+    key: "/admin/labs",
+    label: "Manage Labs",
     roles: ["Administrator"],
-    leftIcon: <DashboardOutlined />
->>>>>>> 6bd28a014d4cd45ea6c5287bdcdfe38abde4d3b0
+    leftIcon: <DashboardOutlined />,
+      children: [
+        {
+          key: "/admin/labs",
+          label: "Manage Labs",
+          roles: ["Administrator"]
+        },
+        {
+          key: "/admin/labs/add",
+          label: "Add new lab",
+          roles: ["Administrator"]
+        }
+      ]
   }
 ];
 
