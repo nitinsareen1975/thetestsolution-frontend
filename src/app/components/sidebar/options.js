@@ -2,15 +2,10 @@ import React from "react";
 import { 
   DashboardOutlined, 
   UserOutlined, 
-  ExperimentOutlined 
+  ExperimentOutlined,
+  AuditOutlined
 } from '@ant-design/icons';
-
-/* import {
-  HomeSvg,
-  ManageUser
-} from "../../assets/svg/sidebar-icons.jsx"; */
-import { DashboardOutlined, UserOutlined, ExperimentOutlined, AuditOutlined } from '@ant-design/icons';
-
+  
 const HomeIcon = props => < Icon component={
   HomeSvg
 } {
