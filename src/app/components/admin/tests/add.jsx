@@ -14,14 +14,14 @@ import {
   Row,
   Col,
   Spin,
+  DatePicker,
   Switch,
-  Radio,
 } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
 import { PlusCircleOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
-class EditUser extends React.Component {
+class AddTest extends React.Component {
   state = {
     loading: true,
     confirmDirty: false,
@@ -88,14 +88,11 @@ class EditUser extends React.Component {
             wrapperCol: { span: 14 },
           }
         : null;
-    function onChange(checked) {
-      console.log(`switch to ${checked}`);
-    }
     return (
       <div>
         <Row gutter={24}>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <Typography.Title level={4}>Edit User</Typography.Title>
+            <Typography.Title level={4}>Add Test</Typography.Title>
           </Col>
 
           <Col
@@ -110,7 +107,7 @@ class EditUser extends React.Component {
               type="primary"
               className=""
               htmlType="button"
-              onClick={() => this.props.history.push("./")}
+              onClick={() => this.props.history.push("../tests")}
             >
               <ArrowLeftOutlined />
               <IntlMessages id="admin.userlisting.back" />
@@ -125,8 +122,8 @@ class EditUser extends React.Component {
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
-                    name="firstname"
-                    label={<IntlMessages id="admin.userlisting.firstName" />}
+                    name="testname"
+                    label="Name of test"
                     rules={[
                       {
                         whitespace: true,
@@ -141,7 +138,7 @@ class EditUser extends React.Component {
                       },
                     ]}
                     initialValue={
-                      this.state.firstName === null ? "" : this.state.firstName
+                      this.state.testname === null ? "" : this.state.testname
                     }
                   >
                     <Input maxLength={20} />
@@ -150,8 +147,92 @@ class EditUser extends React.Component {
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
-                    label={<IntlMessages id="admin.userlisting.lastName" />}
-                    name="lastname"
+                    name="procedure"
+                    label="Procedure"
+                    rules={[
+                      {
+                        whitespace: true,
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      },
+                      {
+                        pattern: new RegExp(/^(\S.*)[a-zA-Z-.']+$/),
+                        message: (
+                          <IntlMessages id="admin.name.valid"></IntlMessages>
+                        ),
+                      },
+                    ]}
+                    initialValue={
+                      this.state.procedure === null
+                        ? ""
+                        : this.state.procedure
+                    }
+                  >
+                    <Input maxLength={20} />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="proceduresnomed"
+                    label="Procedure Snomed"
+                    rules={[
+                      {
+                        whitespace: true,
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      },
+                      {
+                        pattern: new RegExp(/^(\S.*)[a-zA-Z-.']+$/),
+                        message: (
+                          <IntlMessages id="admin.name.valid"></IntlMessages>
+                        ),
+                      },
+                    ]}
+                    initialValue={
+                      this.state.proceduresnomed === null
+                        ? ""
+                        : this.state.proceduresnomed
+                    }
+                  >
+                    <Input maxLength={20} />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="testingplatform"
+                    label="Testing Platform"
+                    rules={[
+                      {
+                        whitespace: true,
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      },
+                      {
+                        pattern: new RegExp(/^(\S.*)[a-zA-Z-.']+$/),
+                        message: (
+                          <IntlMessages id="admin.name.valid"></IntlMessages>
+                        ),
+                      },
+                    ]}
+                    initialValue={
+                      this.state.testingplatform === null
+                        ? ""
+                        : this.state.testingplatform
+                    }
+                  >
+                    <Input maxLength={20} />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Row gutter={24}>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="Price Offers"
+                    name="priceOffers"
                     rules={[
                       {
                         whitespace: true,
@@ -166,7 +247,7 @@ class EditUser extends React.Component {
                       },
                     ]}
                     initialValue={
-                      this.state.lastName === null ? "" : this.state.lastName
+                      this.state.priceOffers === null ? "" : this.state.priceOffers
                     }
                   >
                     <Input maxLength={20} />
@@ -175,35 +256,33 @@ class EditUser extends React.Component {
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
-                    label={<IntlMessages id="admin.userlisting.email" />}
-                    name="email"
+                    name="loinc"
+                    label="Loinc (This is goverment id code)"
                     rules={[
-                      {
-                        type: "email",
-                        message: <IntlMessages id="admin.email.valid" />,
-                      },
                       {
                         whitespace: true,
                         required: true,
                         message: <IntlMessages id="admin.input.required" />,
                       },
+                      {
+                        pattern: new RegExp(/^(\S.*)[a-zA-Z-.']+$/),
+                        message: (
+                          <IntlMessages id="admin.name.valid"></IntlMessages>
+                        ),
+                      },
                     ]}
                     initialValue={
-                      this.state.userName === null ? "" : this.state.userName
+                      this.state.loinc === null ? "" : this.state.loinc
                     }
                   >
-                    {this.state.userId === 0 ? (
-                      <Input maxLength={80} />
-                    ) : (
-                      <Input disabled />
-                    )}
+                    <Input maxLength={20} />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
-                    label={<IntlMessages id="admin.userlisting.phonenumber" />}
-                    name="phone"
+                    label="Test Type"
+                    name="testtype"
                     rules={[
                       {
                         whitespace: true,
@@ -221,84 +300,73 @@ class EditUser extends React.Component {
                     />
                   </Form.Item>
                 </Col>
-              </Row>
-              <Row gutter={24}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
-                    label={<IntlMessages id="admin.userlisting.address" />}
-                    name="address"
-                    initialValue={
-                      this.state.address === null ? "" : this.state.address
-                    }
+                    label="FI Test Name"
+                    rules={[
+                      {
+                        whitespace: true,
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      },
+                    ]}
                   >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label="City"
-                    name="city"
-                    initialValue={
-                      this.state.city === null ? "" : this.state.city
-                    }
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label="Country"
-                    name="country"
-                    initialValue={
-                      this.state.countryId === null ? "" : this.state.countryId
-                    }
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label="Zip Code"
-                    name="zipcode"
-                    initialValue={
-                      this.state.zipcode === null ? "" : this.state.zipcode
-                    }
-                  >
-                    <Input />
+                    <Input
+                      maxLength={15}
+                      style={{ width: "100%" }}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={24}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item label="Status" valuePropName="checked">
+                <Form.Item
+                    {...formItemLayout}
+                    label="FI Test Type"
+                    rules={[
+                      {
+                        whitespace: true,
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="Fi Model or Component"
+                    rules={[
+                      {
+                        whitespace: true,
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      },
+                    ]}
+                  >
+                    <Input/>
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="Estimated time  hours  and seconds"
+                    name="estimatedtime"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                <Form.Item label="Status" valuePropName="checked">
                     <Switch />
                   </Form.Item>
                 </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item name="radio-group" label="Read Report Test">
-                    <Radio.Group>
-                      <Radio value="a">Yes</Radio>
-                      <Radio value="b">No</Radio>
-                    </Radio.Group>
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label={<IntlMessages id="admin.userlisting.role" />}
-                  >
-                    <Select>
-                      {this.state.allRoles.map(function (item) {
-                        return <Option key={item.id}>{item.name}</Option>;
-                      })}
-                    </Select>
-                  </Form.Item>
-                </Col>
+               
               </Row>
+              
               <Row>
                 <Col>
                   <Form.Item>
@@ -318,7 +386,11 @@ class EditUser extends React.Component {
                       htmlType="submit"
                       size="large"
                     >
-                     Update
+                      {this.state.userId > 0 ? (
+                        <IntlMessages id="admin.userlisting.update" />
+                      ) : (
+                        <IntlMessages id="admin.userlisting.add" />
+                      )}
                       <PlusCircleOutlined />
                     </Button>
                   </Form.Item>
@@ -340,6 +412,6 @@ function mapDispatchToProps(dispatch) {
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-    EditUser
+    AddTest
   )
 );

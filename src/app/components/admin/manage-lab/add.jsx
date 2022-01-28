@@ -107,7 +107,7 @@ class AddLab extends React.Component {
               type="primary"
               className=""
               htmlType="button"
-              onClick={() => this.props.history.push("../")}
+              onClick={() => this.props.history.push("../Lab")}
             >
               <ArrowLeftOutlined />
               <IntlMessages id="admin.userlisting.back" />
@@ -141,7 +141,7 @@ class AddLab extends React.Component {
                       this.state.labName === null ? "" : this.state.labName
                     }
                   >
-                    <Input size="large" maxLength={20} />
+                    <Input maxLength={20} />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -168,7 +168,7 @@ class AddLab extends React.Component {
                         : this.state.labLicense
                     }
                   >
-                    <Input size="large" maxLength={20} />
+                    <Input maxLength={20} />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -198,7 +198,7 @@ class AddLab extends React.Component {
                       this.state.firstName === null ? "" : this.state.firstName
                     }
                   >
-                    <Input size="large" maxLength={20} />
+                    <Input maxLength={20} />
                   </Form.Item>
                 </Col>
               </Row>
@@ -226,7 +226,7 @@ class AddLab extends React.Component {
                       this.state.lastName === null ? "" : this.state.lastName
                     }
                   >
-                    <Input size="large" maxLength={20} />
+                    <Input maxLength={20} />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -250,7 +250,7 @@ class AddLab extends React.Component {
                     }
                   >
                     {this.state.userId === 0 ? (
-                      <Input size="large" maxLength={80} />
+                      <Input maxLength={80} />
                     ) : (
                       <Input disabled />
                     )}
@@ -273,7 +273,6 @@ class AddLab extends React.Component {
                     }
                   >
                     <Input
-                      size="large"
                       maxLength={15}
                       style={{ width: "100%" }}
                     />
@@ -291,7 +290,7 @@ class AddLab extends React.Component {
                       },
                     ]}
                   >
-                    <Select size="large">
+                    <Select>
                       {this.state.allRoles.map(function (item) {
                         return <Option key={item.id}>{item.name}</Option>;
                       })}
@@ -302,7 +301,7 @@ class AddLab extends React.Component {
               <Row gutter={24}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item {...formItemLayout} label="Test Codes">
-                    <Select size="large">
+                    <Select>
                       {this.state.allRoles.map(function (item) {
                         return <Option key={item.id}>{item.name}</Option>;
                       })}
@@ -318,7 +317,7 @@ class AddLab extends React.Component {
                       this.state.address === null ? "" : this.state.address
                     }
                   >
-                    <Input size="large" />
+                    <Input />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -330,7 +329,7 @@ class AddLab extends React.Component {
                       this.state.address === null ? "" : this.state.address
                     }
                   >
-                    <Input size="large" />
+                    <Input />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -342,7 +341,7 @@ class AddLab extends React.Component {
                       this.state.state === null ? "" : this.state.state
                     }
                   >
-                    <Input size="large" />
+                    <Input />
                   </Form.Item>
                 </Col>
               </Row>
@@ -356,7 +355,7 @@ class AddLab extends React.Component {
                       this.state.city === null ? "" : this.state.city
                     }
                   >
-                    <Input size="large" />
+                    <Input />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -368,7 +367,7 @@ class AddLab extends React.Component {
                       this.state.countryId === null ? "" : this.state.countryId
                     }
                   >
-                    <Input size="large" />
+                    <Input />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -380,12 +379,12 @@ class AddLab extends React.Component {
                       this.state.zipcode === null ? "" : this.state.zipcode
                     }
                   >
-                    <Input size="large" />
+                    <Input />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item {...formItemLayout} label="Payment Code">
-                    <Select size="large">
+                    <Select>
                       {this.state.allRoles.map(function (item) {
                         return <Option key={item.id}>{item.name}</Option>;
                       })}
@@ -401,7 +400,7 @@ class AddLab extends React.Component {
                     name="tax"
                     initialValue={this.state.tax === null ? "" : this.state.tax}
                   >
-                    <Input size="large" />
+                    <Input />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -415,7 +414,7 @@ class AddLab extends React.Component {
                         : this.state.compliance
                     }
                   >
-                    <Input size="large" />
+                    <Input />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>

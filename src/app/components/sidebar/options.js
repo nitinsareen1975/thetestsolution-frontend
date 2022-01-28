@@ -5,6 +5,24 @@ import {
   ExperimentOutlined 
 } from '@ant-design/icons';
 
+/* import {
+  HomeSvg,
+  ManageUser
+} from "../../assets/svg/sidebar-icons.jsx"; */
+import { DashboardOutlined, UserOutlined, ExperimentOutlined, AuditOutlined } from '@ant-design/icons';
+
+const HomeIcon = props => < Icon component={
+  HomeSvg
+} {
+  ...props
+  }
+/>;
+const ManageUserIcon = props => < Icon component={
+  ManageUser
+} {
+  ...props
+  }
+/>;
 const adminOptions = [{
     key: "/admin",
     label: "Dashboard",
@@ -43,6 +61,25 @@ const adminOptions = [{
       {
         key: "/admin/labs/add",
         label: "Add New Lab",
+        roles: ["Administrator"]
+      }
+    ]
+  }
+  ,
+  {
+    key: "/admin/tests",
+    label: "Tests",
+    roles: ["Administrator"],
+    leftIcon: <AuditOutlined />,
+    children: [
+      {
+        key: "/admin/tests",
+        label: "Test List",
+        roles: ["Administrator"]
+      },
+      {
+        key: "/admin/tests/add",
+        label: "Add New Test",
         roles: ["Administrator"]
       }
     ]

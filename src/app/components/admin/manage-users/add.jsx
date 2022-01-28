@@ -136,7 +136,7 @@ class AddUser extends React.Component {
 												: this.state.firstName
 										}
 									>
-										<Input size="large" maxLength={20} />
+										<Input maxLength={20} />
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -157,7 +157,7 @@ class AddUser extends React.Component {
 											]}
 										initialValue={this.state.lastName === null ? "" : this.state.lastName}
 										>
-											<Input size="large" maxLength={20} />
+											<Input maxLength={20} />
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -179,7 +179,7 @@ class AddUser extends React.Component {
 											]}
 										initialValue={this.state.userName === null ? "" : this.state.userName}
 										>
-											{this.state.userId === 0 ? <Input size="large" maxLength={80} /> : <Input disabled />}
+											{this.state.userId === 0 ? <Input maxLength={80} /> : <Input disabled />}
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -196,7 +196,7 @@ class AddUser extends React.Component {
 											]}
 										initialValue={this.state.contactNo === null ? "" : this.state.contactNo}
 									>
-										<Input size="large" maxLength={15} style={{ width: "100%" }} />
+										<Input maxLength={15} style={{ width: "100%" }} />
 									</Form.Item>
 								</Col>
 							</Row>
@@ -209,7 +209,7 @@ class AddUser extends React.Component {
 										name="address"
 										initialValue={this.state.address === null ? "" : this.state.address}
 									>
-										<Input size="large" />
+										<Input />
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -219,7 +219,7 @@ class AddUser extends React.Component {
 										name="city"
 										initialValue={this.state.city === null ? "" : this.state.city}
 									>
-										<Input size="large" />
+										<Input />
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -229,7 +229,7 @@ class AddUser extends React.Component {
 										name="country"
 										initialValue={this.state.countryId === null ? "" : this.state.countryId}
 									>
-										<Input size="large" />
+										<Input />
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -239,7 +239,7 @@ class AddUser extends React.Component {
 										name="zipcode"
 										initialValue={this.state.zipcode === null ? "" : this.state.zipcode}
 									>
-										<Input size="large" />
+										<Input />
 									</Form.Item>
 								</Col>
 							</Row>
@@ -262,7 +262,7 @@ class AddUser extends React.Component {
 										{...formItemLayout}
 										label={<IntlMessages id="admin.userlisting.role" />}
 									>
-										<Select size="large">
+										<Select>
 											{this.state.allRoles.map(function (item) {
 												return <Option key={item.id}>{item.name}</Option>;
 											})}

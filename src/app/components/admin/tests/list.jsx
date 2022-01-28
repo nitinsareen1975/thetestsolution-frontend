@@ -18,10 +18,10 @@ import {
 import { notifyUser } from "../../../services/notification-service";
 import { EditOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons';
 
-class ManageUsers extends Component {
+class ManageTest extends Component {
   constructor(props) {
     super(props);
-    this.module = 'users';
+    this.module = 'labs';
     this.state = {
       dataLoaded: false,
       loading: false,
@@ -51,41 +51,42 @@ class ManageUsers extends Component {
   getHeaderKeys = () => {
     return [
       {
-        title: "First Name",
-        dataIndex: "firstname",
-        filteredValue : this.getSelectedFilterValue('firstname'),
-        ...this.getColumnSearchProps("firstname")
+        title: "Test Name",
+        dataIndex: "testname",
+        filteredValue : this.getSelectedFilterValue('testname'),
+        ...this.getColumnSearchProps("testname")
         //width: "200px"
         //sorter: true
       },
       {
-        title: "Last Name",
-        dataIndex: "lastname",
-        filteredValue : this.getSelectedFilterValue('lastname'),
-        ...this.getColumnSearchProps("lastname")
+        title: "Loinc Code",
+        dataIndex: "loinccode",
+        filteredValue : this.getSelectedFilterValue('loinccode'),
+        ...this.getColumnSearchProps("loinccode")
         // width: "200px"
       },
       {
-        title: "Email Address",
-        dataIndex: "email",
-        filteredValue : this.getSelectedFilterValue('email'),
-        ...this.getColumnSearchProps("email")
+        title: "Code(s)",
+        dataIndex: "testcode",
+        filteredValue : this.getSelectedFilterValue('testcode'),
+        ...this.getColumnSearchProps("testcode")
         //width: "250px"
       },
       {
-        title: "Phone",
-        dataIndex: "phone",
+        title: "Price",
+        dataIndex: "price",
         // width: "250px",
-        filteredValue : this.getSelectedFilterValue('phone'),
-        ...this.getColumnSearchProps("phone")
+        filteredValue : this.getSelectedFilterValue('price'),
+        ...this.getColumnSearchProps("price")
       },
       {
-        title: "Role",
-        dataIndex: "role"
+        title: "Estimated Time (Min)",
+        dataIndex: "estimatedtime"
         // width: "200px"
       },
       {
         title: "Status",
+        width: "150px",
         render: (_text, record) => (
           <span>
             <Switch
@@ -101,6 +102,7 @@ class ManageUsers extends Component {
       },
       {
         title:"Actions",
+        width: "85px",
         rowKey: "action",
         // width: "200px",
         render: (_text, record) => (
@@ -266,8 +268,8 @@ class ManageUsers extends Component {
       });
   };
 
-  editItem = id => {
-    this.props.history.push("./users/edit/" + id);
+   editItem = id => {
+    this.props.history.push("./tests/edit/" + id);
   };
 
   handleTableChange = (pagination, filters, sorter, manual) => {
@@ -353,13 +355,13 @@ class ManageUsers extends Component {
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
-              Manage Users
+              Manage Test
             </Typography.Title>
           </Col>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Button
               type="primary"
-              onClick={() => this.editItem("../add")}
+              onClick={() => window.location.href='tests/add'}
               className="right-fl def-blue"
             >
               Add New
@@ -389,7 +391,7 @@ class ManageUsers extends Component {
   }
 }
 
-ManageUsers.propTypes = {
+ManageTest.propTypes = {
   location: PropTypes.object,
   userData: PropTypes.object,
   getUserListing: PropTypes.func
@@ -406,6 +408,6 @@ function mapDispatchToProps(dispatch) {
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-    ManageUsers
+    ManageTest
   )
 );

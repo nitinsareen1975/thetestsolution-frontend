@@ -8,6 +8,10 @@ import  EditUser  from "../components/admin/manage-users/edit.jsx";
 import ManageLab from "../components/admin/manage-lab/list.jsx";
 import AddLab from "../components/admin/manage-lab/add.jsx";
 import EditLab  from "../components/admin/manage-lab/edit.jsx"
+// Tests 
+import ManageTest from "../components/admin/tests/list.jsx";
+import AddTest from "../components/admin/tests/add.jsx";
+import EditTest  from "../components/admin/tests/edit.jsx"
 const routes = [
   {
     path: "",
@@ -36,6 +40,18 @@ const routes = [
   {
     path: "labs/edit/:id",
     component: EditLab
+  },
+  {
+    path: "tests",
+    component: ManageTest
+  },
+  {
+    path: "tests/add/",
+    component: AddTest
+  },
+  {
+    path: "tests/edit/:id",
+    component: EditTest
   }
 ];
 
