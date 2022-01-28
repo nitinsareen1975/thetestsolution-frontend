@@ -153,7 +153,7 @@ const DataAccessService = {
 };
 
 function getFetchMethod(url, data, token) {
-  if (url.indexOf("/api/ForgotPassword") !== -1) {
+  if (config.API.indexOf("api.thetestsolutions.com") !== -1) {
     return "real";
   } else {
     return "fake";

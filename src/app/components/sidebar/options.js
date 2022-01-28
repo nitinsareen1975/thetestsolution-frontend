@@ -1,23 +1,10 @@
 import React from "react";
+import { 
+  DashboardOutlined, 
+  UserOutlined, 
+  ExperimentOutlined 
+} from '@ant-design/icons';
 
-/* import {
-  HomeSvg,
-  ManageUser
-} from "../../assets/svg/sidebar-icons.jsx"; */
-import { DashboardOutlined, UserOutlined } from '@ant-design/icons';
-
-const HomeIcon = props => < Icon component={
-  HomeSvg
-} {
-  ...props
-  }
-/>;
-const ManageUserIcon = props => < Icon component={
-  ManageUser
-} {
-  ...props
-  }
-/>;
 const adminOptions = [{
     key: "/admin",
     label: "Dashboard",
@@ -43,18 +30,18 @@ const adminOptions = [{
     ]
   },
   {
-    key: "/admin/Labs",
-    label: "Manage Lab",
+    key: "/admin/labs",
+    label: "Manage Labs",
     roles: ["Administrator"],
-    leftIcon: <DashboardOutlined />,
+    leftIcon: <ExperimentOutlined />,
     children: [
       {
-        key: "/admin/Lab",
-        label: "Manage Lab",
+        key: "/admin/labs",
+        label: "Manage Labs",
         roles: ["Administrator"]
       },
       {
-        key: "/admin/lab/add",
+        key: "/admin/labs/add",
         label: "Add New Lab",
         roles: ["Administrator"]
       }

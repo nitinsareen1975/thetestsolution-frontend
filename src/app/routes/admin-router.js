@@ -18,7 +18,7 @@ const routes = [
     component: AdminUsers
   },
   {
-    path: "users/add/",
+    path: "users/add",
     component: AddUser
   },
   {
@@ -26,15 +26,15 @@ const routes = [
     component: EditUser
   },
   {
-    path: "lab",
+    path: "labs",
     component: ManageLab
   },
   {
-    path: "lab/add/",
+    path: "labs/add",
     component: AddLab
   },
   {
-    path: "lab/edit/:id",
+    path: "labs/edit/:id",
     component: EditLab
   }
 ];

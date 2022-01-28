@@ -91,9 +91,7 @@ const DataAccessService = {
 	}
 };
 function getFetchMethod(url,data,token){
-	if(url.indexOf("/api/forgot-password") !== -1 
-	 || url.indexOf("/api/login") !== -1
-	 || url.indexOf("/api/reset-password") !== -1){
+	if(config.AuthAPI.indexOf("api.thetestsolutions.com") !== -1){
 		return "real";
 	} else {
 		return "fake";
