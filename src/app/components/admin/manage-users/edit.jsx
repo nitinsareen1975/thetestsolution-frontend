@@ -90,7 +90,7 @@ class EditUser extends React.Component {
 			>
 				{this.state.countries.map(function(item) {
 				return (
-					<Option key={item.id} value={item.id}>
+					<Option key={item.id.toString()} value={item.id.toString()}>
 					{item.name}
 					</Option>
 				);
