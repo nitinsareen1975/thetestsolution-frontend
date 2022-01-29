@@ -1,4 +1,4 @@
-import { Button, Col, Row, Form } from "antd";
+import { Button, Col, Row, Form, Spin } from "antd";
 import React, { Component } from "react";
 import logo from "../../assets/images/logo.png";
 import LoginImage from "../../assets/images/register.gif";
@@ -42,7 +42,7 @@ class ForgotPassword extends Component {
           });
           this.setState(response);
           if (response.status && response.status == true) {
-            notifyUser(response.message, "success" );
+            notifyUser(response.message, "success");
             this.setState({
               email: "",
               submitted: false,
@@ -79,73 +79,75 @@ class ForgotPassword extends Component {
   /* section skin */
   render() {
     return (
-      <Form onFinish={this.handleSubmit}>
-        <section id="forgot-password" className="main-login">
-          <Row className="login">
-            {/*Login section left side */}
-            {/* logo */}
-            <Col xs={24} lg={12}>
+      <Spin spinning={this.state.submitted}>
+        <Form onFinish={this.handleSubmit}>
+          <section id="forgot-password" className="main-login">
+            <Row className="login">
+              {/*Login section left side */}
               {/* logo */}
-              <div className="form-column">
-                <div className="form-column-inner">
-                  <div className="logo">
-                    <img src={logo} alt="Logo" />
+              <Col xs={24} lg={12}>
+                {/* logo */}
+                <div className="form-column">
+                  <div className="form-column-inner">
+                    <div className="logo">
+                      <img src={logo} alt="Logo" />
+                    </div>
+                    {/* logo ends */}
+                    {/* title */}
+                    <h2>Forgot Password</h2>
+                    <hr className="title-hr" />
+                    {/* title ends */}
+                    {/* logi form */}
+                    <div className="login-form">
+                      <Row>
+                        <Col xs={24}>
+                          <div className="form-group">
+                            <i className="far fa-envelope"></i>
+                            <input
+                              type="email"
+                              name="email"
+                              placeholder="Enter Email Address..."
+                              value={this.state.success ? "" : this.state.email}
+                              onChange={this.handleChange}
+                            />
+                          </div>
+                        </Col>
+                      </Row>
+                      {/* Email ends*/}
+                      {/* submit button */}
+                      <Row>
+                        <Col xs={24}>
+                          <div className="form-group">
+                            <Button type="primary" htmlType="submit" size={'large'}>submit</Button>
+                          </div>
+                        </Col>
+                      </Row>
+                      <Row style={{ marginTop: "10px" }}>
+                        <Col xs={24} style={{ textAlign: "center" }}>
+                          <div className="form-group">
+                            <a onClick={() => this.props.history.push("/login")}><span>Back to Login</span></a>
+                          </div>
+                        </Col>
+                      </Row>
+                      {/* submit button ends */}
+                    </div>
+                    {/* login form ends */}
                   </div>
-                  {/* logo ends */}
-                  {/* title */}
-                  <h2>Forgot Password</h2>
-                  <hr className="title-hr" />
-                  {/* title ends */}
-                  {/* logi form */}
-                  <div className="login-form">
-                    <Row>
-                      <Col xs={24}>
-                        <div className="form-group">
-                          <i className="far fa-envelope"></i>
-                          <input
-                            type="email"
-                            name="email"
-                            placeholder="Enter Email Address..."
-                            value={this.state.success ? "" : this.state.email}
-                            onChange={this.handleChange}
-                          />
-                        </div>
-                      </Col>
-                    </Row>
-                    {/* Email ends*/}
-                    {/* submit button */}
-                    <Row>
-                      <Col xs={24}>
-                        <div className="form-group">
-                          <Button type="primary" htmlType="submit" size={'large'}>submit</Button>
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row style={{ marginTop: "10px" }}>
-                      <Col xs={24} style={{ textAlign: "center" }}>
-                        <div className="form-group">
-                          <a onClick={() => this.props.history.push("/login")}><span>Back to Login</span></a>
-                        </div>
-                      </Col>
-                    </Row>
-                    {/* submit button ends */}
-                  </div>
-                  {/* login form ends */}
                 </div>
-              </div>
-              {/*login section left side ends */}
-            </Col>
-            {/* Image area  */}
-            <Col xs={24} lg={12} className="login-img-col">
-              <div className="login-image-area">
-                <img src={LoginImage} alt="login" />
-              </div>
+                {/*login section left side ends */}
+              </Col>
+              {/* Image area  */}
+              <Col xs={24} lg={12} className="login-img-col">
+                <div className="login-image-area">
+                  <img src={LoginImage} alt="login" />
+                </div>
+                {/* image are ends  */}
+              </Col>
               {/* image are ends  */}
-            </Col>
-            {/* image are ends  */}
-          </Row>
-        </section>
-      </Form>
+            </Row>
+          </section>
+        </Form>
+      </Spin>
     );
   }
 }
