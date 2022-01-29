@@ -461,7 +461,7 @@ class EditLab extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return { ...state.user };
+  return { ...state.userConfig };
 }
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({ ...userActions, ...RolesActions }, dispatch);

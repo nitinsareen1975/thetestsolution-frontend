@@ -127,39 +127,21 @@ export function getUserListing({
 }
 
 
+export function addUser(data) {
+  return async function (dispatch, getState) {
+    return await API.addUser(data);
+  }
+}
+
 export function updateUser(data) {
   return async function (dispatch, getState) {
-    try {
-      let resp;
-      if (data.userId > 0) {
-        resp = await API.updateUser(data);
-      } else {
-        resp = await API.addUser(data);
-      }
-      return resp;
-    } catch (e) {
-      return {
-        "error": true
-      };
-    }
+    return await API.updateUser(data);
   };
 }
 
 export function getUser(idx) {
   return async function (dispatch, getState) {
-    try {
-      let resp = await API.getUser(idx);
-      return resp;
-    } catch (e) {
-      /*dispatch({
-        type: Types.USER_LISTING_ERROR,
-        payload: { errorMessage: "Listing error", isLoggedIn: false }
-      })*/
-      ;
-      return {
-        "error": true
-      };
-    }
+    return await API.getUser(idx);
   };
 }
 
@@ -241,13 +223,13 @@ export function checkIfDetailAlreadyVerified(type) {
   };
 }
 
-export function getAllUserRoles() {
+export function getAllRoles({ filters, pagination, sorter }) {
   return async function (dispatch, getState) {
     try {
-      let response = await API.getAllUserRoles({
-        filters: {},
-        pagination: {},
-        sorter: {}
+      let response = await API.getAllRoles({
+        filters: filters,
+        pagination: pagination,
+        sorter: sorter
       });
       return response.data;
     } catch (e) {

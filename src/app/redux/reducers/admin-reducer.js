@@ -1,10 +1,6 @@
 import { Types } from "../constants/admin-types";
 const initialState = {
-  countries: [],
-  emergencyContacts: {
-    // IN: '98989898980',
-    // AU: '61000000'
-  }
+  countries: []
 };
 export default function adminReducer(state = initialState, action) {
   switch (action.type) {
@@ -17,6 +13,11 @@ export default function adminReducer(state = initialState, action) {
       return {
         ...state,
         emergencyContacts: action.payload
+      };
+    case Types.GET_COUNTRIES:
+      return {
+        ...state,
+        countries: action.payload
       };
     default:
       return state;

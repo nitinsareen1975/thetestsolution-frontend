@@ -18,6 +18,9 @@ class AdminDash extends Component {
       collapsed: false
     };
   }
+  async componentDidMount() {
+    await this.props.getCountriesList();
+  }
   onCollapse = () => {
     this.setState({ collapsed: !this.state.collapsed });
   }
@@ -67,7 +70,7 @@ class AdminDash extends Component {
               style={{
                 margin: "24px 16px",
                 padding: 24,
-                background: "#fff",
+                /* background: "#fff", */
                 maxWidth: "100%",
                 position: "relative",
                 minHeight: 280

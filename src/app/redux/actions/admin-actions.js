@@ -5,11 +5,21 @@ import config from "../../config";
 export function getCountriesList() {
   return async function(dispatch, _getState) {
     try {
-      let countryAndTierInfo = await API.getCountriesList();
-      dispatch({ type: Types.COUNTRIES_LIST, payload: countryAndTierInfo });
+      let countries = await API.getCountriesList();
+      dispatch({ type: Types.COUNTRIES_LIST, payload: countries.data });
     } catch (e) {}
   };
 }
+
+export function getCountries() {
+  return async function(dispatch, _getState) {
+    try {
+      let countries = await API.getCountriesList();
+      return countries.data;
+    } catch (e) {}
+  };
+}
+
 
 export function myAccount() {
   return async function(_dispatch, _getState) {

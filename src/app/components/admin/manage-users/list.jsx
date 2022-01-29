@@ -81,7 +81,7 @@ class ManageUsers extends Component {
       },
       {
         title: "Role",
-        dataIndex: "role"
+        dataIndex: "roles"
         // width: "200px"
       },
       {
@@ -91,9 +91,9 @@ class ManageUsers extends Component {
             <Switch
               checkedChildren={"Active"}
               unCheckedChildren={"Inactive"}
-              checked={record.isActive}
+              checked={record.status}
               onClick={() =>
-                this.updateUserStatus(!record.isActive, record.userId)
+                this.updateUserStatus(!record.status, record.id)
               }
             />
           </span>
@@ -204,7 +204,7 @@ class ManageUsers extends Component {
       filter: true,
       setSelectedKeys: setSelectedKeys,
       confirm: confirm,
-      auto:true
+      auto:false
     };
     this.setState({ filters: filters });
     this.props.updateFilters({module:this.module, filters: filters})
@@ -288,7 +288,7 @@ class ManageUsers extends Component {
         sorter: sorter
       })
       .then(resp => {
-        pager.total = resp.paging.totalRecords;
+        pager.total = resp.pagination.totalRecords;
         this.setState({
           loading: false,
           data: resp.data,
@@ -303,13 +303,13 @@ class ManageUsers extends Component {
   updateUserStatus = async (selected, userId) => {
     this.setState({loading: true});
     try {
-      this.props.updateStatus(userId, selected).then(response => {
-        if (response.data && response.data.message) {
-          notifyUser(response.data.message, "success");
+      this.props.updateUser({id: userId, status: selected}).then(response => {
+        if (response.status && response.status == true) {
+          notifyUser(response.message, "success");
           this.setState({loading: false});
           this.initComponent();
         } else {
-          notifyUser("Unknown error", "error");
+          notifyUser(response.message, "error");
           this.setState({loading: false});
         }
       });
@@ -376,7 +376,7 @@ class ManageUsers extends Component {
             <Table
               className="theme-table"
               columns={this.getHeaderKeys()}
-              rowKey={record => record.userId}
+              rowKey={record => record.id}
               dataSource={this.state.data}
               pagination={this.state.pagination}
               loading={this.state.loading}

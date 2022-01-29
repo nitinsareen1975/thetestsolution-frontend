@@ -288,7 +288,7 @@ class ManageLab extends Component {
         sorter: sorter
       })
       .then(resp => {
-        pager.total = resp.paging.totalRecords;
+        pager.total = resp.pagination.totalRecords;
         this.setState({
           loading: false,
           data: resp.data,

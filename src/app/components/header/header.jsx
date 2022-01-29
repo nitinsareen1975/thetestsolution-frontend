@@ -37,7 +37,7 @@ Header.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    ...state.user,
+    ...state.userConfig,
   }
 }
 function mapDispatchToProps(dispatch) {

@@ -14,19 +14,19 @@ const getUserListing = data => {
 };
 
 const updateUser = data => {
-  return Axios.put("/api/Users/"+data.userId, data, undefined);
+  return Axios.put("/users/"+data.id, data, undefined);
 };
 
 const addUser = data => {
-  return Axios.post("/api/Users", data, undefined);
+  return Axios.post("/users", data, undefined);
 };
 
 const getUser = idx => {
-  return Axios.get("/api/Users/"+idx, undefined, undefined);
+  return Axios.get("/users/"+idx, undefined, undefined);
 };
 
 const deleteUser = data => {
-  return Axios.delete("/users/"+ data.userId, data, undefined);
+  return Axios.delete("/users/"+ data.id, data, undefined);
 };
 
 const forgotPassword = data => {
@@ -37,8 +37,8 @@ const resetPassword = data => {
   return AxiosAuth.post("/reset-password", data, undefined);
 };
 
-const getAllUserRoles = data => {
-  return Axios.get("/api/Roles/InternalRoles?filters="+encodeURIComponent(JSON.stringify(data)), data, undefined);
+const getAllRoles = data => {
+  return Axios.get("/roles?filters="+encodeURIComponent(JSON.stringify(data)), data, undefined);
 };
 
 const updateToken = data => {
@@ -46,7 +46,7 @@ const updateToken = data => {
 };
 
 const updateProfile = data => {
-  return Axios.put("/api/Users/"+data.userId, data, undefined);
+  return Axios.put("/api/Users/"+data.id, data, undefined);
 };
 const getMyAccount = async () => {
   return await Axios.get("/api/Users/Profile", undefined, undefined);
@@ -87,7 +87,7 @@ export default {
   deleteUser,
   forgotPassword,
   resetPassword,
-  getAllUserRoles,
+  getAllRoles,
   updateToken,
   updateProfile,
   getMyAccount,

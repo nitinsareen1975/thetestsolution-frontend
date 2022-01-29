@@ -1,11 +1,11 @@
 import Axios from "../../services/axios-service";
 
 const getCountriesList = async () => {
-  return await Axios.get("/api/GetCountryList", undefined, undefined);
+  return await Axios.get("/get-countries", undefined, undefined);
 };
 const getCountriesListByRegion = async () => {
   return await Axios.get(
-    "/api/RiskLineRegionWiseCountryList",
+    "/get-region-countries",
     undefined,
     undefined
   );

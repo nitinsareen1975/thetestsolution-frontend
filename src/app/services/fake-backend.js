@@ -18,13 +18,9 @@ export function configureFakeBackend() {
         "country":null,
         "zip":null,
         "geo_location":"",
-        "identifier":null,
-        "identifier_state":null,
-        "identifier_country":null,
-        "identifier_type":null,
-        "ethnicity":null,
-        "pregnant":null,
-        "race":null,
+        "can_read_reports":1,
+        "created_at":null,
+        "updated_at":null,
         "status":1
       },
       {
@@ -45,13 +41,9 @@ export function configureFakeBackend() {
         "country":null,
         "zip":null,
         "geo_location":"",
-        "identifier":null,
-        "identifier_state":null,
-        "identifier_country":null,
-        "identifier_type":null,
-        "ethnicity":null,
-        "pregnant":null,
-        "race":null,
+        "can_read_reports":1,
+        "created_at":null,
+        "updated_at":null,
         "status":1
       }
     ];
@@ -60,14 +52,16 @@ export function configureFakeBackend() {
     let travelers = getTravelers(1, 41);
     let organizations = getOrganizations(1, 41);
     let organizationTypes = getOrganizationTypes(1, 41);
+    let countries = getCountries(1, 41);
     let recordCountPerPage = 10;
   
     function getDataByEntity(entity) {
+      if (entity === "get-countries") return countries;
       if (entity === "users") return items;
       if (entity === "roles") return roles;
       if (entity === "organizations") return organizations;
       if (entity === "organization-types") return organizationTypes;
-      else if (entity === "travelers") return travelers;
+      if (entity === "travelers") return travelers;
     }
   
     function getUrlEntity(url) {
@@ -78,21 +72,92 @@ export function configureFakeBackend() {
     }
   
     function getItems(pageNo, count) {
+      let tempItems = [{
+        "id":1,
+        "username":"admin@admin.com",
+        "firstname":"Admin",
+        "middlename":null,
+        "lastname":null,
+        "email":"admin@admin.com",
+        "password":"admin",
+        "phone":"9816311185",
+        "roles":"Administrator",
+        "gender":null,
+        "dob":null,
+        "street":null,
+        "city":null,
+        "state":null,
+        "country":null,
+        "zip":null,
+        "geo_location":"",
+        "can_read_reports":1,
+        "created_at":null,
+        "updated_at":null,
+        "status":1
+      },
+      {
+        "id":2,
+        "username":"user@user.com",
+        "firstname":"User",
+        "middlename":null,
+        "lastname":null,
+        "email":"user@gmail.com",
+        "password":"user",
+        "phone":"9816311185",
+        "roles":"Administrator",
+        "gender":null,
+        "dob":null,
+        "street":null,
+        "city":null,
+        "state":null,
+        "country":null,
+        "zip":null,
+        "geo_location":"",
+        "can_read_reports":1,
+        "created_at":null,
+        "updated_at":null,
+        "status":1
+      }];
+
+      for (let i = 3; i <= count; i++) {
+        let no = (pageNo - 1) * count + i;
+        tempItems.push({
+          "id": no,
+          "username":"admin"+no+"@admin.com",
+          "firstname":"Admin"+no,
+          "middlename":null,
+          "lastname":null,
+          "email":"admin"+no+"@admin.com",
+          "password":"admin"+no,
+          "phone":"9816311185"+no,
+          "roles":"Administrator",
+          "gender":null,
+          "dob":null,
+          "street":null,
+          "city":null,
+          "state":null,
+          "country":null,
+          "zip":null,
+          "geo_location":"",
+          "can_read_reports":1,
+          "created_at":null,
+          "updated_at":null,
+          "status":1
+        });
+      }
+      return tempItems;
+    }
+  
+    function getCountries(pageNo, count) {
       let tempItems = [];
       for (let i = 1; i <= count; i++) {
         let no = (pageNo - 1) * count + i;
         tempItems.push({
           id: no,
-          firstname: "first" + no,
-          lastname: "last" + no,
-          email: "email1@yahoo.com" + no,
-          phone: "00000000" + no,
-          address: "location" + no,
-          state: "state" + no,
-          country: "country" + no,
-          zip: "zip" + no,
-          role: Math.round(Math.random() * getRoles(1,10).length),
-          status: i % 2 === 0 ? "active" : "inactive"
+          name: "Country " + no,
+          iso_code_alpha2: "iso_code2_"+no,
+          iso_code_alpha3: "iso_code3_"+no,
+          status: no
         });
       }
       return tempItems;
@@ -230,11 +295,13 @@ export function configureFakeBackend() {
             resolve(responseJson);
             return;
           }
-  
-          if (entity === "users" || entity === "travelers" || entity === "roles" || entity === "organizations" || entity === "organization-types") {
+
+          if (entity === "users" || entity === "get-countries" || entity === "roles" || entity === "organizations" || entity === "organization-types") {
             if (url.indexOf("/" + entity + "/") !== -1 && opts.method === "GET") {
               let parts = url.split("/" + entity + "/");
-              resolve(getDataByEntity(entity)[parts[1] - 1]);
+              var data = getDataByEntity(entity);
+              data = data[parts[1]];
+              resolve({ status: true, data: data });
               return;
             } else if (url.indexOf("/" + entity) !== -1 && opts.method === "GET") {
               let request = {};
@@ -255,7 +322,7 @@ export function configureFakeBackend() {
               console.log("fake response:", data)
               resolve({
                 data: data,
-                paging: {
+                pagination: {
                   totalRecords: getDataByEntity(entity).length,
                   currentPage: page,
                   pageSize: pageSize
@@ -379,7 +446,7 @@ export function configureFakeBackend() {
   
             return;
           }
-  
+          resolve();
           // pass through any requests not handled above
           //if(opts.method == "GET" || opts.method == "HEAD") delete opts.body
           //realFetch(url, opts).then(response => resolve(response));
