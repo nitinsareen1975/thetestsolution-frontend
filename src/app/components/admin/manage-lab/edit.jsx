@@ -2,8 +2,8 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import * as userActions from "../../../redux/actions/user-actions";
-import * as RolesActions from "../../../redux/actions/roles-actions";
+import * as labActions from "../../../redux/actions/lab-actions";
+import * as adminActions from "../../../redux/actions/admin-actions";
 import { notifyUser } from "../../../services/notification-service";
 import {
   Typography,
@@ -16,77 +16,126 @@ import {
   Spin,
   DatePicker,
   Switch,
+  Upload
 } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
-import { PlusCircleOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined, ArrowLeftOutlined, UploadOutlined, DeleteOutlined, SaveOutlined } from "@ant-design/icons";
+import moment from "moment";
+import Config from "../../../config";
+
 const { Option } = Select;
 
 class EditLab extends React.Component {
   state = {
     loading: true,
-    confirmDirty: false,
-    userId: 0,
-    identityId: "",
-    firstName: "",
-    lastName: "",
-    userName: "",
-    contactNo: "",
-    address: "",
-    state: "",
-    countryId: "",
-    roleId: "",
-    created: "",
-    countries: [],
-    allRoles: [],
     dataLoaded: false,
+    logo: null,
+    countries: [],
+    lab: {}
   };
 
   async componentDidMount() {
-    this.setState({ loading: false });
-    this.setState({ dataLoaded: true });
+    var _countries = [];
+    if (typeof this.props.countries === "undefined" || this.props.countries.length <= 0) {
+      _countries = await this.props.getCountries();
+    } else {
+      _countries = this.props.countries;
+    }
+    var lab = await this.props.getLab(this.props.match.params.id);
+    if(lab.data.date_incorporated != null){
+      lab.data.date_incorporated = moment(lab.data.date_incorporated);
+    }
+    if(lab.data.tests_available != null){
+      lab.data.tests_available = lab.data.tests_available.split(",");
+    }
+    this.setState({
+      loading: false,
+      countries: _countries,
+      lab: lab.data,
+      logo: (lab.data.logo && lab.data.logo != null) ? Config.DASHBOARD_URL + lab.data.logo : this.state.logo,
+      dataLoaded: true
+    });
   }
 
-  submitForm = (data) => {
-    this.props
-      .updateUser(data)
-      .then((response) => {
-        if (response.error) {
-          if (response.error.message) {
-            notifyUser(response.error.message, "error");
-          } else {
-            notifyUser("Unknown error. Please try again!", "error");
-          }
-          this.setState({ loading: false });
-        } else {
-          notifyUser("User added successfully", "success");
-          //notifyUser("User added successfully!", "success");
-          this.props.history.push("./");
-          this.setState({ loading: false });
+  handleSubmit = (data) => {
+    if (typeof data.date_incorporated !== "undefined") {
+      data.date_incorporated = moment(data.date_incorporated).format("YYYY-MM-DD");
+    }
+    if (typeof data.tests_available !== "undefined") {
+      data.tests_available = data.tests_available.join(",");
+    }
+
+    const formData = new FormData();
+    if (typeof this.state.logo !== "undefined" && this.state.logo !== null && typeof this.state.logo === "string" && this.state.logo.file) {
+      formData.append('logo', this.state.logo);
+    }
+    for (const key in data) {
+      if (key !== "logo") {
+        if (typeof data[key] === "undefined") {
+          data[key] = "";
         }
-      })
+        formData.set(key, data[key]);
+      }
+    }
+    this.setState({ loading: true });
+    this.props.updateLab(this.props.match.params.id, formData).then((response) => {
+      if (response.status && response.status === true) {
+        notifyUser(response.message, "success");
+        this.props.history.push("../../labs");
+        this.setState({ loading: false });
+      } else {
+        if (response.message) {
+          notifyUser(response.message, "error");
+        } else {
+          notifyUser("Unknown error. Please try again!", "error");
+        }
+        this.setState({ loading: false });
+      }
+    })
       .catch((err) => {
         this.setState({ loading: false });
       });
   };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        this.setState({ loading: true });
-        this.submitForm(values);
+  uploaderProps = (field, accept) => {
+    let _this = this;
+    return {
+      showUploadList: true,
+      accept: accept,
+      multiple: false,
+      beforeUpload: file => {
+        if (file.type.indexOf('image/') === -1) {
+          message.error(<IntlMessages id="admin.fileupload.acceptedtypes" />);
+          _this.setState({ [field]: null });
+        } else {
+          _this.setState({ [field]: file });
+        }
+        return false;
+      },
+      onRemove: _file => {
+        _this.setState({ [field]: null });
+      },
+      onSuccess: _res => {
+        _this.setState({ [field]: null });
+      },
+      onError(_err) {
+        message.error(<IntlMessages id="admin.fileupload.failed" />);
       }
-    });
-  };
+    }
+  }
+
+  removeLogoInline(){
+    this.setState({ logo: null });
+  }
 
   render() {
     const { formLayout } = this.state;
     const formItemLayout =
       formLayout === "horizontal"
         ? {
-            labelCol: { span: 4 },
-            wrapperCol: { span: 14 },
-          }
+          labelCol: { span: 4 },
+          wrapperCol: { span: 14 },
+        }
         : null;
     return (
       <div>
@@ -107,7 +156,7 @@ class EditLab extends React.Component {
               type="primary"
               className=""
               htmlType="button"
-              onClick={() => this.props.history.push("../")}
+              onClick={() => this.props.history.goBack()}
             >
               <ArrowLeftOutlined />
               <IntlMessages id="admin.userlisting.back" />
@@ -117,342 +166,325 @@ class EditLab extends React.Component {
         <hr />
         <div>
           <Spin spinning={this.state.loading}>
-            <Form layout="vertical" onSubmit={this.handleSubmit}>
-              <Row gutter={24}>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="labname"
-                    label="Lab Name"
-                    rules={[
-                      {
-                        whitespace: true,
-                        required: true,
-                        message: <IntlMessages id="admin.input.required" />,
-                      },
-                      {
-                        pattern: new RegExp(/^(\S.*)[a-zA-Z-.']+$/),
-                        message: (
-                          <IntlMessages id="admin.name.valid"></IntlMessages>
-                        ),
-                      },
-                    ]}
-                    initialValue={
-                      this.state.labName === null ? "" : this.state.labName
-                    }
-                  >
-                    <Input maxLength={20} />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="lablicense"
-                    label="Lab license"
-                    rules={[
-                      {
-                        whitespace: true,
-                        required: true,
-                        message: <IntlMessages id="admin.input.required" />,
-                      },
-                      {
-                        pattern: new RegExp(/^(\S.*)[a-zA-Z-.']+$/),
-                        message: (
-                          <IntlMessages id="admin.name.valid"></IntlMessages>
-                        ),
-                      },
-                    ]}
-                    initialValue={
-                      this.state.labLicense === null
-                        ? ""
-                        : this.state.labLicense
-                    }
-                  >
-                    <Input maxLength={20} />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item label="DatePicker">
-                    <DatePicker />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="firstname"
-                    label={<IntlMessages id="admin.userlisting.firstName" />}
-                    rules={[
-                      {
-                        whitespace: true,
-                        required: true,
-                        message: <IntlMessages id="admin.input.required" />,
-                      },
-                      {
-                        pattern: new RegExp(/^(\S.*)[a-zA-Z-.']+$/),
-                        message: (
-                          <IntlMessages id="admin.name.valid"></IntlMessages>
-                        ),
-                      },
-                    ]}
-                    initialValue={
-                      this.state.firstName === null ? "" : this.state.firstName
-                    }
-                  >
-                    <Input maxLength={20} />
-                  </Form.Item>
-                </Col>
-              </Row>
+            {this.state.lab.id ?
+              <Form layout="vertical" onFinish={this.handleSubmit} initialValues={this.state.lab}>
+                <Row gutter={24}>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      name="name"
+                      label="Lab Name"
+                      rules={[
+                        {
+                          whitespace: true,
+                          required: true,
+                          message: <IntlMessages id="admin.input.required" />,
+                        }
+                      ]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      name="email"
+                      label="Lab Email Address"
+                      rules={[
+                        {
+                          type: "email",
+                          message: <IntlMessages id="admin.email.valid" />,
+                        },
+                        {
+                          whitespace: true,
+                          required: true,
+                          message: <IntlMessages id="admin.input.required" />,
+                        }
+                      ]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      name="phone"
+                      label="Lab Contact Number"
+                      rules={[
+                        {
+                          required: true,
+                          message: <IntlMessages id="admin.input.required" />,
+                        }
+                      ]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      name="concerned_person_name"
+                      label="Concerned Person Name"
+                      rules={[
+                        {
+                          whitespace: true,
+                          required: true,
+                          message: <IntlMessages id="admin.input.required" />,
+                        }
+                      ]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                </Row>
 
-              <Row gutter={24}>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label={<IntlMessages id="admin.userlisting.lastName" />}
-                    name="lastname"
-                    rules={[
-                      {
-                        whitespace: true,
-                        required: true,
-                        message: <IntlMessages id="admin.input.required" />,
-                      },
-                      {
-                        pattern: new RegExp(/^(\S.*)[a-zA-Z-.']+$/),
-                        message: (
-                          <IntlMessages id="admin.lname.valid"></IntlMessages>
-                        ),
-                      },
-                    ]}
-                    initialValue={
-                      this.state.lastName === null ? "" : this.state.lastName
-                    }
-                  >
-                    <Input maxLength={20} />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label={<IntlMessages id="admin.userlisting.email" />}
-                    name="email"
-                    rules={[
-                      {
-                        type: "email",
-                        message: <IntlMessages id="admin.email.valid" />,
-                      },
-                      {
-                        whitespace: true,
-                        required: true,
-                        message: <IntlMessages id="admin.input.required" />,
-                      },
-                    ]}
-                    initialValue={
-                      this.state.userName === null ? "" : this.state.userName
-                    }
-                  >
-                    {this.state.userId === 0 ? (
-                      <Input maxLength={80} />
-                    ) : (
-                      <Input disabled />
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label={<IntlMessages id="admin.userlisting.phonenumber" />}
-                    name="phone"
-                    rules={[
-                      {
-                        whitespace: true,
-                        required: true,
-                        message: <IntlMessages id="admin.input.required" />,
-                      },
-                    ]}
-                    initialValue={
-                      this.state.contactNo === null ? "" : this.state.contactNo
-                    }
-                  >
-                    <Input
-                      maxLength={15}
-                      style={{ width: "100%" }}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label="Type Of Test"
-                    rules={[
-                      {
-                        whitespace: true,
-                        required: true,
-                        message: <IntlMessages id="admin.input.required" />,
-                      },
-                    ]}
-                  >
-                    <Select>
-                      {this.state.allRoles.map(function (item) {
-                        return <Option key={item.id}>{item.name}</Option>;
-                      })}
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={24}>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item {...formItemLayout} label="Test Codes">
-                    <Select>
-                      {this.state.allRoles.map(function (item) {
-                        return <Option key={item.id}>{item.name}</Option>;
-                      })}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label={<IntlMessages id="admin.userlisting.address" />}
-                    name="address"
-                    initialValue={
-                      this.state.address === null ? "" : this.state.address
-                    }
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label="Address Line 2"
-                    name="addressline2"
-                    initialValue={
-                      this.state.address === null ? "" : this.state.address
-                    }
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label="State"
-                    name="state"
-                    initialValue={
-                      this.state.state === null ? "" : this.state.state
-                    }
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={24}>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label="City"
-                    name="city"
-                    initialValue={
-                      this.state.city === null ? "" : this.state.city
-                    }
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label="Country"
-                    name="country"
-                    initialValue={
-                      this.state.countryId === null ? "" : this.state.countryId
-                    }
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label="Zip Code"
-                    name="zipcode"
-                    initialValue={
-                      this.state.zipcode === null ? "" : this.state.zipcode
-                    }
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item {...formItemLayout} label="Payment Code">
-                    <Select>
-                      {this.state.allRoles.map(function (item) {
-                        return <Option key={item.id}>{item.name}</Option>;
-                      })}
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={24}>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label="Tax"
-                    name="tax"
-                    initialValue={this.state.tax === null ? "" : this.state.tax}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    label="Compliance"
-                    name="compliance"
-                    initialValue={
-                      this.state.compliance === null
-                        ? ""
-                        : this.state.compliance
-                    }
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item label="Status" valuePropName="checked">
-                    <Switch />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Form.Item>
-                    {/* <Button
-                      type="default"
-                      className=""
-                      htmlType="button"
-                      onClick={() => this.props.history.push("./")}
+                <Row gutter={24}>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Licence Number"
+                      name="licence_number"
+                      rules={[
+                        {
+                          required: true,
+                          message: <IntlMessages id="admin.input.required" />,
+                        }
+                      ]}
                     >
-                      <IntlMessages id="admin.userlisting.back" />
-                    </Button>
-                    &nbsp;&nbsp; */}
-                    <Button
-                      type="primary"
-                      style={{ display: "inline-block", marginRight: "10px" }}
-                      className="def-blue"
-                      htmlType="submit"
-                      size="large"
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Company Logo (Used to attach in invoice)"
+                      name="logo"
                     >
-                      {this.state.userId > 0 ? (
+                      <Upload {...this.uploaderProps('logo', '.jpg,.jpeg,.png')}>
+                        <Button>
+                          <UploadOutlined /> <IntlMessages id="admin.select.uploadfile" />
+                        </Button>
+                      </Upload>
+                      {this.state.logo !== "" && typeof this.state.logo === "string" ?
+                        <span>
+                          <img src={this.state.logo} style={{ maxWidth: 100 }}/>
+                          <Button type="link" onClick={() => this.removeLogoInline()}><DeleteOutlined /></Button>
+                        </span>
+                      : "" }
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Price per test"
+                      name="price_per_test"
+                      rules={[
+                        {
+                          required: true,
+                          message: <IntlMessages id="admin.input.required" />,
+                        }
+                      ]}
+                    >
+                      <Input
+                        style={{ width: "100%" }}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Type Of Tests Available"
+                      name="tests_available"
+                      rules={[
+                        {
+                          required: true,
+                          message: <IntlMessages id="admin.input.required" />,
+                        },
+                      ]}
+                    >
+                      <Select
+                        mode="multiple"
+                        showSearch
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        <Option value={1}>Test type 1</Option>
+                        <Option value={2}>Test type 2</Option>
+                        <Option value={3}>Test type 3</Option>
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Test Codes"
+                      name="test_codes"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Onboarding Date"
+                      name="date_incorporated"
+                    >
+                      <DatePicker />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Payment Days"
+                      name="payment_days"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Payment Mode"
+                      name="payment_mode"
+                    >
+                      <Select />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Tax Applicable?"
+                      name="has_tax"
+                    >
+                      <Switch
+                        checkedChildren={"Yes"}
+                        unCheckedChildren={"No"}
+                        defaultChecked={this.state.lab.has_tax === 1}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Has Compliance?"
+                      name="has_compliance"
+                    >
+                      <Switch
+                        checkedChildren={"Yes"}
+                        unCheckedChildren={"No"}
+                        defaultChecked={this.state.lab.has_compliance === 1}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="street"
+                      name="Street"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="City"
+                      name="city"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="State"
+                      name="state"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="County"
+                      name="county"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Country"
+                      name="country"
+                    >
+                      <Select
+                        showSearch
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        {this.state.countries.map(function (item) {
+                          return (
+                            <Option key={item.id} value={item.id}>
+                              {item.name}
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="ZIP Code"
+                      name="zip"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Status"
+                      name="status"
+                      >
+                      <Switch
+                        checkedChildren={"Active"}
+                        unCheckedChildren={"Inactive"}
+                        defaultChecked={this.state.lab.status === 1}
+                        
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Form.Item>
+                      <Button
+                        type="primary"
+                        style={{ display: "inline-block", marginRight: "10px" }}
+                        className="def-blue"
+                        htmlType="submit"
+                        size="large"
+                      >
                         <IntlMessages id="admin.userlisting.update" />
-                      ) : (
-                        <IntlMessages id="admin.userlisting.add" />
-                      )}
-                      <PlusCircleOutlined />
-                    </Button>
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
+                        <SaveOutlined />
+                      </Button>
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+              : ""}
           </Spin>
         </div>
       </div>
@@ -461,10 +493,10 @@ class EditLab extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return { ...state.userConfig };
+  return { ...state.adminConfig };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...userActions, ...RolesActions }, dispatch);
+  return bindActionCreators({ ...labActions, ...adminActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(

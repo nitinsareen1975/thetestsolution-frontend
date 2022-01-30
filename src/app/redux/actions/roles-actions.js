@@ -16,28 +16,6 @@ export function getRoles({ filters, pagination, sorter }) {
   };
 }
 
-export function getAllExternalRoles() {
-  return async function(dispatch, getState) {
-    try {
-      let resp = await API.getAllExternalRoles();
-      return resp.data;
-    } catch (e) {
-      return {"error" : true};
-    }
-  };
-}
-
-export function getAllInternalRoles() {
-  return async function(dispatch, getState) {
-    try {
-      let resp = await API.getAllInternalRoles();
-      return resp.data;
-    } catch (e) {
-      return {"error" : true};
-    }
-  };
-}
-
 export function updateRole(data) {
    return async function(dispatch, getState) {
     try {

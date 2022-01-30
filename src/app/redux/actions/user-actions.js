@@ -181,48 +181,6 @@ export function LogOutUser() {
   };
 }
 
-export function forgotPassword(email) {
-  return async function (dispatch, getState) {
-    try {
-      let data = {
-        userName: email
-      };
-      let response = await API.forgotPassword(data);
-      if (response) {
-        dispatch({
-          type: Types.FORGOT_PASSWORD_RESPONSE,
-          payload: response
-        });
-      } else {
-        dispatch({
-          type: Types.FORGOT_PASSWORD_RESPONSE,
-          payload: {
-            flashText: "Error"
-          }
-        });
-      }
-    } catch (e) {
-      dispatch({
-        type: Types.FORGOT_PASSWORD_RESPONSE,
-        payload: {
-          flashText: "Error"
-        }
-      });
-    }
-  };
-}
-
-export function checkIfDetailAlreadyVerified(type) {
-  return async function (dispatch, getState) {
-    try {
-      dispatch({
-        type: Types.SAVE_ALREADY_VERIFIED,
-        payload: type
-      });
-    } catch (e) {}
-  };
-}
-
 export function getAllRoles({ filters, pagination, sorter }) {
   return async function (dispatch, getState) {
     try {
@@ -235,42 +193,6 @@ export function getAllRoles({ filters, pagination, sorter }) {
     } catch (e) {
       return e;
     }
-  };
-}
-
-export function getTokenExpiry() {
-  return async function (dispatch, getState) {
-    try {
-      var tokenData = JSON.parse(localStorage.getItem("tokenData"));
-      if (tokenData && tokenData.token_expiry && tokenData.token_expiry !== "") {
-        var objData = {
-          "token_expiry": tokenData.token_expiry,
-          "token": tokenData.token,
-          "refreshToken": tokenData.refreshToken
-        }
-        dispatch({
-          type: Types.TOKEN_EXPIRY_DATE,
-          payload: objData
-        });
-      } else {
-        dispatch({
-          type: Types.FLUSH_TOKEN_DATA,
-          payload: ""
-        });
-      }
-
-    } catch (e) {}
-  };
-}
-
-export function flushTimer() {
-  return async function (dispatch, getState) {
-    try {
-      dispatch({
-        type: Types.FLUSH_TOKEN_DATA,
-        payload: ""
-      });
-    } catch (e) {}
   };
 }
 
@@ -313,66 +235,6 @@ export function updateProfile(data) {
   };
 }
 
-export function myAccount() {
-  return async function (_dispatch, _getState) {
-    try {
-      let resp = await API.getMyAccount();
-      return resp;
-    } catch (e) {
-      return {
-        "error": true
-      };
-    }
-  };
-}
-
-export function updateMyAccount(data) {
-  return async function (_dispatch, _getState) {
-    try {
-      let resp = await API.updateMyAccount(data);
-      return resp;
-    } catch (e) {
-      return {
-        "error": true
-      };
-    }
-  };
-}
-
-export function updatePassword(data) {
-  return async function (_dispatch, _getState) {
-    try {
-      let resp = await API.updatePassword(data);
-      return resp;
-    } catch (e) {
-      return {
-        "error": true
-      };
-    }
-  };
-}
-
-export function updateLoggedInUserAccount(data) {
-  return async function (dispatch, _getState) {
-    let currentUser = JSON.parse(localStorage.getItem('user'));
-    currentUser.firstName = data.firstName;
-    currentUser.lastName = data.lastName;
-    currentUser.email = data.email;
-    currentUser.userName = data.userName;
-    currentUser.contactNo = data.contactNo;
-    localStorage.setItem('user', JSON.stringify(currentUser));
-
-    dispatch({
-      type: Types.UPDATE_MY_ACCOUNT,
-      payload: {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        contactNo: data.contactNo,
-      }
-    });
-  };
-}
 export function updateStatus(userId, status) {
   return async function (_dispatch, _getState) {
     try {
@@ -382,78 +244,6 @@ export function updateStatus(userId, status) {
       return {
         "error": true
       };
-    }
-  };
-}
-export function updateContactDetails(data) {
-  return async function (_dispatch, _getState) {
-    try {
-      let resp = await API.updateContactDetails(data);
-      return resp;
-    } catch (e) {
-      return {
-        "error": true
-      };
-    }
-  };
-}
-export function assignIdentity(data) {
-  return async function (_dispatch, _getState) {
-    try {
-      let resp = await API.assignIdentity(data);
-      return resp;
-    } catch (e) {
-      return e;
-    }
-  };
-}
-
-export function getActiveInternalUsers({
-  orgId,
-  filters,
-  pagination,
-  sorter
-}) {
-  return async function (dispatch, getState) {
-    try {
-      let resp = await API.getActiveInternalUsers({
-        orgId: orgId,
-        filters: filters,
-        pagination: pagination,
-        sorter: sorter
-      });
-      return resp;
-
-    } catch (e) {
-      /*dispatch({
-        type: Types.USER_LISTING_ERROR,
-        payload: { errorMessage: "Listing error", isLoggedIn: false }
-      });*/
-      return {
-        "error": true
-      };
-    }
-  };
-}
-
-export function hasB2B2CEmergencyContact(userId) {
-  return async function(_dispatch, _getState) {
-    try {
-      let response = await API.hasB2B2CEmergencyContact(userId);
-      return response;
-    } catch (e) {
-      return { error: true };
-    }
-  };
-}
-
-export function updateB2B2CEmergencyContact(userId, data) {
-  return async function(_dispatch, _getState) {
-    try {
-      let response = await API.updateB2B2CEmergencyContact(userId, data);
-      return response;
-    } catch (e) {
-      return { error: true };
     }
   };
 }

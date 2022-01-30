@@ -19,7 +19,9 @@ class AdminDash extends Component {
     };
   }
   async componentDidMount() {
-    await this.props.getCountriesList();
+    if(typeof this.props.adminConfig.countries === "undefined" || this.props.adminConfig.countries.length <= 0){
+      await this.props.getCountriesList();
+    }
   }
   onCollapse = () => {
     this.setState({ collapsed: !this.state.collapsed });

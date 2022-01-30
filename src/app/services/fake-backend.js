@@ -50,7 +50,7 @@ export function configureFakeBackend() {
     let items = getItems(1, 41);
     let roles = getRoles(1, 11);
     let travelers = getTravelers(1, 41);
-    let organizations = getOrganizations(1, 41);
+    let labs = getLabs(1, 41);
     let organizationTypes = getOrganizationTypes(1, 41);
     let countries = getCountries(1, 41);
     let recordCountPerPage = 10;
@@ -59,7 +59,7 @@ export function configureFakeBackend() {
       if (entity === "get-countries") return countries;
       if (entity === "users") return items;
       if (entity === "roles") return roles;
-      if (entity === "organizations") return organizations;
+      if (entity === "labs") return labs;
       if (entity === "organization-types") return organizationTypes;
       if (entity === "travelers") return travelers;
     }
@@ -158,6 +158,41 @@ export function configureFakeBackend() {
           iso_code_alpha2: "iso_code2_"+no,
           iso_code_alpha3: "iso_code3_"+no,
           status: no
+        });
+      }
+      return tempItems;
+    }
+  
+    function getLabs(pageNo, count) {
+      let tempItems = [];
+      for (let i = 1; i <= count; i++) {
+        let no = (pageNo - 1) * count + i;
+        tempItems.push({
+          id: no,
+          type: Math.round(Math.random() * getOrganizationTypes(1,10).length),
+          name: "Lab " + no,
+          email: "lab"+no+"@mail.com",
+          concerned_person_name: "Person name "+no,
+          phone: "000000000"+no,
+          licence_number: "LIC-"+no,
+          logo: "",
+          price_per_test: no*10,
+          tests_available: "1,2",
+          test_codes: "1,2",
+          date_incorporated: "2019-10-"+((no < 10) ? "0"+no : no),
+          payment_days: "20",
+          payment_mode: "1,2",
+          has_tax: 1,
+          has_compliance: 0,
+          location_code: "",
+          street: "",
+          city: "",
+          state: "",
+          county: "",
+          country: "",
+          zip: "1234"+no,
+          geo_location: "",
+          status: i % 2 === 0 ? 1 : 0
         });
       }
       return tempItems;
@@ -296,7 +331,7 @@ export function configureFakeBackend() {
             return;
           }
 
-          if (entity === "users" || entity === "get-countries" || entity === "roles" || entity === "organizations" || entity === "organization-types") {
+          if (entity === "users" || entity === "get-countries" || entity === "roles" || entity === "labs" || entity === "organization-types") {
             if (url.indexOf("/" + entity + "/") !== -1 && opts.method === "GET") {
               let parts = url.split("/" + entity + "/");
               var data = getDataByEntity(entity);

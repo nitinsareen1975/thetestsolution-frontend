@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { PlusCircleOutlined } from '@ant-design/icons';
-import * as userActions from "../../../redux/actions/user-actions";
+import * as labActions from "../../../redux/actions/lab-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
 import {
   Switch,
@@ -13,12 +12,14 @@ import {
   Button,
   Row,
   Col,
-  Typography
+  Typography,
+  Tag,
+  Tooltip
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
-import { EditOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons';
+import { EditOutlined, CloseOutlined, SearchOutlined, SolutionOutlined, CreditCardOutlined, TeamOutlined } from '@ant-design/icons';
 
-class ManageLab extends Component {
+class ManageLabs extends Component {
   constructor(props) {
     super(props);
     this.module = 'labs';
@@ -31,7 +32,7 @@ class ManageLab extends Component {
         showTotal: (total, range) => {
           return (
             <span>
-               Showing {range[0]}-{range[1]}{" "}
+              Showing {range[0]}-{range[1]}{" "}
               of {total}{" "}
               results
             </span>
@@ -46,72 +47,86 @@ class ManageLab extends Component {
   }
   getSelectedFilterValue = (index) => {
     return this.props.paginginfo[this.module] && typeof this.props.paginginfo[this.module] !== "undefined" && this.props.paginginfo[this.module].filter && this.props.paginginfo[this.module].filter[index] || null;
-  } 
+  }
 
   getHeaderKeys = () => {
     return [
       {
         title: "Lab Name",
-        dataIndex: "labname",
-        filteredValue : this.getSelectedFilterValue('labname'),
-        ...this.getColumnSearchProps("labname")
+        dataIndex: "name",
+        filteredValue: this.getSelectedFilterValue('name'),
+        ...this.getColumnSearchProps("name")
         //width: "200px"
         //sorter: true
       },
       {
-        title: "Lab License Number",
-        dataIndex: "lablicensenumber",
-        filteredValue : this.getSelectedFilterValue('lablicensenumber'),
-        ...this.getColumnSearchProps("lablicensenumber")
+        title: "Licence Number",
+        dataIndex: "licence_number",
+        filteredValue: this.getSelectedFilterValue('licence_number'),
+        ...this.getColumnSearchProps("licence_number")
         // width: "200px"
       },
       {
-        title: "Lab  Email",
-        dataIndex: "labemail",
-        filteredValue : this.getSelectedFilterValue('labemail'),
-        ...this.getColumnSearchProps("labemail")
+        title: "Lab Email",
+        dataIndex: "email",
+        filteredValue: this.getSelectedFilterValue('email'),
+        ...this.getColumnSearchProps("email")
         //width: "250px"
       },
       {
         title: "Lab Phone",
         dataIndex: "phone",
         // width: "250px",
-        filteredValue : this.getSelectedFilterValue('phone'),
+        filteredValue: this.getSelectedFilterValue('phone'),
         ...this.getColumnSearchProps("phone")
       },
       {
-        title: "On Board  Date",
-        dataIndex: "onboarddate"
+        title: "Onboarding Date",
+        dataIndex: "date_incorporated"
         // width: "200px"
       },
       {
         title: "Status",
         render: (_text, record) => (
           <span>
-            <Switch
-              checkedChildren={"Active"}
-              unCheckedChildren={"Inactive"}
-              checked={record.isActive}
-              onClick={() =>
-                this.updateUserStatus(!record.isActive, record.userId)
-              }
-            />
+            <Tag color={record.status == 1 ? "green" : "red"}>{record.status == 1 ? "Active" : "Inactive"}</Tag>
           </span>
         )
       },
       {
-        title:"Actions",
+        title: "Actions",
         rowKey: "action",
         // width: "200px",
         render: (_text, record) => (
           <span>
-            <Button
-              onClick={() => {
-                this.editItem(record.id);
-              }}
+            <Tooltip title="Edit Lab">
+              <Button
+                onClick={() => this.props.history.push("./labs/edit/" + record.id)}
               >
                 <EditOutlined />
-            </Button>
+              </Button>
+            </Tooltip>
+            <Tooltip title="Manage Employees">
+              <Button
+                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/employees")}
+              >
+                <TeamOutlined />
+              </Button>
+            </Tooltip>
+            <Tooltip title="View Billing">
+              <Button
+                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/billing")}
+              >
+                <CreditCardOutlined />
+              </Button>
+            </Tooltip>
+            <Tooltip title="Scheduled Tests">
+              <Button
+                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/tests")}
+              >
+                <SolutionOutlined />
+              </Button>
+            </Tooltip>
           </span>
         )
       }
@@ -158,7 +173,6 @@ class ManageLab extends Component {
               )
             }
             disabled={selectedKeys != "" && selectedKeys !== null ? false : true}
-            icon="search"
             size="small"
             style={{ width: 90, marginRight: 8 }}
           >
@@ -204,10 +218,10 @@ class ManageLab extends Component {
       filter: true,
       setSelectedKeys: setSelectedKeys,
       confirm: confirm,
-      auto:true
+      auto: false
     };
     this.setState({ filters: filters });
-    this.props.updateFilters({module:this.module, filters: filters})
+    this.props.updateFilters({ module: this.module, filters: filters })
     confirm();
   };
 
@@ -215,36 +229,32 @@ class ManageLab extends Component {
     clearFilters();
     let filters = this.state.filters;
     if (filters[dataIndex]) {
-      if(filters[dataIndex].setSelectedKeys && typeof filters[dataIndex].setSelectedKeys === 'function'){
+      if (filters[dataIndex].setSelectedKeys && typeof filters[dataIndex].setSelectedKeys === 'function') {
         filters[dataIndex].setSelectedKeys("");
         //filters[dataIndex].confirm();
       }
     }
-    if(filters[dataIndex] && !filters[dataIndex].auto){
+    if (filters[dataIndex] && !filters[dataIndex].auto) {
       delete this.props.paginginfo[this.module].filter[dataIndex];
       this.handleTableChange({ current: 1, pageSize: 10 }, this.props.paginginfo[this.module].filter, {});
-   
+
     }
     filters[dataIndex] = { val: "", clearf: "", filter: false };
     this.setState({ filters: filters });
-    this.props.updateFilters({module: this.module, filters:  filters})
+    this.props.updateFilters({ module: this.module, filters: filters })
     this.setState({ searchText: "" });
   };
 
   async componentDidMount() {
-    this.initComponent();
-  }
-
-  initComponent = async() => {
-    if(this.props.paginginfo && this.props.currentModule !== "" && this.props.currentModule !== this.module){
+    if (this.props.paginginfo && this.props.currentModule !== "" && this.props.currentModule !== this.module) {
       this.props.clearPaginationExceptMe(this.module);
     } else {
-      if(this.props.paginginfo && this.props.paginginfo[this.module]){
-        this.handleTableChange(this.props.paginginfo[this.module].pagination, this.props.paginginfo[this.module].filter, {},true);
-        if(this.props.paginginfo[this.module].filters){
-        let filters = this.props.paginginfo[this.module].filters
-        Object.keys(filters).map(k=> {filters[k].auto = false});
-          this.setState({filters :  filters});
+      if (this.props.paginginfo && this.props.paginginfo[this.module]) {
+        this.handleTableChange(this.props.paginginfo[this.module].pagination, this.props.paginginfo[this.module].filter, {}, true);
+        if (this.props.paginginfo[this.module].filters) {
+          let filters = this.props.paginginfo[this.module].filters
+          Object.keys(filters).map(k => { filters[k].auto = false });
+          this.setState({ filters: filters });
         }
       } else {
         this.handleTableChange({ current: 1, pageSize: 10 }, {}, {}, true);
@@ -266,23 +276,20 @@ class ManageLab extends Component {
       });
   };
 
-   editItem = id => {
-    this.props.history.push("./lab/edit/" + id);
-  };
-
   handleTableChange = (pagination, filters, sorter, manual) => {
-    if(filters === undefined) filters={};
-    Object.keys(filters).map( key => { if((!filters[key]) || (Array.isArray(filters[key]) && filters[key].length===0)) { delete filters[key] }} )
+    if (filters === undefined) filters = {};
+    Object.keys(filters).map(key => { if ((!filters[key]) || (Array.isArray(filters[key]) && filters[key].length === 0)) { delete filters[key] } })
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
-    if(manual !== true)
-    {
-      this.props.updatePaginationRemoveOld({module:this.module, filter: filters,
-      pagination: { current: pagination.current, pageSize: pagination.pageSize }})
+    if (manual !== true) {
+      this.props.updatePaginationRemoveOld({
+        module: this.module, filter: filters,
+        pagination: { current: pagination.current, pageSize: pagination.pageSize }
+      })
     }
+    console.log("sorter:", sorter)
     this.setState({ loading: true });
-    this.props
-      .getUserListing({
+    this.props.getLabs({
         filters: filters,
         pagination: { page: pagination.current, pageSize: pagination.pageSize },
         sorter: sorter
@@ -300,29 +307,10 @@ class ManageLab extends Component {
       });
   };
 
-  updateUserStatus = async (selected, userId) => {
-    this.setState({loading: true});
-    try {
-      this.props.updateStatus(userId, selected).then(response => {
-        if (response.data && response.data.message) {
-          notifyUser(response.data.message, "success");
-          this.setState({loading: false});
-          this.initComponent();
-        } else {
-          notifyUser("Unknown error", "error");
-          this.setState({loading: false});
-        }
-      });
-    } catch (e) {
-      console.log("Error:", e);
-      this.setState({loading: false});
-    }
-  };
-
   render() {
     let _state = this.state;
     let _this = this;
-    let filtertag = Object.keys(this.state.filters).map(function(key1) {
+    let filtertag = Object.keys(this.state.filters).map(function (key1) {
       let keyLabel = _this.getHeaderKeys().find(el => el.dataIndex === key1);
       if (keyLabel.title.props && keyLabel.title.props.id) {
         keyLabel = keyLabel.title.props.id;
@@ -353,13 +341,13 @@ class ManageLab extends Component {
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
-              Manage Labs
+              Manage Users
             </Typography.Title>
           </Col>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Button
               type="primary"
-              onClick={() => this.editItem("new")}
+              onClick={() => this.props.history.push("./labs/add")}
               className="right-fl def-blue"
             >
               Add New
@@ -376,7 +364,7 @@ class ManageLab extends Component {
             <Table
               className="theme-table"
               columns={this.getHeaderKeys()}
-              rowKey={record => record.userId}
+              rowKey={record => record.id}
               dataSource={this.state.data}
               pagination={this.state.pagination}
               loading={this.state.loading}
@@ -389,23 +377,17 @@ class ManageLab extends Component {
   }
 }
 
-ManageLab.propTypes = {
-  location: PropTypes.object,
-  userData: PropTypes.object,
-  getUserListing: PropTypes.func
-};
 function mapStateToProps(state) {
-    return {
-      ...state.userConfig,
-      ...state.pagination,
-      ...state.language
-    };  
+  return {
+    ...state.pagination,
+    ...state.language
+  };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...userActions, ...paginationActions }, dispatch);
+  return bindActionCreators({ ...labActions, ...paginationActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-    ManageLab
+    ManageLabs
   )
 );

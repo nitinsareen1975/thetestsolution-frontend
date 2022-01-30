@@ -50,7 +50,7 @@ const refreshToken = async (method, url, data, hitCount,reject) => {
       }
       let optionsToken = {
         method: "POST",
-        url: "/auth/refresh-token",
+        url: "/refresh-token",
         responseType: "json",
         data:objTokenData,
         headers: {
@@ -60,17 +60,18 @@ const refreshToken = async (method, url, data, hitCount,reject) => {
       
       AxiosAuth.request(optionsToken, undefined)
       .then(async (responseToken) => {
-        if(responseToken.status === 200){
+        responseToken = JSON.parse(responseToken);
+        if(responseToken.status === true){
           var tokenResponseData = responseToken.data;
           var expiry = new Date();
-          expiry.setSeconds( expiry.getSeconds() + tokenResponseData.accessToken.expiresIn );
+          expiry.setSeconds( expiry.getSeconds() + tokenResponseData.expires_in );
           var newTokenData = {
             "token_expiry":expiry,
-            "token":tokenResponseData.accessToken.token,
-            "refreshToken":tokenResponseData.refreshToken
+            "token":tokenResponseData.token,
+            "refreshToken":tokenResponseData.token+'re'
           }
           localStorage.setItem("tokenData", JSON.stringify(newTokenData));
-          _request(method, url, data, tokenResponseData.accessToken.token, hitCount+ 1)
+          _request(method, url, data, tokenResponseData.token, hitCount+ 1)
         }
       })
       .catch(error => {

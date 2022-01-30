@@ -19,20 +19,10 @@ const addRole = data => {
   return Axios.post("/roles/", data, undefined);
 };
 
-const getAllExternalRoles = data => {
-  return Axios.get("/roles/ExternalRoles", undefined, undefined);
-};
-
-const getAllInternalRoles = data => {
-  return Axios.get("/roles/InternalRoles", undefined, undefined);
-};
-
 export default {
     getRoles,
     updateRole,
     getRole,
     deleteRole,
-    addRole,
-    getAllExternalRoles,
-    getAllInternalRoles
+    addRole
 };

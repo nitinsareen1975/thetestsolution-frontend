@@ -5,19 +5,7 @@ import {
   ExperimentOutlined,
   AuditOutlined
 } from '@ant-design/icons';
-  
-const HomeIcon = props => < Icon component={
-  HomeSvg
-} {
-  ...props
-  }
-/>;
-const ManageUserIcon = props => < Icon component={
-  ManageUser
-} {
-  ...props
-  }
-/>;
+
 const adminOptions = [{
     key: "/admin",
     label: "Dashboard",
@@ -62,18 +50,18 @@ const adminOptions = [{
   }
   ,
   {
-    key: "/admin/tests",
-    label: "Tests",
+    key: "/admin/test-types",
+    label: "Test Types",
     roles: ["Administrator"],
     leftIcon: <AuditOutlined />,
     children: [
       {
-        key: "/admin/tests",
-        label: "Test List",
+        key: "/admin/test-types",
+        label: "Tests List",
         roles: ["Administrator"]
       },
       {
-        key: "/admin/tests/add",
+        key: "/admin/test-types/add",
         label: "Add New Test",
         roles: ["Administrator"]
       }
