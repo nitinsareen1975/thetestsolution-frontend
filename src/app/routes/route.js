@@ -4,6 +4,7 @@ import ForgotPassword from "../components/forgot-password/forgot-password.jsx";
 import ResetPassword from "../components/reset-password/reset-password.jsx";
 import NotFound from "../components/common/404.jsx";
 import ServerError from "../components/common/500.jsx";
+import Register from "../components/register/register.jsx";
 
 export default {
   routes: [
@@ -36,6 +37,11 @@ export default {
     {
       path: "/500",
       component: ServerError,
+      exact: true
+    },
+    {
+      path: "/register",
+      component: Register,
       exact: true
     },
   ],
