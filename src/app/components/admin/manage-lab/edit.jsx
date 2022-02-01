@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as labActions from "../../../redux/actions/lab-actions";
 import * as adminActions from "../../../redux/actions/admin-actions";
+import * as testsActions from "../../../redux/actions/tests-actions";
 import { notifyUser } from "../../../services/notification-service";
 import {
   Typography,
@@ -30,7 +31,9 @@ class EditLab extends React.Component {
     loading: true,
     dataLoaded: false,
     logo: null,
+    logoRemoved: false,
     countries: [],
+    testTypes: [],
     lab: {}
   };
 
@@ -42,22 +45,24 @@ class EditLab extends React.Component {
       _countries = this.props.countries;
     }
     var lab = await this.props.getLab(this.props.match.params.id);
-    if(lab.data.date_incorporated != null){
+    if (lab.data.date_incorporated != null) {
       lab.data.date_incorporated = moment(lab.data.date_incorporated);
     }
-    if(lab.data.tests_available != null){
+    if (lab.data.tests_available != null) {
       lab.data.tests_available = lab.data.tests_available.split(",");
     }
+    var _testTypes = await this.props.getTestTypes({});
     this.setState({
       loading: false,
       countries: _countries,
       lab: lab.data,
+      testTypes: _testTypes.data,
       logo: (lab.data.logo && lab.data.logo != null) ? Config.DASHBOARD_URL + lab.data.logo : this.state.logo,
       dataLoaded: true
     });
   }
 
-  handleSubmit = (data) => {
+  handleSubmit = async (data) => {
     if (typeof data.date_incorporated !== "undefined") {
       data.date_incorporated = moment(data.date_incorporated).format("YYYY-MM-DD");
     }
@@ -65,20 +70,29 @@ class EditLab extends React.Component {
       data.tests_available = data.tests_available.join(",");
     }
 
-    const formData = new FormData();
-    if (typeof this.state.logo !== "undefined" && this.state.logo !== null && typeof this.state.logo === "string" && this.state.logo.file) {
-      formData.append('logo', this.state.logo);
-    }
+    var args = {};
     for (const key in data) {
       if (key !== "logo") {
         if (typeof data[key] === "undefined") {
           data[key] = "";
         }
-        formData.set(key, data[key]);
+        args[key] = data[key];
       }
     }
     this.setState({ loading: true });
-    this.props.updateLab(this.props.match.params.id, formData).then((response) => {
+    if (typeof this.state.logo !== "undefined" && this.state.logo !== null && typeof this.state.logo !== "string" && this.state.logo.name) {
+      const formData = new FormData();
+      formData.append('logo', this.state.logo);
+      await this.props.uploadLabLogo('lab-logo', this.props.match.params.id, formData).then((response) => {
+        if (response.status && response.status === true) {
+          args['logo'] = response.data;
+        }
+      });
+    }
+    if (this.state.logoRemoved === true) {
+      args['logo'] = "";
+    }
+    this.props.updateLab(this.props.match.params.id, args).then((response) => {
       if (response.status && response.status === true) {
         notifyUser(response.message, "success");
         this.props.history.push("../../labs");
@@ -124,8 +138,12 @@ class EditLab extends React.Component {
     }
   }
 
-  removeLogoInline(){
-    this.setState({ logo: null });
+  removeLogoInline(labId) {
+    this.props.removeLabLogo('lab-logo', labId).then((response) => {
+      if (response.status && response.status === true) {
+        this.setState({ logo: null, logoRemoved: true });
+      }
+    });
   }
 
   render() {
@@ -267,10 +285,10 @@ class EditLab extends React.Component {
                       </Upload>
                       {this.state.logo !== "" && typeof this.state.logo === "string" ?
                         <span>
-                          <img src={this.state.logo} style={{ maxWidth: 100 }}/>
-                          <Button type="link" onClick={() => this.removeLogoInline()}><DeleteOutlined /></Button>
+                          <img src={this.state.logo} style={{ maxWidth: 100 }} />
+                          <Button type="link" onClick={() => this.removeLogoInline(this.state.lab.id)}><DeleteOutlined /></Button>
                         </span>
-                      : "" }
+                        : ""}
                     </Form.Item>
                   </Col>
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -309,9 +327,9 @@ class EditLab extends React.Component {
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        <Option value={1}>Test type 1</Option>
-                        <Option value={2}>Test type 2</Option>
-                        <Option value={3}>Test type 3</Option>
+                        {this.state.testTypes.map(test => {
+                          return <Option key={test.id.toString()} value={test.id.toString()}>{test.name}</Option>
+                        })}
                       </Select>
                     </Form.Item>
                   </Col>
@@ -350,7 +368,11 @@ class EditLab extends React.Component {
                       label="Payment Mode"
                       name="payment_mode"
                     >
-                      <Select />
+                      <Select>
+                        {Config.PaymentModes.map(mode => {
+                          return <Option key={mode.id.toString()} value={mode.id.toString()}>{mode.name}</Option>
+                        })}
+                      </Select>
                     </Form.Item>
                   </Col>
                 </Row>
@@ -384,8 +406,8 @@ class EditLab extends React.Component {
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
-                      label="street"
-                      name="Street"
+                      label="Street"
+                      name="street"
                     >
                       <Input />
                     </Form.Item>
@@ -457,12 +479,12 @@ class EditLab extends React.Component {
                       {...formItemLayout}
                       label="Status"
                       name="status"
-                      >
+                    >
                       <Switch
                         checkedChildren={"Active"}
                         unCheckedChildren={"Inactive"}
                         defaultChecked={this.state.lab.status === 1}
-                        
+
                       />
                     </Form.Item>
                   </Col>
@@ -496,7 +518,7 @@ function mapStateToProps(state) {
   return { ...state.adminConfig };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...labActions, ...adminActions }, dispatch);
+  return bindActionCreators({ ...labActions, ...adminActions, ...testsActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(

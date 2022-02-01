@@ -287,7 +287,6 @@ class ManageLabs extends Component {
         pagination: { current: pagination.current, pageSize: pagination.pageSize }
       })
     }
-    console.log("sorter:", sorter)
     this.setState({ loading: true });
     this.props.getLabs({
         filters: filters,

@@ -9,9 +9,9 @@ import ManageLab from "../components/admin/manage-lab/list.jsx";
 import AddLab from "../components/admin/manage-lab/add.jsx";
 import EditLab  from "../components/admin/manage-lab/edit.jsx"
 // Tests 
-import ManageTest from "../components/admin/tests/list.jsx";
-import AddTest from "../components/admin/tests/add.jsx";
-import EditTest  from "../components/admin/tests/edit.jsx"
+import ManageTestTypes from "../components/admin/test-types/list.jsx";
+import AddTestType from "../components/admin/test-types/add.jsx";
+import EditTestType  from "../components/admin/test-types/edit.jsx"
 const routes = [
   {
     path: "",
@@ -42,16 +42,16 @@ const routes = [
     component: EditLab
   },
   {
-    path: "tests",
-    component: ManageTest
+    path: "test-types",
+    component: ManageTestTypes
   },
   {
-    path: "tests/add/",
-    component: AddTest
+    path: "test-types/add/",
+    component: AddTestType
   },
   {
-    path: "tests/edit/:id",
-    component: EditTest
+    path: "test-types/edit/:id",
+    component: EditTestType
   }
 ];
 

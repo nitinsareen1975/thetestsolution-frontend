@@ -53,6 +53,7 @@ export function configureFakeBackend() {
     let labs = getLabs(1, 41);
     let organizationTypes = getOrganizationTypes(1, 41);
     let countries = getCountries(1, 41);
+    let testTypes = getTestTypes(1, 41);
     let recordCountPerPage = 10;
   
     function getDataByEntity(entity) {
@@ -62,6 +63,7 @@ export function configureFakeBackend() {
       if (entity === "labs") return labs;
       if (entity === "organization-types") return organizationTypes;
       if (entity === "travelers") return travelers;
+      if (entity === "test-types") return testTypes;
     }
   
     function getUrlEntity(url) {
@@ -162,6 +164,32 @@ export function configureFakeBackend() {
       }
       return tempItems;
     }
+  
+    function getTestTypes(pageNo, count) {
+      let tempItems = [];
+      for (let i = 1; i <= count; i++) {
+        let no = (pageNo - 1) * count + i;
+        tempItems.push({
+          id: no,
+          cost: "10",
+          estimated_seconds: "30",
+          fi_model: "Model FI"+no,
+          fi_test_name: "RTPCR FI"+no,
+          fi_test_type: "Test type FI"+no,
+          loinc: "IONC"+no,
+          name: "RTPCR-2"+no,
+          price: "100",
+          status: true,
+          test_procedure: "Pro"+no,
+          test_procedure_snomed: "Pro sno"+no,
+          test_type: "Test type"+no,
+          testing_platform: "Test platform"+no,
+          status: i % 2 === 0 ? 1 : 0
+        });
+      }
+      return tempItems;
+    }
+  
   
     function getLabs(pageNo, count) {
       let tempItems = [];
@@ -331,7 +359,7 @@ export function configureFakeBackend() {
             return;
           }
 
-          if (entity === "users" || entity === "get-countries" || entity === "roles" || entity === "labs" || entity === "organization-types") {
+          if (entity === "users" || entity === "get-countries" || entity === "roles" || entity === "labs" || entity === "organization-types" || entity === "test-types") {
             if (url.indexOf("/" + entity + "/") !== -1 && opts.method === "GET") {
               let parts = url.split("/" + entity + "/");
               var data = getDataByEntity(entity);

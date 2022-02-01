@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as labActions from "../../../redux/actions/lab-actions";
 import * as adminActions from "../../../redux/actions/admin-actions";
+import * as testsActions from "../../../redux/actions/tests-actions";
 import { notifyUser } from "../../../services/notification-service";
 import {
   Typography,
@@ -16,11 +17,13 @@ import {
   Spin,
   DatePicker,
   Switch,
-  Upload
+  Upload,
+  InputNumber
 } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
 import { PlusCircleOutlined, ArrowLeftOutlined, UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
+import Config from "../../../config";
 
 const { Option } = Select;
 
@@ -29,48 +32,57 @@ class AddLab extends React.Component {
     loading: true,
     dataLoaded: false,
     logo: null,
+    testTypes: [],
     countries: []
   };
 
   async componentDidMount() {
     var _countries = [];
-		if(typeof this.props.countries === "undefined" || this.props.countries.length <= 0 ){
-			_countries = await this.props.getCountries();
-		} else {
-			_countries = this.props.countries;
-		}
+    if (typeof this.props.countries === "undefined" || this.props.countries.length <= 0) {
+      _countries = await this.props.getCountries();
+    } else {
+      _countries = this.props.countries;
+    }
+    var _testTypes = await this.props.getTestTypes({});
     this.setState({
       loading: false,
       countries: _countries,
+      testTypes: _testTypes.data,
       dataLoaded: true
     });
   }
 
-  handleSubmit = (data) => {
-    if(typeof data.date_incorporated !== "undefined"){
+  handleSubmit = async (data) => {
+    if (typeof data.date_incorporated !== "undefined") {
       data.date_incorporated = moment(data.date_incorporated).format("YYYY-MM-DD");
     }
-    if(typeof data.tests_available !== "undefined"){
+    if (typeof data.tests_available !== "undefined") {
       data.tests_available = data.tests_available.join(",");
     }
 
-    const formData = new FormData();
-    if(typeof data.logo !== "undefined" && data.logo !== null && data.logo.file){
-      formData.append('logo', data.logo);
-    }
+    var args = {};
     for (const key in data) {
-      if(key !== "logo"){
-        if(typeof data[key] === "undefined"){
+      if (key !== "logo") {
+        if (typeof data[key] === "undefined") {
           data[key] = "";
         }
-        formData.set(key, data[key]);
+        args[key] = data[key];
       }
     }
+    if (typeof this.state.logo !== "undefined" && this.state.logo !== null && typeof this.state.logo !== "string" && this.state.logo.name) {
+      const formData = new FormData();
+      formData.append('logo', this.state.logo);
+      await this.props.uploadLabLogo('lab-logo', this.props.match.params.id, formData).then((response) => {
+        if (response.status && response.status === true) {
+          args['logo'] = response.data;
+        }
+      });
+    }
     this.setState({ loading: true });
-    this.props.addLab(formData).then((response) => {
+    this.props.addLab(args).then((response) => {
       if (response.status && response.status === true) {
         notifyUser(response.message, "success");
-        this.props.history.push("./");
+        this.props.history.push("../labs");
         this.setState({ loading: false });
       } else {
         if (response.message) {
@@ -81,9 +93,9 @@ class AddLab extends React.Component {
         this.setState({ loading: false });
       }
     })
-    .catch((err) => {
-      this.setState({ loading: false });
-    });
+      .catch((err) => {
+        this.setState({ loading: false });
+      });
   };
 
   uploaderProps = (field, accept) => {
@@ -93,22 +105,22 @@ class AddLab extends React.Component {
       accept: accept,
       multiple: false,
       beforeUpload: file => {
-        if(file.type.indexOf('image/') === -1){
-          message.error(<IntlMessages id="admin.fileupload.acceptedtypes"/>);
-          _this.setState({[field]: null});
+        if (file.type.indexOf('image/') === -1) {
+          message.error(<IntlMessages id="admin.fileupload.acceptedtypes" />);
+          _this.setState({ [field]: null });
         } else {
-          _this.setState({[field]: file});
+          _this.setState({ [field]: file });
         }
         return false;
       },
       onRemove: _file => {
-        _this.setState({[field]: null});
+        _this.setState({ [field]: null });
       },
       onSuccess: _res => {
-        _this.setState({[field]: null});
+        _this.setState({ [field]: null });
       },
       onError(_err) {
-        message.error(<IntlMessages id="admin.fileupload.failed"/>);
+        message.error(<IntlMessages id="admin.fileupload.failed" />);
       }
     }
   }
@@ -179,14 +191,14 @@ class AddLab extends React.Component {
                         type: "email",
                         message: <IntlMessages id="admin.email.valid" />,
                       },
-                      { 
+                      {
                         whitespace: true,
                         required: true,
                         message: <IntlMessages id="admin.input.required" />,
                       }
                     ]}
                   >
-                    <Input  />
+                    <Input />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -201,7 +213,7 @@ class AddLab extends React.Component {
                       }
                     ]}
                   >
-                    <Input/>
+                    <Input />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -217,7 +229,7 @@ class AddLab extends React.Component {
                       }
                     ]}
                   >
-                    <Input/>
+                    <Input />
                   </Form.Item>
                 </Col>
               </Row>
@@ -235,7 +247,7 @@ class AddLab extends React.Component {
                       }
                     ]}
                   >
-                    <Input  />
+                    <Input />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -280,27 +292,27 @@ class AddLab extends React.Component {
                       },
                     ]}
                   >
-                    <Select 
+                    <Select
                       mode="multiple"
                       showSearch
                       filterOption={(input, option) =>
                         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       }
                     >
-                      <Option value={1}>Test type 1</Option>
-                      <Option value={2}>Test type 2</Option>
-                      <Option value={3}>Test type 3</Option>
+                      {this.state.testTypes.map(test => {
+                        return <Option key={test.id.toString()} value={test.id.toString()}>{test.name}</Option>
+                      })}
                     </Select>
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={24}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item 
-                    {...formItemLayout} 
+                  <Form.Item
+                    {...formItemLayout}
                     label="Test Codes"
                     name="test_codes"
-                    >
+                  >
                     <Input />
                   </Form.Item>
                 </Col>
@@ -328,7 +340,11 @@ class AddLab extends React.Component {
                     label="Payment Mode"
                     name="payment_mode"
                   >
-                    <Select />
+                    <Select>
+                      {Config.PaymentModes.map(mode => {
+                        return <Option key={mode.id.toString()} value={mode.id.toString()}>{mode.name}</Option>
+                      })}
+                    </Select>
                   </Form.Item>
                 </Col>
               </Row>
@@ -360,18 +376,18 @@ class AddLab extends React.Component {
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
-                    label="street"
-                    name="Street"
+                    label="Street"
+                    name="street"
                   >
                     <Input />
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item 
-                    {...formItemLayout} 
+                  <Form.Item
+                    {...formItemLayout}
                     label="City"
                     name="city"
-                    >
+                  >
                     <Input />
                   </Form.Item>
                 </Col>
@@ -404,15 +420,15 @@ class AddLab extends React.Component {
                     <Select
                       showSearch
                       filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       }
                     >
-                      {this.state.countries.map(function(item) {
-                      return (
-                        <Option key={item.id} value={item.id}>
-                          {item.name}
-                        </Option>
-                      );
+                      {this.state.countries.map(function (item) {
+                        return (
+                          <Option key={item.id} value={item.id}>
+                            {item.name}
+                          </Option>
+                        );
                       })}
                     </Select>
                   </Form.Item>
@@ -469,7 +485,7 @@ function mapStateToProps(state) {
   return { ...state.adminConfig };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...labActions, ...adminActions }, dispatch);
+  return bindActionCreators({ ...labActions, ...adminActions, ...testsActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(

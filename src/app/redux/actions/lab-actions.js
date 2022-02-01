@@ -18,6 +18,18 @@ export function updateLab(id, data) {
   };
 }
 
+export function uploadLabLogo(key, id, data) {
+  return async function (dispatch, getState) {
+    return await API.uploadLabLogo(key, id, data);
+  };
+}
+
+export function removeLabLogo(key, id) {
+  return async function (dispatch, getState) {
+    return await API.removeLabLogo(key, id);
+  };
+}
+
 export function getLab(idx) {
   return async function (dispatch, getState) {
     return await API.getLab(idx);

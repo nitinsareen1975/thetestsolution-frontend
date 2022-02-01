@@ -6,6 +6,12 @@ const getLabs = data => {
 const updateLab = (id, data) => {
   return Axios.put("/labs/"+id, data, undefined);
 };
+const uploadLabLogo = (key, id, data) => {
+  return Axios.post("/upload/"+key+"/"+id, data, undefined);
+};
+const removeLabLogo = (key, id) => {
+  return Axios.delete("/upload/"+key+"/"+id, undefined, undefined);
+};
 const addLab = data => {
   return Axios.post("/labs", data, undefined);
 };
@@ -20,6 +26,8 @@ export default {
   getLabs,
   addLab,
   updateLab,
+  uploadLabLogo,
+  removeLabLogo,
   getLab,
   deleteLab
 };
