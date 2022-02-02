@@ -154,7 +154,8 @@ const DataAccessService = {
 };
 
 function getFetchMethod(url, data, token) {
-  if (config.API.indexOf("api.thetestsolutions.com") !== -1) {
+  if (config.API.indexOf("api.thetestsolutions.com") !== -1 ||
+    config.API.indexOf("thetestapi.alphawebtech.com") !== -1) {
     return "real";
   } else {
     return "fake";
