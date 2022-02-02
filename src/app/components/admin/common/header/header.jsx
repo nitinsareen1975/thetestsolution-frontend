@@ -7,29 +7,30 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
 } from '@ant-design/icons';
-const AdminHeader = ({...props}) => {
-    const menu = (
-        <Menu>
-          <Menu.Item key="1" icon={<UserOutlined />}>
-            <a onClick={() => UserService.logOut()}>
-                Logout
-            </a>
-          </Menu.Item>
-        </Menu>
-      );
-    return <Row justify="space-between">
-      <Button className="menu-toggle" onClick={props.onCollapse}>
-          {React.createElement(props.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined)}
-        </Button>
-              {/* <LanguageSwitcher /> */}
-        <div className="right-nav">
-          <div className="notifation">
-            <Badge count={5}>
-              <BellOutlined />
-            </Badge>
-          </div>
-          <Dropdown.Button overlay={menu} trigger={['click']} placement="bottomCenter" icon={<UserOutlined />}>Hi admin</Dropdown.Button>
-        </div>
-    </Row>
+const AdminHeader = ({ ...props }) => {
+  var user = JSON.parse(localStorage.getItem("user"));
+  const menu = (
+    <Menu>
+      <Menu.Item key="1" icon={<UserOutlined />}>
+        <a onClick={() => UserService.logOut()}>
+          Logout
+        </a>
+      </Menu.Item>
+    </Menu>
+  );
+  return <Row justify="space-between">
+    <Button className="menu-toggle" onClick={props.onCollapse}>
+      {React.createElement(props.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined)}
+    </Button>
+    {/* <LanguageSwitcher /> */}
+    <div className="right-nav">
+      <div className="notifation">
+        <Badge count={5}>
+          <BellOutlined />
+        </Badge>
+      </div>
+      <Dropdown.Button overlay={menu} trigger={['click']} placement="bottomCenter" icon={<UserOutlined />}>Hi{user.firstname ? " " + user.firstname : ""}</Dropdown.Button>
+    </div>
+  </Row>
 }
 export default AdminHeader;
