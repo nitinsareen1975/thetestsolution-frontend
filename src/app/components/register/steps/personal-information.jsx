@@ -2,44 +2,61 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import logo from "../../assets/images/horizontal-logo.png";
-import { notifyUser } from "../../services/notification-service";
-import * as UserActions from "../../redux/actions/user-actions";
+import { notifyUser } from "../../../services/notification-service";
+import * as UserActions from "../../../redux/actions/user-actions";
 import { Button, Col, Form, Row, Spin, Steps } from "antd";
-import { UserOutlined, SolutionOutlined, CreditCardOutlined, SmileOutlined, ScheduleOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import PersonalInformation from "./steps/personal-information.jsx";
+import { UserOutlined, SolutionOutlined, HomeOutlined, ContactsOutlined, DeploymentUnitOutlined, ExceptionOutlined, ExperimentOutlined} from '@ant-design/icons';
+import Waiver from "../steps/information/waiver.jsx";
+import ContactInfo from "../steps/information/contact-info.jsx";
+import DetailsInfo from "../steps/information/personal-info.jsx";
+import HomeAddressInfo from "../steps/information/home-address.jsx";
+import SymptomsInfo from "../steps/information/symptoms-info.jsx";
+import Identification from "../steps/information/identification.jsx";
+import TestInfo from "../steps/information/test.jsx";
 
-import Schedule from "./steps/schedule.jsx";
-import Payment from "./steps/payment.jsx";
-// import Success from "./steps/success.jsx";
 const { Step } = Steps;
 
-class Register extends Component {
+class PersonalInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
       current: 0,
-      steps:[        
+      steps:[
         {
-          title:"Information",
-          icon: <InfoCircleOutlined />,
-          content: <PersonalInformation />,
+          title:"Waiver",
+          icon: <UserOutlined />,
+          content: <Waiver />,
         },
         {
-          title:"Schedule", 
-          icon:<ScheduleOutlined />,
-          content: <Schedule />,
+          title:"Contact Info",
+          icon: <ContactsOutlined />,
+          content: <ContactInfo />,
         },
         {
-          title: "Payment Details",
-          icon: <CreditCardOutlined />,
-          content: <Payment />,
+          title:"Personal Info", 
+          icon:<SolutionOutlined />,
+          content: <DetailsInfo />,
         },
-        // {
-        //   title:"Done",
-        //   icon: <SmileOutlined />,
-        //   content: <Success />,
-        // }
+        {
+          title:"Home Address", 
+          icon:<HomeOutlined />,
+          content: <HomeAddressInfo />,
+        },
+        {
+          title:"Symptoms Info", 
+          icon:<DeploymentUnitOutlined />,
+          content: <SymptomsInfo />,
+        },
+        {
+          title:"Identification", 
+          icon:<ExceptionOutlined />,
+          content: <Identification />,
+        },
+        {
+          title:"Test", 
+          icon:<ExperimentOutlined />,
+          content: <TestInfo />,
+        },
       ],
       submitted: false
     };
@@ -70,17 +87,6 @@ class Register extends Component {
     const { current, steps, submitted } = this.state;
     return (
       <Spin size="large" spinning={submitted}>
-        <header className="register-header">
-          <Row>
-            <Col xs={24}>
-              <div className="logo">
-                <img src={logo} alt="Logo" />
-              </div>
-            </Col>
-          </Row>
-        </header>
-        <section className="testform" >
-          <div className="inner-form-wrap">
           <Row>
             {/* <Col xs={24} md={8} className="right-img">
             <img src={registerSideImg} alt="register Img" />
@@ -89,16 +95,18 @@ class Register extends Component {
                 <Row className="form-row">
                   <Col xs={24}>
                     <div className="form-column">
-                      <div className="form-column-inner" style={{ maxWidth: '100%' }}>                 
-                        
+                      <div className="form-column-inner" style={{ maxWidth: '100%' }}>                
+                      <h2>Fill Your Information</h2>
+                        <hr className="title-hr" />
                         <Form layout='vertical' onFinish={this.handleSubmit}>
-                            <Steps current={current} className="form-type">
+                          <div>
+                            <Steps current={current}>
                               {steps.map(item => (
                                 <Step key={item.title} title={item.title} icon={item.icon}/>
                               ))}
                             </Steps>
                             <div className="steps-content">{steps[current].content}</div>
-                            {/* <div className="steps-action">
+                            <div className="steps-action">
                               {current < steps.length - 1 && (
                                 <Button type="primary" onClick={() => this.gotoNextStep()}>
                                   Next
@@ -113,8 +121,9 @@ class Register extends Component {
                                 <Button style={{ margin: '0 8px' }} onClick={() => this.gotoPreviousStep()}>
                                   Previous
                                 </Button>
-                              )}                            </div> */}
-                          
+                              )}
+                            </div>
+                          </div>
                         </Form>
                       </div>
                     </div>
@@ -122,8 +131,6 @@ class Register extends Component {
                 </Row>
                 </Col>
           </Row>
-          </div>
-        </section>
       </Spin>
     );
   }
@@ -140,5 +147,5 @@ function mapDispatchToProps(dispatch) {
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, {
     forwardRef: true
-  })(Register)
+  })(PersonalInfo)
 );
