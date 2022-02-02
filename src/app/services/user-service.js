@@ -6,6 +6,7 @@ export function isLoggedIn() {
 }
 
 export function logOut() {
+	localStorage.removeItem('lab');
 	localStorage.removeItem('user');
 	localStorage.removeItem('tokenData');
 	localStorage.removeItem('userLang');

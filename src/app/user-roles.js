@@ -1,64 +1,49 @@
 export default{
     userRoles: {
-        Administrator:{
+        'Administrator':{
             url:"/admin",
     
         },
-        User:{
-            url:"/user",
+        'Doctor':{
+            url:"/lab",
     
         },
-        Partner:{
-            url:"/reseller",
+        'Nurse':{
+            url:"/user",
+        },
+        'Medical Assistant':{
+            url:"/user",
+        },
+        'Clerk':{
+            url:"/user",
+        },
+        'Patient':{
+            url:"/user",
         }
     },
     types: {
-        'Companion': {
-            url: "/user"
+        'Administrator':{
+            url:"/admin",
+    
         },
-        'CSR': {
-            url: "/admin"
+        'Doctor':{
+            url:"/lab",
+    
         },
-        'Membership': {
-            url: "/user"
+        'Nurse':{
+            url:"/user",
         },
-        'Employee': {
-            url: "/user"
+        'Medical Assistant':{
+            url:"/user",
         },
-        'Division Manager': {
-            url: "/user"
+        'Clerk':{
+            url:"/user",
         },
-        'Travel Manager': {
-            url: "/user"
-        },
-        'Traveler': {
-            url: "/user"
-        },
-        'Super Admin': {
-            url: "/admin"
-        },
-        'Administrator': {
-            url: "/admin"
-        },
-        'Admin': {
-            url: "/user"
-        },
-        'Partner': {
-            url: "/reseller"
-        },
-        'Hybrid Admin':{
-            url:"/hybrid"
+        'Patient':{
+            url:"/user",
         }
     },
     permissions: {
-		price_read: ['CSR','Administrator'],
-		price_update: ['Administrator'],
-        dashboard_charts: ['Administrator'],
-        add_organization: ['Administrator'],
-        update_receive_travel_alerts: ['Membership'],
-        traveler_dashboard: ['Membership','Employee','Partner'],
-        travel_manager_dashboard: ['Travel Manager', 'Division Manager', 'Admin'],
-        organization_managers: ['Administrator', 'CSR'],
-        license_count: ['Administrator', 'CSR', 'Admin','Travel Manager', 'Division Manager']
+		manage_labs: ['Administrator']
 	}
 }

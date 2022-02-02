@@ -3,7 +3,9 @@ import {
   DashboardOutlined, 
   UserOutlined, 
   ExperimentOutlined,
-  AuditOutlined
+  AuditOutlined,
+  AimOutlined,
+  FileSearchOutlined
 } from '@ant-design/icons';
 
 const adminOptions = [{
@@ -69,6 +71,74 @@ const adminOptions = [{
   }
 ];
 
+const labAdminOptions = [{
+    key: "/lab",
+    label: "Dashboard",
+    roles: ["Doctor"],
+    leftIcon: <DashboardOutlined />
+  },
+  {
+    key: "/lab/users",
+    label: "Manage Users",
+    leftIcon: <UserOutlined />,
+    roles: ["Doctor"],
+    children: [
+      {
+        key: "/lab/users",
+        label: "Manage Users",
+        roles: ["Doctor"]
+      },
+      {
+        key: "/lab/users/add",
+        label: "Add new user",
+        roles: ["Doctor"]
+      }
+    ]
+  },
+  {
+    key: "/lab/patients",
+    label: "Manage Patients",
+    leftIcon: <AimOutlined />,
+    roles: ["Doctor"],
+    children: [
+      {
+        key: "/lab/patients",
+        label: "Manage Patients",
+        roles: ["Doctor"]
+      },
+      {
+        key: "/lab/patients/scheduled",
+        label: "Scheduled List",
+        roles: ["Doctor"]
+      },
+      {
+        key: "/lab/patients/add",
+        label: "Add new patient",
+        roles: ["Doctor"]
+      }
+    ]
+  },
+  {
+    key: "/lab/reports",
+    label: "Reports",
+    leftIcon: <FileSearchOutlined />,
+    roles: ["Doctor"],
+    children: [
+      {
+        key: "/lab/reports",
+        label: "All Reports",
+        roles: ["Doctor"]
+      },
+      {
+        key: "/lab/reports/checkin",
+        label: "CheckIn List",
+        roles: ["Doctor"]
+      }
+    ]
+  }
+];
+
 export default {
-  adminOptions
+  adminOptions,
+  labAdminOptions
 };

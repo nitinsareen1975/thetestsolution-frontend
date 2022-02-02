@@ -5,6 +5,7 @@ import ResetPassword from "../components/reset-password/reset-password.jsx";
 import NotFound from "../components/common/404.jsx";
 import ServerError from "../components/common/500.jsx";
 import Register from "../components/register/register.jsx";
+import LabAdmin from "../components/lab-admin/lab-admin.jsx";
 
 export default {
   routes: [
@@ -50,7 +51,14 @@ export default {
       path: "/admin",
       component: Admin,
       exact: false,
-      roles: ["Administrator", "Lab Admin"],
+      roles: ["Administrator"],
+      status: 200
+    },
+    {
+      path: "/lab",
+      component: LabAdmin,
+      exact: false,
+      roles: ["Lab Admin", "Doctor"],
       status: 200
     }
   ],

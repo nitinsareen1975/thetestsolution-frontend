@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import * as adminActions from "../../../redux/actions/admin-actions";
 import * as userActions from "../../../redux/actions/user-actions";
 import * as RolesActions from "../../../redux/actions/roles-actions";
-import * as labsActions from "../../../redux/actions/lab-actions";
 import { notifyUser } from "../../../services/notification-service";
 import { Typography, Form, Input, Select, Button, Row, Col, Spin, Switch, Radio } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
@@ -28,7 +27,6 @@ class AddUser extends React.Component {
 		can_read_reports: "",
 		countries: [],
 		allRoles: [],
-		labs: [],
 		dataLoaded: false
 	};
 
@@ -45,12 +43,10 @@ class AddUser extends React.Component {
 			sorter: {column: "name", order: "asc"}
 		}
 		var roles = await this.props.getAllRoles(args);
-		var labs = await this.props.getLabs(args);
 		this.setState({ 
 			loading: false,
 			countries: _countries,
 			allRoles: roles, 
-			labs: labs.data,
 			dataLoaded: true 
 		});
 	}
@@ -282,29 +278,8 @@ class AddUser extends React.Component {
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
-									<Form.Item
-										{...formItemLayout}
-										label={<IntlMessages id="admin.userlisting.role" />}
-										name="roles"
-									>
-										<Select>
-											{this.state.allRoles.map(function (item) {
-												return <Option key={item.id}>{item.name}</Option>;
-											})}
-										</Select>
-									</Form.Item>
-								</Col>
-								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
-									<Form.Item
-										{...formItemLayout}
-										label="Lab Assigned"
-										name="lab_assigned"
-									>
-										<Select>
-											{this.state.labs.map(function (item) {
-												return <Option key={item.id} value={item.id}>{item.name} ({item.state}, {item.zip})</Option>;
-											})}
-										</Select>
+									 <Form.Item name="status" label="Status" initialValue={this.state.status === null ? "" : this.state.status}>
+										<Switch checkedChildren="Active" unCheckedChildren="Inactive"/>
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -315,11 +290,17 @@ class AddUser extends React.Component {
 										</Radio.Group>
 									</Form.Item>
 								</Col>
-							</Row>
-							<Row>
 								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
-									 <Form.Item name="status" label="Status" initialValue={this.state.status === null ? "" : this.state.status}>
-										<Switch checkedChildren="Active" unCheckedChildren="Inactive"/>
+									<Form.Item
+										{...formItemLayout}
+										label={<IntlMessages id="admin.userlisting.role" />}
+										name="roles"
+									>
+										<Select>
+											{this.state.allRoles.map(function (item) {
+												return <Option key={item.id}>{item.name}</Option>;
+											})}
+										</Select>
 									</Form.Item>
 								</Col>
 							</Row>
@@ -351,7 +332,7 @@ function mapStateToProps(state) {
 	return { ...state.userConfig, ...state.countries, ...state.adminConfig };
 }
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({ ...userActions, ...RolesActions, ...adminActions, ...labsActions }, dispatch);
+	return bindActionCreators({ ...userActions, ...RolesActions, ...adminActions }, dispatch);
 }
 export default withRouter(
 	connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(

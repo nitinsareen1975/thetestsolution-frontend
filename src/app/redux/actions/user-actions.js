@@ -35,6 +35,7 @@ export function login(username, password) {
             type: Types.LOGIN_SUCCESS,
             payload: true
           });
+          localStorage.setItem("lab", JSON.stringify(response.data.lab));
           localStorage.setItem("user", JSON.stringify(response.data.user));
           localStorage.setItem("tokenData", JSON.stringify(tokenData));
         } else {
