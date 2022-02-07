@@ -17,7 +17,7 @@ import {
   Tooltip
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
-import { EditOutlined, CloseOutlined, SearchOutlined, SolutionOutlined, CreditCardOutlined, TeamOutlined } from '@ant-design/icons';
+import { EditOutlined, CloseOutlined, SearchOutlined, SolutionOutlined, CreditCardOutlined, TeamOutlined, FileProtectOutlined } from '@ant-design/icons';
 
 class ManageLabs extends Component {
   constructor(props) {
@@ -125,6 +125,13 @@ class ManageLabs extends Component {
                 onClick={() => this.props.history.push("./labs/edit/" + record.id+"/tests")}
               >
                 <SolutionOutlined />
+              </Button>
+            </Tooltip>
+             <Tooltip title="Scheduled Reports">
+              <Button
+                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/reports")}
+              >
+                <FileProtectOutlined />
               </Button>
             </Tooltip>
           </span>
