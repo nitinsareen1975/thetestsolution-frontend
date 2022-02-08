@@ -5,13 +5,16 @@ import { bindActionCreators } from "redux";
 import logo from "../../assets/images/horizontal-logo.png";
 import { notifyUser } from "../../services/notification-service";
 import * as UserActions from "../../redux/actions/user-actions";
+import * as adminActions from "../../redux/actions/admin-actions";
+import * as patientActions from "../../redux/actions/patient-actions";
+import GlobalAPI from "../../redux/api/global-api";
 import { Button, Col, Form, Row, Spin, Steps } from "antd";
 import { UserOutlined, SolutionOutlined, CreditCardOutlined, SmileOutlined, ScheduleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import PersonalInformation from "./steps/personal-information.jsx";
-
+import moment from "moment";
 import Schedule from "./steps/schedule.jsx";
 import Payment from "./steps/payment.jsx";
-// import Success from "./steps/success.jsx";
+import Success from "./steps/success.jsx";
 const { Step } = Steps;
 
 class Register extends Component {
@@ -19,55 +22,125 @@ class Register extends Component {
     super(props);
     this.state = {
       current: 0,
-      steps:[        
+      steps: [
         {
-          title:"Information",
+          title: "Information",
           icon: <InfoCircleOutlined />,
-          content: <PersonalInformation />,
+          content: PersonalInformation,
         },
         {
-          title:"Schedule", 
-          icon:<ScheduleOutlined />,
-          content: <Schedule />,
+          title: "Schedule",
+          icon: <ScheduleOutlined />,
+          content: Schedule,
         },
         {
           title: "Payment Details",
           icon: <CreditCardOutlined />,
-          content: <Payment />,
-        },
-        // {
-        //   title:"Done",
-        //   icon: <SmileOutlined />,
-        //   content: <Success />,
-        // }
+          content: Payment,
+        }
       ],
-      submitted: false
+      submitted: false,
+      data: [],
+      countries: [],
+      paymentDone: false
     };
   }
 
-  componentDidMount() {
-
+  async componentDidMount() {
+    var _countries = [];
+    if (typeof this.props.countries === "undefined" || this.props.countries.length <= 0) {
+      _countries = await this.props.getCountries();
+    } else {
+      _countries = this.props.countries;
+    }
+    this.setState({ countries: _countries });
   }
 
-  handleSubmit = (values) => {
-    console.log("VAL:", values)
+  submitStep = (data) => {
+    this.setState({
+      data: { ...data, ...this.state.data }
+    }, () => {
+      this.gotoNextStep();
+    });
+  };
+
+  handleSubmit = async (values) => {
+    var data = { ...values, ...this.state.data };
+    var args = {
+      city: data.city,
+      country: data.country,
+      dob: moment(data.dob).format("YYYY-MM-DD"),
+      email: data.email,
+      ethnicity: data.ethnicity,
+      firstname: data.firstname,
+      gender: data.gender,
+      have_any_symptom: data.have_any_symptom,
+      have_breath_shortness: data.have_breath_shortness,
+      have_cough: data.have_cough,
+      have_decreased_taste: data.have_decreased_taste,
+      have_fever: data.have_fever,
+      have_muscle_pain: data.have_muscle_pain,
+      have_sore_throat: data.have_sore_throat,
+      have_vaccinated: data.have_vaccinated,
+      identifier: data.identifier,
+      identifier_country: data.identifier_country,
+      identifier_doc: "",
+      identifier_type: data.identifier_type,
+      lab_assigned: data.lab_assigned,
+      lastname: data.lastname,
+      middlename: data.middlename,
+      phone: data.phone,
+      race: data.race,
+      scheduled_date: moment(data.scheduled_date).format("YYYY-MM-DD"),
+      scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD"),
+      state: data.state,
+      street: data.street,
+      test_type: data.test_type,
+      zip: data.zip,
+      transaction_id: "test_000000001",
+      confirmation_code: "ctest_00000001"
+    };
+    if (typeof data.identifier_doc.file !== "undefined" && data.identifier_doc.file !== null && typeof data.identifier_doc.file !== "string" && data.identifier_doc.file.name) {
+      const formData = new FormData();
+      formData.append('identifier_doc', data.identifier_doc.file);
+      await GlobalAPI.uploadIdentifierDoc('patient-identifier-doc', formData).then((response) => {
+        if (response.status && response.status === true) {
+          args['identifier_doc'] = response.data;
+        }
+      });
+    }
     this.setState({ submitted: true });
-    notifyUser("In progress...", "success");
-    this.setState({ submitted: false });
+    await this.props.registerPatient(args).then((response) => {
+        if (response.status && response.status === true) {
+          notifyUser(response.message, "success");
+          this.setState({ submitted: false, paymentDone: true });
+        } else {
+          if (response.message) {
+            notifyUser(response.message, "error");
+          } else {
+            notifyUser("Unknown error. Please try again!", "error");
+          }
+          this.setState({ submitted: false });
+        }
+      })
+      .catch((err) => {
+        this.setState({ submitted: false });
+      });
   };
 
-  gotoNextStep(){
+  gotoNextStep = () => {
     var _current = this.state.current;
-    this.setState({current: _current + 1});
+    this.setState({ current: _current + 1 });
   };
 
-  gotoPreviousStep(){
+  gotoPreviousStep = () => {
     var _current = this.state.current;
-    this.setState({current: _current - 1});
+    this.setState({ current: _current - 1 });
   };
 
   render() {
     const { current, steps, submitted } = this.state;
+    const StepsComponent = steps[current].content;
     return (
       <Spin size="large" spinning={submitted}>
         <header className="register-header">
@@ -81,47 +154,38 @@ class Register extends Component {
         </header>
         <section className="testform" >
           <div className="inner-form-wrap">
-          <Row>
-            {/* <Col xs={24} md={8} className="right-img">
-            <img src={registerSideImg} alt="register Img" />
-            </Col> */}
-            <Col xs={24} md={24} className="step-form">
+            <Row>
+              <Col xs={24} md={24} className="step-form">
                 <Row className="form-row">
                   <Col xs={24}>
                     <div className="form-column">
-                      <div className="form-column-inner" style={{ maxWidth: '100%' }}>                 
-                        
-                        <Form layout='vertical' onFinish={this.handleSubmit}>
+                      <div className="form-column-inner" style={{ maxWidth: '100%' }}>
+                        {this.state.paymentDone === true ?
+                          <Success {...this.props} />
+                          : <>
                             <Steps current={current} className="form-type">
                               {steps.map(item => (
-                                <Step key={item.title} title={item.title} icon={item.icon}/>
+                                <Step key={item.title} title={item.title} icon={item.icon} />
                               ))}
                             </Steps>
-                            <div className="steps-content">{steps[current].content}</div>
-                            {/* <div className="steps-action">
-                              {current < steps.length - 1 && (
-                                <Button type="primary" onClick={() => this.gotoNextStep()}>
-                                  Next
-                                </Button>
-                              )}
-                              {current === steps.length - 1 && (
-                                <Button type="primary" onClick={() => notifyUser('Processing complete!', 'success')}>
-                                  Done
-                                </Button>
-                              )}
-                              {current > 0 && (
-                                <Button style={{ margin: '0 8px' }} onClick={() => this.gotoPreviousStep()}>
-                                  Previous
-                                </Button>
-                              )}                            </div> */}
-                          
-                        </Form>
+                            <div className="steps-content">
+                              <StepsComponent
+                                countries={this.state.countries}
+                                submitStep={this.submitStep}
+                                handleSubmit={this.handleSubmit}
+                                parentNext={this.gotoNextStep}
+                                parentPrev={this.gotoPreviousStep}
+                                {...this.props}
+                              />
+                            </div>
+                          </>
+                        }
                       </div>
                     </div>
                   </Col>
                 </Row>
-                </Col>
-          </Row>
+              </Col>
+            </Row>
           </div>
         </section>
       </Spin>
@@ -131,11 +195,12 @@ class Register extends Component {
 
 function mapStateToProps(state) {
   return {
-    ...state.userConfig
+    ...state.userConfig,
+    ...state.countries
   };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...UserActions }, dispatch);
+  return bindActionCreators({ ...UserActions, ...adminActions, ...patientActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, {

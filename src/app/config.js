@@ -3,6 +3,7 @@ module.exports = {
   API: AppConfig && AppConfig.API ? AppConfig.API : "http://localhost:3010",
   AuthAPI: AppConfig && AppConfig.AuthAPI ? AppConfig.AuthAPI : "http://localhost:3010",
   DASHBOARD_URL: AppConfig && AppConfig.DASHBOARD_URL ? AppConfig.DASHBOARD_URL : "http://localhost:3010",
+  WEB_URL: AppConfig && AppConfig.WEB_URL ? AppConfig.WEB_URL : "http://thetestsolution.com",
   PaymentModes: AppConfig && AppConfig.PaymentModes
     ? AppConfig.PaymentModes
     : [{
@@ -30,31 +31,18 @@ module.exports = {
       'name': 'Stripe',
       'status': 1
     }],
-  TestTypes: AppConfig && AppConfig.TestTypes
-    ? AppConfig.TestTypes
+  ProgressStatusList: AppConfig && AppConfig.ProgressStatusList
+    ? AppConfig.ProgressStatusList
     : [{
-      'id': 1,
-      'name': 'Test 1',
-      'status': 1
-    },
-    {
-      'id': 2,
-      'name': 'Test 2',
-      'status': 1
-    },
-    {
-      'id': 3,
-      'name': 'Test 3',
-      'status': 1
-    },
-    {
-      'id': 4,
-      'name': 'Test 4',
-      'status': 1
-    },
-    {
-      'id': 5,
-      'name': 'Test 5',
-      'status': 1
-    }]
+        id: 1,
+        name: 'Scheduled'
+      },
+      {
+        id: 2,
+        name: 'Checked In'
+      },
+      {
+        id: 3,
+        name: 'Complete'
+      }]
 };

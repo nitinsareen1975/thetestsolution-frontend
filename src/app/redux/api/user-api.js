@@ -1,38 +1,37 @@
 import Axios from "../../services/axios-service";
-import AxiosAuth from "../../services/axios-service-auth";
 
 const login = data => {
-  return AxiosAuth.post("/login", data, undefined);
+  return Axios.post("/auth/login", data, undefined);
 };
 const getUserData = (data) => {
-	return Axios.get("/validateToken", data, undefined);
+	return Axios.get("/api/validateToken", data, undefined);
 };
 const getUserListing = data => {
-  return Axios.get("/users?filters="+encodeURIComponent(JSON.stringify(data)), data, undefined);
+  return Axios.get("/api/users?filters="+encodeURIComponent(JSON.stringify(data)), data, undefined);
 };
 const updateUser = data => {
-  return Axios.put("/users/"+data.id, data, undefined);
+  return Axios.put("/api/users/"+data.id, data, undefined);
 };
 const addUser = data => {
-  return Axios.post("/users", data, undefined);
+  return Axios.post("/api/users", data, undefined);
 };
 const getUser = idx => {
-  return Axios.get("/users/"+idx, undefined, undefined);
+  return Axios.get("/api/users/"+idx, undefined, undefined);
 };
 const deleteUser = data => {
-  return Axios.delete("/users/"+ data.id, data, undefined);
+  return Axios.delete("/api/users/"+ data.id, data, undefined);
 };
 const forgotPassword = data => {
-  return AxiosAuth.post("/forgot-password", data, undefined);
+  return Axios.post("/auth/forgot-password", data, undefined);
 };
 const resetPassword = data => {
-  return AxiosAuth.post("/reset-password", data, undefined);
+  return Axios.post("/auth/reset-password", data, undefined);
 };
 const getAllRoles = data => {
-  return Axios.get("/roles?filters="+encodeURIComponent(JSON.stringify(data)), data, undefined);
+  return Axios.get("/api/roles?filters="+encodeURIComponent(JSON.stringify(data)), data, undefined);
 };
 const updateToken = data => {
-  return AxiosAuth.post("/refresh-token", data, undefined);
+  return Axios.post("/auth/refresh-token", data, undefined);
 };
 const updateProfile = data => {
   return Axios.put("/api/Users/"+data.id, data, undefined);

@@ -1,5 +1,4 @@
 import AxiosLib from "./lib/http-axios-lib";
-import AxiosAuth from "./lib/http-axios-lib-auth";
 import config from "../config";
 import { configureFakeBackend } from "./fake-backend";
 configureFakeBackend();
@@ -58,7 +57,7 @@ const refreshToken = async (method, url, data, hitCount,reject) => {
         }
       };
       
-      AxiosAuth.request(optionsToken, undefined)
+      Axios.request(optionsToken, undefined)
       .then(async (responseToken) => {
         responseToken = JSON.parse(responseToken);
         if(responseToken.status === true){

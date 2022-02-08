@@ -1,29 +1,33 @@
 import Axios from "../../services/axios-service";
 
 const getLabs = data => {
-  return Axios.get("/labs", data, undefined);
+  return Axios.get("/api/labs", data, undefined);
+};
+const getGlobalLabs = data => {
+  return Axios.get("/global/labs", data, undefined);
 };
 const updateLab = (id, data) => {
-  return Axios.put("/labs/"+id, data, undefined);
+  return Axios.put("/api/labs/"+id, data, undefined);
 };
 const uploadLabLogo = (key, id, data) => {
-  return Axios.post("/upload/"+key+"/"+id, data, undefined);
+  return Axios.post("/api/upload/"+key+"/"+id, data, undefined);
 };
 const removeLabLogo = (key, id) => {
-  return Axios.delete("/upload/"+key+"/"+id, undefined, undefined);
+  return Axios.delete("/api/upload/"+key+"/"+id, undefined, undefined);
 };
 const addLab = data => {
-  return Axios.post("/labs", data, undefined);
+  return Axios.post("/api/labs", data, undefined);
 };
 const getLab = idx => {
-  return Axios.get("/labs/"+idx, undefined, undefined);
+  return Axios.get("/api/labs/"+idx, undefined, undefined);
 };
 const deleteLab = data => {
-  return Axios.delete("/labs/"+ data.id, data, undefined);
+  return Axios.delete("/api/labs/"+ data.id, data, undefined);
 };
 
 export default {
   getLabs,
+  getGlobalLabs,
   addLab,
   updateLab,
   uploadLabLogo,
