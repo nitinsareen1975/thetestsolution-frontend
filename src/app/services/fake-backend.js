@@ -29,10 +29,10 @@ export function configureFakeBackend() {
         "firstname":"User",
         "middlename":null,
         "lastname":null,
-        "email":"user@gmail.com",
+        "email":"user@user.com",
         "password":"user",
         "phone":"9816311185",
-        "roles":"Administrator",
+        "roles":"Doctor",
         "gender":null,
         "dob":null,
         "street":null,
@@ -54,6 +54,7 @@ export function configureFakeBackend() {
     let organizationTypes = getOrganizationTypes(1, 41);
     let countries = getCountries(1, 41);
     let testTypes = getTestTypes(1, 41);
+    let patients = getPatients(1, 41);
     let recordCountPerPage = 10;
   
     function getDataByEntity(entity) {
@@ -64,6 +65,7 @@ export function configureFakeBackend() {
       if (entity === "organization-types") return organizationTypes;
       if (entity === "travelers") return travelers;
       if (entity === "test-types") return testTypes;
+      if (entity === "patients") return patients;
     }
   
     function getUrlEntity(url) {
@@ -185,6 +187,58 @@ export function configureFakeBackend() {
           test_type: "Test type"+no,
           testing_platform: "Test platform"+no,
           status: i % 2 === 0 ? 1 : 0
+        });
+      }
+      return tempItems;
+    }
+  
+  
+    function getPatients(pageNo, count) {
+      let tempItems = [];
+      for (let i = 1; i <= count; i++) {
+        let no = (pageNo - 1) * count + i;
+        tempItems.push({
+          city: "Kennesaw",
+          confirmation_code: "ctest_00000001",
+          country: "82",
+          county: null,
+          created_at: "2022-02-09 03:58:08",
+          dob: "2007-01-03",
+          email: "ankit+12@rb.com",
+          ethnicity: "Non-Hispanic",
+          firstname: "Ankit",
+          gender: "Male",
+          have_any_symptom: 1,
+          have_breath_shortness: 1,
+          have_cough: 1,
+          have_decreased_taste: 0,
+          have_fever: 1,
+          have_muscle_pain: 0,
+          have_sore_throat: 0,
+          have_vaccinated: 1,
+          id: no,
+          identifier: "CH01332311221",
+          identifier_country: "1",
+          identifier_doc: "\\public\\uploads\\patients\\62033bd0a6766_untitled.png",
+          identifier_state: null,
+          identifier_type: "Driver License",
+          initial: null,
+          lab_assigned: "Cisco Diagnostics - Florida",
+          lastname: "Test2",
+          middlename: "M",
+          phone: "01231231231",
+          pregnent: null,
+          progress_status: 1,
+          race: "Black",
+          scheduled_date: "2022-02-11",
+          scheduled_time: "2022-02-09",
+          state: "Georgia",
+          status: 1,
+          street: "3213 Campus Loop Road, Kennesaw, GA, USA",
+          test_type: 1,
+          transaction_id: "test_000000001",
+          updated_at: "2022-02-09 03:58:08",
+          zip: "30144"
         });
       }
       return tempItems;
@@ -337,7 +391,7 @@ export function configureFakeBackend() {
           let pathArray = getUrlEntity(url);
           let entity = "";
           if (pathArray.length >= 2) {
-            entity = pathArray[1];
+            entity = pathArray[2];
           }
           
           if(url.endsWith("/forgot-password")){
@@ -359,7 +413,7 @@ export function configureFakeBackend() {
             return;
           }
 
-          if (entity === "users" || entity === "get-countries" || entity === "roles" || entity === "labs" || entity === "organization-types" || entity === "test-types") {
+          if (entity === "users" || entity === "get-countries" || entity === "roles" || entity === "labs" || entity === "patients" || entity === "test-types") {
             if (url.indexOf("/" + entity + "/") !== -1 && opts.method === "GET") {
               let parts = url.split("/" + entity + "/");
               var data = getDataByEntity(entity);

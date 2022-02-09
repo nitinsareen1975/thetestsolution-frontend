@@ -6,6 +6,24 @@ export function getPatients({filters,pagination,sorter}) {
   };
 }
 
+export function getScheduledPatients({filters,pagination,sorter}) {
+  return async function (dispatch, getState) {
+    return await API.getPatients({filters: {progress_status: 1,...filters},pagination: pagination,sorter: sorter});
+  };
+}
+
+export function getCheckedinPatients({filters,pagination,sorter}) {
+  return async function (dispatch, getState) {
+    return await API.getPatients({filters: {progress_status: 2,...filters},pagination: pagination,sorter: sorter});
+  };
+}
+
+export function getCompletedPatients({filters,pagination,sorter}) {
+  return async function (dispatch, getState) {
+    return await API.getPatients({filters: {progress_status: 3,...filters},pagination: pagination,sorter: sorter});
+  };
+}
+
 export function registerPatient(data) {
   return async function (dispatch, getState) {
     return await API.registerPatient(data);

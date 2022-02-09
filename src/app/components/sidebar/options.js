@@ -103,11 +103,6 @@ const labAdminOptions = [{
     children: [
       {
         key: "/lab/patients",
-        label: "Manage Patients",
-        roles: ["Doctor"]
-      },
-      {
-        key: "/lab/patients/scheduled",
         label: "Scheduled List",
         roles: ["Doctor"]
       },
