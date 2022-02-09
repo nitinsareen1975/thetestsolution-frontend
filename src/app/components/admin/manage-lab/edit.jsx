@@ -294,59 +294,6 @@ class EditLab extends React.Component {
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
-                      label="Price per test"
-                      name="price_per_test"
-                      rules={[
-                        {
-                          required: true,
-                          message: <IntlMessages id="admin.input.required" />,
-                        }
-                      ]}
-                    >
-                      <Input
-                        style={{ width: "100%" }}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item
-                      {...formItemLayout}
-                      label="Type Of Tests Available"
-                      name="tests_available"
-                      rules={[
-                        {
-                          required: true,
-                          message: <IntlMessages id="admin.input.required" />,
-                        },
-                      ]}
-                    >
-                      <Select
-                        mode="multiple"
-                        showSearch
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {this.state.testTypes.map(test => {
-                          return <Option key={test.id.toString()} value={test.id.toString()}>{test.name}</Option>
-                        })}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={24}>
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item
-                      {...formItemLayout}
-                      label="Test Codes"
-                      name="test_codes"
-                    >
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item
-                      {...formItemLayout}
                       label="Onboarding Date"
                       name="date_incorporated"
                     >
@@ -375,8 +322,6 @@ class EditLab extends React.Component {
                       </Select>
                     </Form.Item>
                   </Col>
-                </Row>
-                <Row gutter={24}>
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -421,8 +366,7 @@ class EditLab extends React.Component {
                       <Input />
                     </Form.Item>
                   </Col>
-                </Row>
-                <Row gutter={24}>
+                
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -472,8 +416,6 @@ class EditLab extends React.Component {
                       <Input />
                     </Form.Item>
                   </Col>
-                </Row>
-                <Row gutter={24}>
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -486,6 +428,66 @@ class EditLab extends React.Component {
                         defaultChecked={this.state.lab.status === 1}
 
                       />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                
+                <Row gutter={24}>
+                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                  <Typography.Title level={4}>Add Price & Test Type</Typography.Title>
+                </Col>
+                <hr />
+                </Row>
+                <Row gutter={24}>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Price per test"
+                      name="price_per_test"
+                      rules={[
+                        {
+                          required: true,
+                          message: <IntlMessages id="admin.input.required" />,
+                        }
+                      ]}
+                    >
+                      <Input
+                        style={{ width: "100%" }}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Type Of Tests Available"
+                      name="tests_available"
+                      rules={[
+                        {
+                          required: true,
+                          message: <IntlMessages id="admin.input.required" />,
+                        },
+                      ]}
+                    >
+                      <Select
+                        mode="multiple"
+                        showSearch
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        {this.state.testTypes.map(test => {
+                          return <Option key={test.id.toString()} value={test.id.toString()}>{test.name}</Option>
+                        })}
+                      </Select>
+                    </Form.Item>
+                  </Col>   
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Test Codes"
+                      name="test_codes"
+                    >
+                      <Input />
                     </Form.Item>
                   </Col>
                 </Row>
