@@ -295,7 +295,16 @@ class AllPatients extends Component {
     await this.props.updatePatient(id, {progress_status: 2}).then(response => {
       if (response.status && response.status == true) {
 				notifyUser(response.message, "success");
-				this.setState({ loading: false });
+        if (this.props.paginginfo && this.props.paginginfo[this.module]) {
+          this.handleTableChange(this.props.paginginfo[this.module].pagination, this.props.paginginfo[this.module].filter, {}, true);
+          if (this.props.paginginfo[this.module].filters) {
+            let filters = this.props.paginginfo[this.module].filters
+            Object.keys(filters).map(k => { filters[k].auto = false });
+            this.setState({ filters: filters });
+          }
+        } else {
+          this.handleTableChange({ current: 1, pageSize: 10 }, {}, {}, true);
+        }
 			} else {
 				if (response.message) {
 					notifyUser(response.message, "error");

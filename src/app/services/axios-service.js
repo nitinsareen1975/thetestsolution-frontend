@@ -49,7 +49,7 @@ const refreshToken = async (method, url, data, hitCount,reject) => {
       }
       let optionsToken = {
         method: "POST",
-        url: "/refresh-token",
+        url: "/auth/refresh-token",
         responseType: "json",
         data:objTokenData,
         headers: {
@@ -57,7 +57,7 @@ const refreshToken = async (method, url, data, hitCount,reject) => {
         }
       };
       
-      Axios.request(optionsToken, undefined)
+      AxiosLib.request(optionsToken, undefined)
       .then(async (responseToken) => {
         responseToken = JSON.parse(responseToken);
         if(responseToken.status === true){
