@@ -7,6 +7,7 @@ import  EditUser  from "../components/lab-admin/manage-users/edit.jsx";
 import AllPatients  from "../components/lab-admin/manage-patients/list.jsx";
 import AddPatient  from "../components/lab-admin/manage-patients/add.jsx";
 import EditPatient  from "../components/lab-admin/manage-patients/edit.jsx";
+import CheckInList  from "../components/lab-admin/manage-patients/checkedin.jsx";
 const routes = [
   {
     path: "",
@@ -35,6 +36,10 @@ const routes = [
   {
     path: "patients/add",
     component: AddPatient
+  },
+  {
+    path: "reports/checkin",
+    component: CheckInList
   }
 ];
 

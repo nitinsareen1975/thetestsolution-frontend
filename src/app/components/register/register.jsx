@@ -15,6 +15,7 @@ import moment from "moment";
 import Schedule from "./steps/schedule.jsx";
 import Payment from "./steps/payment.jsx";
 import Success from "./steps/success.jsx";
+import * as UserService from "../../services/user-service";
 const { Step } = Steps;
 
 class Register extends Component {
@@ -97,8 +98,8 @@ class Register extends Component {
       street: data.street,
       test_type: data.test_type,
       zip: data.zip,
-      transaction_id: "test_000000001",
-      confirmation_code: "ctest_00000001"
+      transaction_id: UserService.getRandomString(24, data.email),
+      confirmation_code: UserService.getRandomString(24, data.email)
     };
     if (typeof data.identifier_doc.file !== "undefined" && data.identifier_doc.file !== null && typeof data.identifier_doc.file !== "string" && data.identifier_doc.file.name) {
       const formData = new FormData();

@@ -6,6 +6,7 @@ import NotFound from "../components/common/404.jsx";
 import ServerError from "../components/common/500.jsx";
 import Register from "../components/register/register.jsx";
 import LabAdmin from "../components/lab-admin/lab-admin.jsx";
+import PatientReport from "../components/patient-report/view.jsx";
 
 export default {
   routes: [
@@ -45,6 +46,11 @@ export default {
       component: Register,
       exact: true
     },
+    {
+      path: "/patient-report/:code",
+      component: PatientReport,
+      exact: true
+    }
   ],
   private: [
     {

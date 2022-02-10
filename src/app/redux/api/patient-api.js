@@ -18,12 +18,15 @@ const getPatient = idx => {
 const deletePatient = data => {
   return Axios.delete("/api/patients/"+ data.id, data, undefined);
 };
-
+const removeIdentifierDoc = (key, id) => {
+  return Axios.delete("/api/upload/"+key+"/"+id, undefined, undefined);
+};
 export default {
   getPatients,
   addPatient,
   registerPatient,
   updatePatient,
   getPatient,
-  deletePatient
+  deletePatient,
+  removeIdentifierDoc
 };

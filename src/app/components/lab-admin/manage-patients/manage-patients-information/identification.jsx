@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Button, Col, Form, Input, Row, Select, Typography, Upload } from "antd";
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons';
 import IntlMessages from "../../../../services/intlMesseges";
 import { notifyUser } from "../../../../services/notification-service";
+import { FormattedHTMLMessage } from "react-intl";
 const { Option } = Select;
 const output = ({ ...props }) => {
-	const [identifier_doc, setIdentifier_doc] = useState(null);
 	const uploaderProps = (field, accept) => {
 		return {
 			showUploadList: true,
@@ -14,17 +14,17 @@ const output = ({ ...props }) => {
 			beforeUpload: file => {
 				if (file.type.indexOf('image/') === -1) {
 					notifyUser(<IntlMessages id="admin.fileupload.acceptedtypes" />, "error");
-					setIdentifier_doc(null);
+					props.setIdentifierDocUpload(null);
 				} else {
-					setIdentifier_doc(file);
+					props.setIdentifierDocUpload(file);
 				}
 				return false;
 			},
 			onRemove: _file => {
-				setIdentifier_doc(null);
+				props.setIdentifierDocUpload(null);
 			},
 			onSuccess: _res => {
-				setIdentifier_doc(null);
+				props.setIdentifierDocUpload(null);
 			},
 			onError(_err) {
 				notifyUser(<IntlMessages id="admin.fileupload.failed" />, "error");
@@ -63,7 +63,7 @@ const output = ({ ...props }) => {
 					>
 						{_countries.map(function (item) {
 							return (
-								<Option key={item.id} value={item.id}>
+								<Option key={item.id.toString()} value={item.id.toString()}>
 									{item.name}
 								</Option>
 							);
@@ -72,10 +72,17 @@ const output = ({ ...props }) => {
 				</Form.Item>
 			</Col>
 			<Col xs={24} sm={24} md={12} lg={6} xl={6}>
-				<Form.Item name="identifier_doc" label="Select identification image to upload:" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+				<Form.Item name="identifier_doc" label="Select identification image to upload:">
 					<Upload {...uploaderProps('identifier_doc', '.jpg,.jpeg,.png')}>
 						<Button icon={<UploadOutlined />}>Click to Upload</Button>
 					</Upload>
+					{props.identifier_doc && props.identifier_doc !== null && props.identifier_doc !== "" && typeof props.identifier_doc === "string" ?
+						<span>
+							<img src={props.identifier_doc} style={{ maxWidth: 100 }} />
+							<Button type="link" onClick={() => window.open(props.identifier_doc,"_blank")}><DownloadOutlined /></Button>
+							<Button type="link" onClick={() => props.removeIdentifierDocInline()}><DeleteOutlined /></Button>
+						</span>
+						: ""}
 				</Form.Item>
 			</Col>
 		</Row>
