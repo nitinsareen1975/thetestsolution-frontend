@@ -5,9 +5,9 @@ import { bindActionCreators } from "redux";
 import * as adminActions from "../../../redux/actions/admin-actions";
 import * as patientActions from "../../../redux/actions/patient-actions";
 import { notifyUser } from "../../../services/notification-service";
-import { Form, Button, Row, Col, Spin, Empty } from "antd";
+import { Form, Button, Row, Col, Spin, Empty, Typography } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
-import { PlusCircleOutlined, SaveOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
 import ContactInfo from "../manage-patients/manage-patients-information/contact-info.jsx";
 import HomeAddressInfo from "../manage-patients/manage-patients-information/home-address.jsx";
 import PersonalInfo from "../manage-patients/manage-patients-information/personal-info.jsx";
@@ -141,6 +141,31 @@ class EditPatient extends React.Component {
   render() {
     return (
       <div>
+        <Row gutter={24}>
+          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Typography.Title level={4}>Edit Patient</Typography.Title>
+          </Col>
+
+          <Col
+            xs={24}
+            sm={24}
+            md={12}
+            lg={12}
+            xl={12}
+            style={{ textAlign: "right" }}
+          >
+            <Button
+              type="primary"
+              className=""
+              htmlType="button"
+              onClick={() => this.props.history.goBack()}
+            >
+              <ArrowLeftOutlined />
+              <IntlMessages id="admin.userlisting.back" />
+            </Button>
+          </Col>
+        </Row>
+        <hr /><br />
         <Spin spinning={this.state.loading}>
           {this.state.patient.id ?
             <Form layout="vertical" onFinish={this.handleSubmit} initialValues={this.state.patient}>

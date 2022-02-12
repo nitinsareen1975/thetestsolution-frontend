@@ -55,6 +55,7 @@ export function configureFakeBackend() {
     let countries = getCountries(1, 41);
     let testTypes = getTestTypes(1, 41);
     let patients = getPatients(1, 41);
+    let labPricing = getLabPricing(1,10);
     let recordCountPerPage = 10;
   
     function getDataByEntity(entity) {
@@ -66,6 +67,7 @@ export function configureFakeBackend() {
       if (entity === "travelers") return travelers;
       if (entity === "test-types") return testTypes;
       if (entity === "patients") return patients;
+      if (entity === "lab-pricing") return labPricing;
     }
   
     function getUrlEntity(url) {
@@ -280,6 +282,23 @@ export function configureFakeBackend() {
       return tempItems;
     }
   
+  
+    function getLabPricing(pageNo, count) {
+      let tempItems = [];
+      for (let i = 1; i <= count; i++) {
+        let no = (pageNo - 1) * count + i;
+        tempItems.push({
+          id: no,
+          lab_id: no,
+          price: 10 * no,
+          test_type: no,
+          test_codes: "Code 00"+no,
+          status: i % 2 === 0 ? 1 : 0
+        });
+      }
+      return tempItems;
+    }
+  
     function getOrganizations(pageNo, count) {
       let tempItems = [];
       for (let i = 1; i <= count; i++) {
@@ -413,7 +432,7 @@ export function configureFakeBackend() {
             return;
           }
 
-          if (entity === "users" || entity === "get-countries" || entity === "roles" || entity === "labs" || entity === "patients" || entity === "test-types") {
+          if (entity === "users" || entity === "get-countries" || entity === "roles" || entity === "labs" || entity === "patients" || entity === "test-types" || entity === "lab-pricing") {
             if (url.indexOf("/" + entity + "/") !== -1 && opts.method === "GET") {
               let parts = url.split("/" + entity + "/");
               var data = getDataByEntity(entity);

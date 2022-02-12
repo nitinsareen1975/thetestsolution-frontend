@@ -17,16 +17,18 @@ import {
   Spin,
   DatePicker,
   Switch,
-  Upload
+  Upload,
+  Space
 } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
-import { PlusCircleOutlined, ArrowLeftOutlined, UploadOutlined, DeleteOutlined, SaveOutlined } from "@ant-design/icons";
+import { PlusOutlined, ArrowLeftOutlined, UploadOutlined, DeleteOutlined, SaveOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import Config from "../../../config";
 
 const { Option } = Select;
 
 class EditLab extends React.Component {
+  formRef = React.createRef();
   state = {
     loading: true,
     dataLoaded: false,
@@ -34,7 +36,8 @@ class EditLab extends React.Component {
     logoRemoved: false,
     countries: [],
     testTypes: [],
-    lab: {}
+    lab: {},
+    lab_pricing: []
   };
 
   async componentDidMount() {
@@ -52,10 +55,12 @@ class EditLab extends React.Component {
       lab.data.tests_available = lab.data.tests_available.split(",");
     }
     var _testTypes = await this.props.getTestTypes({});
+    var _pricing = await this.props.getLabPricing(this.props.match.params.id);
     this.setState({
       loading: false,
       countries: _countries,
       lab: lab.data,
+      lab_pricing: _pricing.status === true ? _pricing.data : [],
       testTypes: _testTypes.data,
       logo: (lab.data.logo && lab.data.logo != null) ? Config.DASHBOARD_URL + lab.data.logo : this.state.logo,
       dataLoaded: true
@@ -92,8 +97,19 @@ class EditLab extends React.Component {
     if (this.state.logoRemoved === true) {
       args['logo'] = "";
     }
-    this.props.updateLab(this.props.match.params.id, args).then((response) => {
+    await this.props.updateLab(this.props.match.params.id, args).then(async(response) => {
       if (response.status && response.status === true) {
+        if(data.lab_pricing && data.lab_pricing.length > 0){
+          await this.props.updateLabPricing(this.props.match.params.id, {pricing: data.lab_pricing}).then(res =>{
+            if (!res.status || res.status === false) {
+              if (res.message) {
+                notifyUser(res.message, "error");
+              } else {
+                notifyUser("Pricing was not updated!", "error");
+              }
+            }
+          });
+        }
         notifyUser(response.message, "success");
         this.props.history.push("../../labs");
         this.setState({ loading: false });
@@ -146,8 +162,16 @@ class EditLab extends React.Component {
     });
   }
 
+  onValuesChange = (changedFields, allFields) => {
+    this.setState({ lab_pricing: allFields.lab_pricing })
+  }
+
   render() {
     const { formLayout } = this.state;
+    var lab_pricing = this.state.lab_pricing;
+    if(lab_pricing.length > 0 && typeof lab_pricing[0] === "undefined"){
+      lab_pricing = [];
+    }
     const formItemLayout =
       formLayout === "horizontal"
         ? {
@@ -185,7 +209,7 @@ class EditLab extends React.Component {
         <div>
           <Spin spinning={this.state.loading}>
             {this.state.lab.id ?
-              <Form layout="vertical" onFinish={this.handleSubmit} initialValues={this.state.lab}>
+              <Form onValuesChange={this.onValuesChange} layout="vertical" onFinish={this.handleSubmit} initialValues={this.state.lab}>
                 <Row gutter={24}>
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
@@ -324,7 +348,7 @@ class EditLab extends React.Component {
                       </Select>
                     </Form.Item>
                   </Col>
-                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
                       label="Tax Applicable?"
@@ -412,7 +436,7 @@ class EditLab extends React.Component {
                   </Col>
                 </Row>
                 <Row gutter={24}>
-                  
+
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -437,63 +461,82 @@ class EditLab extends React.Component {
                     </Form.Item>
                   </Col>
                 </Row>
-                 <Row gutter={24}>
+                <Row gutter={24}>
                   <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                     <Typography.Title level={4}>Add Price & Test Type</Typography.Title>
                   </Col>
                 </Row>
                 <hr />
-                <Row gutter={24}>
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item
-                      {...formItemLayout}
-                      label="Price per test"
-                      name="price_per_test"
-                      rules={[
-                        {
-                          required: true,
-                          message: <IntlMessages id="admin.input.required" />,
-                        }
-                      ]}
-                    >
-                      <Input
-                        style={{ width: "100%" }}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item
-                      {...formItemLayout}
-                      label="Type Of Tests Available"
-                      name="tests_available"
-                      rules={[
-                        {
-                          required: true,
-                          message: <IntlMessages id="admin.input.required" />,
-                        },
-                      ]}
-                    >
-                      <Select
-                        mode="multiple"
-                        showSearch
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {this.state.testTypes.map(test => {
-                          return <Option key={test.id.toString()} value={test.id.toString()}>{test.name}</Option>
-                        })}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item
-                      {...formItemLayout}
-                      label="Test Codes"
-                      name="test_codes"
-                    >
-                      <Input />
-                    </Form.Item>
+                <Row>
+                  <Col>
+                    <Form.List name="lab_pricing" initialValue={lab_pricing}>
+                      {(fields, { add, remove }) => (
+                        <>
+                          {fields.map(({ key, name, ...restField }) => (
+                            <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                              
+                              <Form.Item
+                                {...restField}
+                                name={[name, 'price']}
+                                style={{ width: 300 }}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: <IntlMessages id="admin.input.required" />,
+                                  }
+                                ]}
+                              >
+                                <Input
+                                  style={{ width: "100%" }}
+                                  placeholder="Price per test"
+                                />
+                              </Form.Item>
+
+                              <Form.Item
+                                {...restField}
+                                name={[name, 'test_type']}
+                                style={{ width: 300 }}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: <IntlMessages id="admin.input.required" />,
+                                  },
+                                ]}
+                              >
+                                <Select placeholder="Type Of Test">
+                                  {this.state.testTypes.map(test => {
+                                    var optDisabled = false;
+                                    if(lab_pricing.length > 0){
+                                      lab_pricing.map(i => {
+                                        if(typeof i !== "undefined" && typeof i.test_type !== "undefined" && i.test_type == test.id.toString()){
+                                          optDisabled = true;
+                                        }
+                                      });
+                                    }
+                                    return <Option key={test.id} value={test.id} disabled={optDisabled}>{test.name}</Option>
+                                  })}
+                                </Select>
+                              </Form.Item>
+
+                              <Form.Item
+                                {...restField}
+                                name={[name, 'test_codes']}
+                                style={{ width: 300 }}
+                              >
+                                <Input placeholder="Test Codes" />
+                              </Form.Item>
+
+                              <MinusCircleOutlined onClick={() => remove(name)} />
+                            </Space>
+                          ))}
+                          <Form.Item>
+                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                              Add Pricing
+                            </Button>
+                          </Form.Item>
+                        </>
+                      )}
+                    </Form.List>
                   </Col>
                 </Row>
                 <Row>

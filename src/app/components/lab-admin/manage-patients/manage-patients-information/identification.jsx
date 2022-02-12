@@ -35,7 +35,7 @@ const output = ({ ...props }) => {
 	return <div>
 		<Row gutter={24}>
 			<Col xs={24} sm={24}>
-				<Typography.Title level={4}>Identification</Typography.Title>
+				<Typography.Title level={5}>Identification</Typography.Title>
 			</Col>
 		</Row>
 		<hr />

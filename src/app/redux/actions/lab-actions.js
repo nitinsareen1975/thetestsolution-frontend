@@ -41,3 +41,15 @@ export function deleteLab(idx) {
     return await API.deleteLab(idx);
   };
 }
+
+export function updateLabPricing(id, data) {
+  return async function (_dispatch, _getState) {
+    return await API.updateLabPricing(id, data);
+  };
+}
+
+export function getLabPricing(id) {
+  return async function (_dispatch, _getState) {
+    return await API.getLabPricing(id);
+  };
+}

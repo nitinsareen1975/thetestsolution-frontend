@@ -24,6 +24,12 @@ const getLab = idx => {
 const deleteLab = data => {
   return Axios.delete("/api/labs/"+ data.id, data, undefined);
 };
+const updateLabPricing = (id, data) => {
+  return Axios.post("/api/lab-pricing/"+ id, data, undefined);
+};
+const getLabPricing = (id) => {
+  return Axios.get("/api/lab-pricing/"+ id, undefined, undefined);
+};
 
 export default {
   getLabs,
@@ -33,5 +39,7 @@ export default {
   uploadLabLogo,
   removeLabLogo,
   getLab,
-  deleteLab
+  deleteLab,
+  updateLabPricing,
+  getLabPricing
 };
