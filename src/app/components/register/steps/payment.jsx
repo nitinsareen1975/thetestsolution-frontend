@@ -23,7 +23,7 @@ const output = ({ ...props }) => {
 			pagination: {},
 			sorter: { column: "name", order: "asc" }
 		}
-		await LabAPI.getGlobalLabPricing(/* parentprops.data.lab_assigned */3, args).then(resp => {
+		await LabAPI.getGlobalLabPricing(parentprops.data.lab_assigned, args).then(resp => {
 			if (resp.status && resp.status === true) {
 				setPricing(resp.data);
 			}

@@ -22,7 +22,7 @@ class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      current: 2,
+      current: 0,
       steps: [
         {
           title: "Information",
