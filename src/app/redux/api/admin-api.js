@@ -16,10 +16,18 @@ const getMyAccount = async () => {
 const updateMyAccount = async data => {
   return await Axios.put("/api/Users/Profile", data, undefined);
 };
+const getPatientStatusList = async () => {
+  return await Axios.get("/global/patient-status-list", undefined, undefined);
+};
+const getPaymentMethods = async () => {
+  return await Axios.get("/global/payment-methods", undefined, undefined);
+};
 
 export default {
   getCountriesList,
   getCountriesListByRegion,
   getMyAccount,
-  updateMyAccount
+  updateMyAccount,
+  getPatientStatusList,
+  getPaymentMethods
 };

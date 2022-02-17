@@ -22,6 +22,12 @@ class LabAdminDash extends Component {
     if(typeof this.props.adminConfig.countries === "undefined" || this.props.adminConfig.countries.length <= 0){
       await this.props.getCountriesList();
     }
+    if(typeof this.props.adminConfig.patient_status_list === "undefined" || this.props.adminConfig.patient_status_list.length <= 0){
+      await this.props.getPatientStatusList();
+    }
+    if(typeof this.props.adminConfig.payment_methods === "undefined" || this.props.adminConfig.payment_methods.length <= 0){
+      await this.props.getPaymentMethods();
+    }
   }
   onCollapse = () => {
     this.setState({ collapsed: !this.state.collapsed });

@@ -38,7 +38,7 @@ const routes = [
     component: AddPatient
   },
   {
-    path: "reports/checkin",
+    path: "patients/checkin",
     component: CheckInList
   }
 ];

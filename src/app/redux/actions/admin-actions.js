@@ -42,3 +42,21 @@ export function updateMyAccount(data) {
     }
   };
 }
+
+export function getPaymentMethods() {
+  return async function(dispatch, _getState) {
+    try {
+      let res = await API.getPaymentMethods();
+      dispatch({ type: Types.PAYMENT_METHODS, payload: res.data });
+    } catch (e) {}
+  };
+}
+
+export function getPatientStatusList() {
+  return async function(dispatch, _getState) {
+    try {
+      let res = await API.getPatientStatusList();
+      dispatch({ type: Types.PATIENT_STATUS_LIST, payload: res.data });
+    } catch (e) {}
+  };
+}

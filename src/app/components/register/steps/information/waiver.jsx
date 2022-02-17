@@ -5,7 +5,7 @@ const output = ({ ...props }) => {
     return <Form onFinish={(values) => props.next(values)} initialValues={props.data}>
         <Form.Item>
             <div className="waiver-text">
-                <h2 className="form-section-title">Waiver</h2>
+                <h2 className="form-section-title">Informed Consent and No-Cancellation Policy</h2>
                 <div className="divWaiver" style={{ color: 'red' }}>
                     <p>Please carefully read and sign the following Informed Consent:</p>
                     <p style={{ marginleft: 40 + 'px' }}>A)	I authorize this COVID-19 testing unit to conduct collection and testing for COVID-19 through a nasopharyngeal swab or oral swab, as a requirement of testing by an authorized medical provider and lab.</p>

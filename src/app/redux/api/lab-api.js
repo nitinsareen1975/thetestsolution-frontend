@@ -30,7 +30,12 @@ const updateLabPricing = (id, data) => {
 const getLabPricing = (id) => {
   return Axios.get("/api/lab-pricing/"+ id, undefined, undefined);
 };
-
+const getGlobalLabPricing = (id, data) => {
+  return Axios.get("/global/lab-pricing/"+id, data, undefined);
+};
+const getGlobalLab = id => {
+  return Axios.get("/global/labs/"+id, undefined, undefined);
+};
 export default {
   getLabs,
   getGlobalLabs,
@@ -41,5 +46,7 @@ export default {
   getLab,
   deleteLab,
   updateLabPricing,
-  getLabPricing
+  getLabPricing,
+  getGlobalLabPricing,
+  getGlobalLab
 };

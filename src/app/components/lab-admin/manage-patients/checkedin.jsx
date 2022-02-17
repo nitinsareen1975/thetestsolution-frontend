@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { PlusCircleOutlined } from '@ant-design/icons';
 import * as patientActions from "../../../redux/actions/patient-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
 import {
@@ -15,7 +14,7 @@ import {
   Tooltip
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
-import { EditOutlined, CloseOutlined, SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { EditOutlined, CloseOutlined, SearchOutlined, CheckCircleOutlined, PrinterOutlined } from '@ant-design/icons';
 
 class AllPatients extends Component {
   constructor(props) {
@@ -101,14 +100,20 @@ class AllPatients extends Component {
                 <EditOutlined />
               </Button>
             </Tooltip>
-            <Tooltip title="Mark as Complete">
+            <Tooltip title="Print Patient From">
+              <Button
+                onClick={() => alert("in progress..")}
+              >
+                <PrinterOutlined />
+              </Button>
+            </Tooltip>
+            <Tooltip title="Samples Collected">
               <Button
                 type="primary"
-                icon={<CheckCircleOutlined />}
                 onClick={() => this.markAsComplete(record.id)}
                 style={{ color: '#222'}}
               >
-                Mark as Complete
+                <CheckCircleOutlined />
               </Button>
             </Tooltip>
           </span>

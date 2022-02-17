@@ -89,6 +89,39 @@
                 color: @primary-color;   
             }
         } 
+        .radio-test-price-wrapper {
+            .ant-radio-button-wrapper{
+                width: 180px;
+                float: left;
+                height: 120px;
+                border-radius: 15px;
+                margin-right: 18px;
+                border-left-width: 1px;
+                text-align: center;
+                .radio-test-price{
+                    .pricing-title{
+                        font-size: 14px;
+                        font-weight: 400;
+                        margin-top: 10px;
+                    }
+                    .pricing-amount{
+                        font-size: 40px;
+                        .pricing-amount-currency{
+                            vertical-align: middle;
+                            font-size: 12px;
+                        }
+                    }
+                    .pricing-results{
+                        font-weight: 400;
+                        font-size: 12px;
+                    }
+                }
+            }
+            .ant-radio-button-wrapper:before{
+                border: none;
+                background-color: transparent;
+            }
+        }
     }
 
 }

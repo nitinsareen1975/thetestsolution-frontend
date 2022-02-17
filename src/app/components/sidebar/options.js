@@ -15,22 +15,10 @@ const adminOptions = [{
     leftIcon: <DashboardOutlined />
   },
   {
-    key: "/admin/users",
-    label: "Manage Users",
-    leftIcon: <UserOutlined />,
+    key: "/admin/all-patients",
+    label: "View All Patients",
     roles: ["Administrator"],
-    children: [
-      {
-        key: "/admin/users",
-        label: "Manage Users",
-        roles: ["Administrator"]
-      },
-      {
-        key: "/admin/users/add",
-        label: "Add new user",
-        roles: ["Administrator"]
-      }
-    ]
+    leftIcon: <AimOutlined />
   },
   {
     key: "/admin/labs",
@@ -49,8 +37,25 @@ const adminOptions = [{
         roles: ["Administrator"]
       }
     ]
-  }
-  ,
+  },
+  {
+    key: "/admin/users",
+    label: "Manage Users",
+    leftIcon: <UserOutlined />,
+    roles: ["Administrator"],
+    children: [
+      {
+        key: "/admin/users",
+        label: "Manage Users",
+        roles: ["Administrator"]
+      },
+      {
+        key: "/admin/users/add",
+        label: "Add new user",
+        roles: ["Administrator"]
+      }
+    ]
+  },
   {
     key: "/admin/test-types",
     label: "Test Types",
@@ -68,6 +73,24 @@ const adminOptions = [{
         roles: ["Administrator"]
       }
     ]
+  },
+  {
+    key: "/admin/reports",
+    label: "Reports",
+    leftIcon: <FileSearchOutlined />,
+    roles: ["Administrator"],
+    children: [
+      {
+        key: "/admin/reports/all",
+        label: "View Reports",
+        roles: ["Administrator"]
+      },
+      {
+        key: "/admin/reports/revenue",
+        label: "View Revenue",
+        roles: ["Administrator"]
+      }
+    ]
   }
 ];
 
@@ -76,6 +99,34 @@ const labAdminOptions = [{
     label: "Dashboard",
     roles: ["Doctor"],
     leftIcon: <DashboardOutlined />
+  },
+  {
+    key: "/lab/patients",
+    label: "Manage Patients",
+    leftIcon: <AimOutlined />,
+    roles: ["Doctor"],
+    children: [
+      {
+        key: "/lab/patients",
+        label: "Scheduled List",
+        roles: ["Doctor"]
+      },
+      {
+        key: "/lab/patients/checkin",
+        label: "CheckIn List",
+        roles: ["Doctor"]
+      },
+      {
+        key: "/lab/patients/pending-results",
+        label: "Pending Results",
+        roles: ["Doctor"]
+      },
+      {
+        key: "/lab/patients/add",
+        label: "Create New Patient",
+        roles: ["Doctor"]
+      }
+    ]
   },
   {
     key: "/lab/users",
@@ -96,24 +147,6 @@ const labAdminOptions = [{
     ]
   },
   {
-    key: "/lab/patients",
-    label: "Manage Patients",
-    leftIcon: <AimOutlined />,
-    roles: ["Doctor"],
-    children: [
-      {
-        key: "/lab/patients",
-        label: "Scheduled List",
-        roles: ["Doctor"]
-      },
-      {
-        key: "/lab/patients/add",
-        label: "Add new patient",
-        roles: ["Doctor"]
-      }
-    ]
-  },
-  {
     key: "/lab/reports",
     label: "Reports",
     leftIcon: <FileSearchOutlined />,
@@ -125,8 +158,8 @@ const labAdminOptions = [{
         roles: ["Doctor"]
       },
       {
-        key: "/lab/reports/checkin",
-        label: "CheckIn List",
+        key: "/lab/test-resutls",
+        label: "Test Results",
         roles: ["Doctor"]
       }
     ]
