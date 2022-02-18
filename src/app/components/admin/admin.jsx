@@ -51,7 +51,7 @@ class AdminDash extends Component {
               }}
               width={280}
             >
-              <SideBar  options={options.adminOptions} userType="admin" />
+              <SideBar collapsed={this.state.collapsed} options={options.adminOptions} userType="admin" />
             </Sider>
           <Layout>
          

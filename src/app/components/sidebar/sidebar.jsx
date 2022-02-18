@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { Menu, Button } from "antd";
-import Logo from "../../assets/images/logo-icon.png";
-import LogoTxt from "../../assets/images/logo-2.png";
+import Logo from "../../assets/images/logo-full.png";
+import LogoIcon from "../../assets/images/logo-icon.png";
 
 
 const { SubMenu } = Menu;
@@ -85,8 +85,8 @@ class SideBar extends Component {
     return (
       <div className="menu">
         <div className="logo">
-          <img className="logo-icon" src={Logo} />
-          <img className="logo-text" src={LogoTxt} />
+          <img className="logo-icon" style={{ display: (this.props.collapsed && this.props.collapsed === true) ? "block" : "none" }} src={LogoIcon} />
+          <img className="logo-full" style={{ display: (this.props.collapsed && this.props.collapsed === true) ? "none" : "block" }} src={Logo} />
         </div>
         
         <Menu

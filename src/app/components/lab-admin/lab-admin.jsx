@@ -51,7 +51,7 @@ class LabAdminDash extends Component {
               }}
               width={280}
             >
-              <SideBar  options={options.labAdminOptions} userType="admin" />
+              <SideBar collapsed={this.state.collapsed} options={options.labAdminOptions} userType="admin" />
             </Sider>
           <Layout>
          

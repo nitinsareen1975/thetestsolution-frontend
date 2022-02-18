@@ -11,7 +11,7 @@ const output = ({ ...props }) => {
                 </Form.Item>
             </Col>
             <Col xs={24} md={8}>
-                <Form.Item name="middlename" label="Middle Name" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+                <Form.Item name="middlename" label="Middle Name">
                     <Input placeholder="Middle Name" />
                 </Form.Item>
             </Col>

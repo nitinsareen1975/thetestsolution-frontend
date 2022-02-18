@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { PlusCircleOutlined } from '@ant-design/icons';
-import * as labActions from "../../../redux/actions/lab-actions";
+import * as userActions from "../../../redux/actions/user-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
 import {
   Switch,
@@ -13,16 +13,15 @@ import {
   Row,
   Col,
   Typography,
-  Tag,
   Tooltip
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
-import { EditOutlined, CloseOutlined, SearchOutlined, SolutionOutlined, CreditCardOutlined, TeamOutlined, FileProtectOutlined } from '@ant-design/icons';
+import { EditOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons';
 
-class ManageLabs extends Component {
+class ManageEmployees extends Component {
   constructor(props) {
     super(props);
-    this.module = 'labs';
+    this.module = 'employees';
     this.state = {
       dataLoaded: false,
       loading: false,
@@ -52,44 +51,51 @@ class ManageLabs extends Component {
   getHeaderKeys = () => {
     return [
       {
-        title: "Lab Name",
-        dataIndex: "name",
-        filteredValue: this.getSelectedFilterValue('name'),
-        ...this.getColumnSearchProps("name")
+        title: "First Name",
+        dataIndex: "firstname",
+        filteredValue: this.getSelectedFilterValue('firstname'),
+        ...this.getColumnSearchProps("firstname")
         //width: "200px"
         //sorter: true
       },
       {
-        title: "Licence Number",
-        dataIndex: "licence_number",
-        filteredValue: this.getSelectedFilterValue('licence_number'),
-        ...this.getColumnSearchProps("licence_number")
+        title: "Last Name",
+        dataIndex: "lastname",
+        filteredValue: this.getSelectedFilterValue('lastname'),
+        ...this.getColumnSearchProps("lastname")
         // width: "200px"
       },
       {
-        title: "Lab Email",
+        title: "Email Address",
         dataIndex: "email",
         filteredValue: this.getSelectedFilterValue('email'),
         ...this.getColumnSearchProps("email")
         //width: "250px"
       },
       {
-        title: "Lab Phone",
+        title: "Phone",
         dataIndex: "phone",
         // width: "250px",
         filteredValue: this.getSelectedFilterValue('phone'),
         ...this.getColumnSearchProps("phone")
       },
       {
-        title: "Onboarding Date",
-        dataIndex: "date_incorporated"
+        title: "Role",
+        dataIndex: "roles"
         // width: "200px"
       },
       {
         title: "Status",
         render: (_text, record) => (
           <span>
-            <Tag color={record.status == 1 ? "green" : "red"}>{record.status == 1 ? "Active" : "Inactive"}</Tag>
+            <Switch
+              checkedChildren={"Active"}
+              unCheckedChildren={"Inactive"}
+              checked={record.status}
+              onClick={() =>
+                this.updateUserStatus(!record.status, record.id)
+              }
+            />
           </span>
         )
       },
@@ -99,41 +105,15 @@ class ManageLabs extends Component {
         // width: "200px",
         render: (_text, record) => (
           <span>
-            <Tooltip title="Edit Lab">
+            <Tooltip title="Edit User">
               <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id)}
+                onClick={() => {
+                  this.editItem(record.id);
+                }}
               >
                 <EditOutlined />
               </Button>
             </Tooltip>
-            <Tooltip title="Manage Employees">
-              <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/employees")}
-              >
-                <TeamOutlined />
-              </Button>
-            </Tooltip>
-            {/* <Tooltip title="View Billing">
-              <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/billing")}
-              >
-                <CreditCardOutlined />
-              </Button>
-            </Tooltip> */}
-            <Tooltip title="Scheduled Tests">
-              <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/tests")}
-              >
-                <SolutionOutlined />
-              </Button>
-            </Tooltip>
-             {/* <Tooltip title="Pending Results">
-              <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/reports")}
-              >
-                <FileProtectOutlined />
-              </Button>
-            </Tooltip> */}
           </span>
         )
       }
@@ -253,6 +233,10 @@ class ManageLabs extends Component {
   };
 
   async componentDidMount() {
+    this.initComponent();
+  }
+
+  initComponent = async () => {
     if (this.props.paginginfo && this.props.currentModule !== "" && this.props.currentModule !== this.module) {
       this.props.clearPaginationExceptMe(this.module);
     } else {
@@ -283,6 +267,10 @@ class ManageLabs extends Component {
       });
   };
 
+  editItem = id => {
+    this.props.history.push("./employees/edit/" + id);
+  };
+
   handleTableChange = (pagination, filters, sorter, manual) => {
     if (filters === undefined) filters = {};
     Object.keys(filters).map(key => { if ((!filters[key]) || (Array.isArray(filters[key]) && filters[key].length === 0)) { delete filters[key] } })
@@ -295,7 +283,8 @@ class ManageLabs extends Component {
       })
     }
     this.setState({ loading: true });
-    this.props.getLabs({
+    this.props
+      .getUserListing({
         filters: filters,
         pagination: { page: pagination.current, pageSize: pagination.pageSize },
         sorter: sorter
@@ -311,6 +300,25 @@ class ManageLabs extends Component {
       .catch(ex => {
         this.setState({ loading: false });
       });
+  };
+
+  updateUserStatus = async (selected, userId) => {
+    this.setState({ loading: true });
+    try {
+      this.props.updateUser({ id: userId, status: selected }).then(response => {
+        if (response.status && response.status == true) {
+          notifyUser(response.message, "success");
+          this.setState({ loading: false });
+          this.initComponent();
+        } else {
+          notifyUser(response.message, "error");
+          this.setState({ loading: false });
+        }
+      });
+    } catch (e) {
+      console.log("Error:", e);
+      this.setState({ loading: false });
+    }
   };
 
   render() {
@@ -347,13 +355,13 @@ class ManageLabs extends Component {
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
-              Manage Labs
+              Manage Employees
             </Typography.Title>
           </Col>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Button
               type="primary"
-              onClick={() => this.props.history.push("./labs/add")}
+              onClick={() => this.props.history.push("./employees/add")}
               className="right-fl def-blue"
             >
               Add New
@@ -385,15 +393,16 @@ class ManageLabs extends Component {
 
 function mapStateToProps(state) {
   return {
+    ...state.userConfig,
     ...state.pagination,
     ...state.language
   };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...labActions, ...paginationActions }, dispatch);
+  return bindActionCreators({ ...userActions, ...paginationActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-    ManageLabs
+    ManageEmployees
   )
 );

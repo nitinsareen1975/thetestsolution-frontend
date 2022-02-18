@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import logo from "../../assets/images/horizontal-logo.png";
+import logo from "../../assets/images/logo.png";
 import { notifyUser } from "../../services/notification-service";
 import * as UserActions from "../../redux/actions/user-actions";
 import * as adminActions from "../../redux/actions/admin-actions";

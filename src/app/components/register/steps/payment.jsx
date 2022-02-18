@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Col, Form, Input, Row, Button, Spin, Radio, Alert, message } from "antd";
+import { Col, Form, Input, Row, Button, Spin, Radio, Alert, message, ConfigProvider } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
 import LabAPI from "../../../redux/api/lab-api";
 import * as UserService from "../../../services/user-service";
 import { loadStripe } from '@stripe/stripe-js';
 import Config from "../../../config";
+import Axios from "../../../services/axios-service";
 import {
 	CardElement,
 	Elements,
@@ -48,9 +49,60 @@ const output = ({ ...props }) => {
 			}
 		};
 
-		const handleOk = async() => {
+		const handleOk = async () => {
 			props.setFormSubmitting(true);
-			await stripe.createPaymentMethod({
+
+			var formData = {
+				pricing_id: pricingId,
+				customer_name: parentprops.data.firstname + " " + parentprops.data.lastname,
+				customer_phone: parentprops.data.phone,
+				customer_email: parentprops.data.email
+			}
+			var response = await Axios.post(Config.API + "/global/create-payment-intent", formData, undefined);
+			const payload = await stripe.confirmCardPayment(response.data, {
+				payment_method: {
+					card: elements.getElement(CardElement),
+				},
+			});
+			if (payload.error) {
+				message.error(`Payment failed ${payload.error.message}`);
+				props.setFormSubmitting(false);
+			} else {
+				var formData = {
+					pricing_id: pricingId,
+					transaction_id: payload.paymentIntent.id
+				};
+				parentprops.handleSubmit(formData);
+				props.setFormSubmitting(false);
+			}
+
+			/* await stripe.createToken(elements.getElement(CardElement)).then(function (payload) {
+				if (payload.token) {
+					var formData = {
+						pricing_id: pricingId,
+						transaction_id: payload.token.id,
+						customer_name: parentprops.data.firstname + " " + parentprops.data.lastname,
+						customer_phone: parentprops.data.phone,
+						customer_email: parentprops.data.email
+					};
+					parentprops.handleSubmit(formData);
+				} else {
+					if (typeof payload.error !== "undefined") {
+						if (typeof payload.error.message !== "undefined") {
+							message.error(payload.error.message);
+						} else {
+							message.error(payload.error);
+						}
+					} else {
+						message.error("Please check the card details and try again.");
+					}
+					props.setFormSubmitting(false);
+				}
+			}).catch(error => {
+				props.setFormSubmitting(false);
+			}); */
+
+			/* await stripe.confirmPayment({
 				type: 'card',
 				card: elements.getElement(CardElement),
 				billing_details: {
@@ -72,7 +124,7 @@ const output = ({ ...props }) => {
 				props.setFormSubmitting(false);
 			}).catch(error => {
 				props.setFormSubmitting(false);
-			});
+			}); */
 		};
 
 		return (
@@ -80,7 +132,7 @@ const output = ({ ...props }) => {
 				<Row gutter={15}>
 					<Col xs={24} sm={12}>
 						<Form.Item style={{ background: '#fff', padding: 10, border: '1px solid #ccc', borderRadius: 4 }}>
-							<CardElement />
+							<CardElement hidePostalCode={true} />
 						</Form.Item>
 					</Col>
 				</Row>
