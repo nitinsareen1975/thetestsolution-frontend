@@ -268,6 +268,9 @@ const AdminDashboard = () => {
           </Card>
         </Col>
       </Row>
+      <DemoRadialBar />
+      <DemosRadialBar />
+      <DemoColumn />
     </div>
   );
 };
