@@ -71,7 +71,7 @@ class LabAdminDash extends Component {
           //userData={this.props.userData}
           
           >
-            <AdminHeader collapsed={this.state.collapsed} onCollapse={this.onCollapse} />
+            <AdminHeader collapsed={this.state.collapsed} onCollapse={this.onCollapse} {...this.props}/>
           </Header>
             
             <Content

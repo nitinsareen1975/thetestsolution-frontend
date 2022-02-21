@@ -45,12 +45,10 @@ class AddUser extends React.Component {
 			sorter: {column: "name", order: "asc"}
 		}
 		var roles = await this.props.getAllRoles(args);
-		var labs = await this.props.getLabs(args);
 		this.setState({ 
 			loading: false,
 			countries: _countries,
-			allRoles: roles, 
-			labs: labs.data,
+			allRoles: roles,
 			dataLoaded: true 
 		});
 	}
@@ -58,11 +56,11 @@ class AddUser extends React.Component {
 	handleSubmit = (data) => {
 		this.setState({ loading: true });
 		data.status = data.status === true ? "1" : "0";
+		data.lab_assigned = this.props.match.params.id;
 		this.props.addUser(data).then(response => {
 			if (response.status && response.status == true) {
 				notifyUser(response.message, "success");
-				//notifyUser("User added successfully!", "success");
-				this.props.history.push("../users");
+				this.props.history.push("../employees");
 				this.setState({ loading: false });
 			} else {
 				if (response.message) {
@@ -295,19 +293,6 @@ class AddUser extends React.Component {
 									</Form.Item>
 								</Col>
 								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
-									<Form.Item
-										{...formItemLayout}
-										label="Lab Assigned"
-										name="lab_assigned"
-									>
-										<Select>
-											{this.state.labs.map(function (item) {
-												return <Option key={item.id} value={item.id}>{item.name} ({item.state}, {item.zip})</Option>;
-											})}
-										</Select>
-									</Form.Item>
-								</Col>
-								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
 									<Form.Item name="can_read_reports" label="Can Read Test Report?" initialValue={this.state.can_read_reports === null ? "" : this.state.can_read_reports}>
 										<Radio.Group>
 										<Radio value="1">Yes</Radio>
@@ -315,8 +300,6 @@ class AddUser extends React.Component {
 										</Radio.Group>
 									</Form.Item>
 								</Col>
-							</Row>
-							<Row>
 								<Col xs={24} sm={24} md={6} lg={6} xl={6}>
 									 <Form.Item name="status" label="Status" initialValue={this.state.status === null ? "" : this.state.status}>
 										<Switch checkedChildren="Active" unCheckedChildren="Inactive"/>

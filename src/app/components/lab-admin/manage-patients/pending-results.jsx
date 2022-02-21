@@ -3,25 +3,26 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { PlusCircleOutlined } from '@ant-design/icons';
-import * as userActions from "../../../redux/actions/user-actions";
+import * as patientActions from "../../../redux/actions/patient-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
+import * as adminActions from "../../../redux/actions/admin-actions";
 import {
-  Switch,
   Table,
   Input,
   Button,
   Row,
   Col,
   Typography,
-  Tooltip
+  Tooltip,
+  Modal
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
-import { EditOutlined, CloseOutlined, SearchOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { EditOutlined, CloseOutlined, SearchOutlined, CheckCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 
-class ManageEmployees extends Component {
+class PendingResults extends Component {
   constructor(props) {
     super(props);
-    this.module = 'employees';
+    this.module = 'pending_results';
     this.state = {
       dataLoaded: false,
       loading: false,
@@ -40,7 +41,9 @@ class ManageEmployees extends Component {
         pageSize: 10,
         current: 1
       },
-      filters: {}
+      filters: {},
+      checkInModalVisible: false,
+      checkInPatientId: 0
     };
     this.handleTableChange = this.handleTableChange.bind(this);
   }
@@ -55,49 +58,35 @@ class ManageEmployees extends Component {
         dataIndex: "firstname",
         filteredValue: this.getSelectedFilterValue('firstname'),
         ...this.getColumnSearchProps("firstname")
-        //width: "200px"
-        //sorter: true
       },
       {
         title: "Last Name",
         dataIndex: "lastname",
         filteredValue: this.getSelectedFilterValue('lastname'),
         ...this.getColumnSearchProps("lastname")
-        // width: "200px"
       },
       {
         title: "Email Address",
         dataIndex: "email",
         filteredValue: this.getSelectedFilterValue('email'),
         ...this.getColumnSearchProps("email")
-        //width: "250px"
       },
       {
         title: "Phone",
         dataIndex: "phone",
-        // width: "250px",
         filteredValue: this.getSelectedFilterValue('phone'),
         ...this.getColumnSearchProps("phone")
       },
       {
-        title: "Role",
-        dataIndex: "roles"
-        // width: "200px"
+        title: "Scheduled Date/Time",
+        dataIndex: "scheduled_date",
+        render: (_text, row) => (
+          <span>{row.scheduled_date}<br></br>{row.scheduled_time}</span>
+        )
       },
       {
-        title: "Status",
-        render: (_text, record) => (
-          <span>
-            <Switch
-              checkedChildren={"Active"}
-              unCheckedChildren={"Inactive"}
-              checked={record.status}
-              onClick={() =>
-                this.updateUserStatus(!record.status, record.id)
-              }
-            />
-          </span>
-        )
+        title: "Test Selected",
+        dataIndex: "test_type_name"
       },
       {
         title: "Actions",
@@ -105,13 +94,20 @@ class ManageEmployees extends Component {
         // width: "200px",
         render: (_text, record) => (
           <span>
-            <Tooltip title="Edit User">
+            <Tooltip title="Edit Patient">
               <Button
-                onClick={() => {
-                  this.editItem(record.id);
-                }}
+                onClick={() => this.props.history.push("./patients/edit/" + record.id)}
               >
                 <EditOutlined />
+              </Button>
+            </Tooltip>
+            <Tooltip title="Enter Results">
+              <Button
+                type="primary"
+                onClick={() => this.enterResults(record.id)}
+                style={{ color: '#222' }}
+              >
+                <CheckCircleOutlined />
               </Button>
             </Tooltip>
           </span>
@@ -233,10 +229,6 @@ class ManageEmployees extends Component {
   };
 
   async componentDidMount() {
-    this.initComponent();
-  }
-
-  initComponent = async () => {
     if (this.props.paginginfo && this.props.currentModule !== "" && this.props.currentModule !== this.module) {
       this.props.clearPaginationExceptMe(this.module);
     } else {
@@ -267,10 +259,6 @@ class ManageEmployees extends Component {
       });
   };
 
-  editItem = id => {
-    this.props.history.push("./employees/edit/" + id);
-  };
-
   handleTableChange = (pagination, filters, sorter, manual) => {
     if (filters === undefined) filters = {};
     Object.keys(filters).map(key => { if ((!filters[key]) || (Array.isArray(filters[key]) && filters[key].length === 0)) { delete filters[key] } })
@@ -282,11 +270,18 @@ class ManageEmployees extends Component {
         pagination: { current: pagination.current, pageSize: pagination.pageSize }
       })
     }
-    filters = { ...filters, lab_assigned: this.props.match.params.id };
     this.setState({ loading: true });
+
+    var patients_statuses = this.props.patient_status_list;
+    var lab = JSON.parse(localStorage.getItem("lab"));
+    var patientTypeFilter = {lab_assigned: lab.id};
+    if (patients_statuses.length > 0) {
+      var statusObj = patients_statuses.find(i => i.code == 'pending-results');
+      patientTypeFilter["progress_status"] = statusObj.id;
+    }
     this.props
-      .getUserListing({
-        filters: filters,
+      .getPatients({
+        filters: {...filters, ...patientTypeFilter},
         pagination: { page: pagination.current, pageSize: pagination.pageSize },
         sorter: sorter
       })
@@ -303,24 +298,9 @@ class ManageEmployees extends Component {
       });
   };
 
-  updateUserStatus = async (selected, userId) => {
-    this.setState({ loading: true });
-    try {
-      this.props.updateUser({ id: userId, status: selected }).then(response => {
-        if (response.status && response.status == true) {
-          notifyUser(response.message, "success");
-          this.setState({ loading: false });
-          this.initComponent();
-        } else {
-          notifyUser(response.message, "error");
-          this.setState({ loading: false });
-        }
-      });
-    } catch (e) {
-      console.log("Error:", e);
-      this.setState({ loading: false });
-    }
-  };
+  enterResults = (patientId) => {
+
+  }
 
   render() {
     let _state = this.state;
@@ -356,7 +336,7 @@ class ManageEmployees extends Component {
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
-              Manage Employees
+              Pending Results
             </Typography.Title>
           </Col>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -364,18 +344,9 @@ class ManageEmployees extends Component {
               type="primary"
               onClick={() => this.props.history.goBack()}
               className="right-fl def-blue"
-              style={{ marginLeft: 5 }}
             >
-              Back
               <ArrowLeftOutlined />
-            </Button>
-            <Button
-              type="primary"
-              onClick={() => this.props.history.push("./employees/add")}
-              className="right-fl def-blue"
-            >
-              Add New
-              <PlusCircleOutlined />
+              Back
             </Button>
           </Col>
         </Row>
@@ -403,16 +374,16 @@ class ManageEmployees extends Component {
 
 function mapStateToProps(state) {
   return {
-    ...state.userConfig,
     ...state.pagination,
-    ...state.language
+    ...state.language,
+    ...state.adminConfig
   };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...userActions, ...paginationActions }, dispatch);
+  return bindActionCreators({ ...adminActions, ...patientActions, ...paginationActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-    ManageEmployees
+    PendingResults
   )
 );

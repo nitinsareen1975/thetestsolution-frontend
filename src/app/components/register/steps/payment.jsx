@@ -156,7 +156,6 @@ const output = ({ ...props }) => {
 	};
 
 	const setSubmitting = (val) => {
-		console.log("submittig: ", val)
 		var loaderDiv = '<div id="paymentLoader"><div class="ant-spin ant-spin-spinning"><span class="ant-spin-dot ant-spin-dot-spin"><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i></span></div></div>';
 		var div = document.createElement('div');
 		div.innerHTML = loaderDiv.trim();

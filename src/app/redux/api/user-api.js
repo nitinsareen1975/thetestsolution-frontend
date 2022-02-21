@@ -7,7 +7,7 @@ const getUserData = (data) => {
 	return Axios.get("/api/validateToken", data, undefined);
 };
 const getUserListing = data => {
-  return Axios.get("/api/users?filters="+encodeURIComponent(JSON.stringify(data)), data, undefined);
+  return Axios.get("/api/users/", data, undefined);
 };
 const updateUser = data => {
   return Axios.put("/api/users/"+data.id, data, undefined);
@@ -34,18 +34,11 @@ const updateToken = data => {
   return Axios.post("/auth/refresh-token", data, undefined);
 };
 const updateProfile = data => {
-  return Axios.put("/api/Users/"+data.id, data, undefined);
+  return Axios.put("/api/update-profile", data, undefined);
 };
-const getMyAccount = async () => {
-  return await Axios.get("/api/Users/Profile", undefined, undefined);
+const updatePassword = data => {
+  return Axios.put("/api/update-password", data, undefined);
 };
-const updateMyAccount = async (data) => {
-  return await Axios.put("/api/Users/Profile", data, undefined);
-};
-const updateStatus = (userId, status) => {
-  return Axios.put("/api/UserStatus/"+userId+"/"+status, undefined, undefined);
-};
-
 export default {
   login,
   getUserData,
@@ -59,7 +52,5 @@ export default {
   getAllRoles,
   updateToken,
   updateProfile,
-  getMyAccount,
-  updateMyAccount,
-  updateStatus
+  updatePassword
 };

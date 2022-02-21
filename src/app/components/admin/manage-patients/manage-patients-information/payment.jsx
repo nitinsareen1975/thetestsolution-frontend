@@ -137,6 +137,7 @@ const output = ({ ...props }) => {
 	}
 
 	const stripePromise = loadStripe(Config.StripeAPIKey);
+
 	return <div>
 		<Row gutter={24}>
 			<Col xs={24} sm={24}>
@@ -161,8 +162,8 @@ const output = ({ ...props }) => {
 						<Col xs={24} md={12}>
 							<Form.Item label="Status"><Typography.Title level={5}>Refunded</Typography.Title></Form.Item>
 						</Col>
-						: ""
-						/* <Col xs={24} md={12}>
+						:
+						<Col xs={24} md={12}>
 							<Form.Item label="Actions">
 								<Button
 									type="primary"
@@ -174,7 +175,7 @@ const output = ({ ...props }) => {
 									Refund Transaction
 								</Button>
 							</Form.Item>
-						</Col> */
+						</Col>
 					}
 				</Row>
 			)

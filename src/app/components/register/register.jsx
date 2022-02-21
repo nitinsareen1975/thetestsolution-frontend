@@ -96,7 +96,7 @@ class Register extends Component {
       phone: data.phone,
       race: data.race,
       scheduled_date: moment(data.scheduled_date).format("YYYY-MM-DD"),
-      scheduled_time: moment(data.scheduled_time).format("HH:mm:ss"),
+      scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD HH:mm:ss"),
       state: data.state,
       street: data.street,
       pricing_id: data.pricing_id,

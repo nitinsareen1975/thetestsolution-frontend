@@ -113,27 +113,20 @@ class ManageLabs extends Component {
                 <TeamOutlined />
               </Button>
             </Tooltip>
-            {/* <Tooltip title="View Billing">
+            <Tooltip title="View Patients">
               <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/billing")}
+                onClick={() => this.props.history.push("./all-patients", {lab_assigned: record.id})}
               >
-                <CreditCardOutlined />
+                <FileProtectOutlined />
               </Button>
-            </Tooltip> */}
+            </Tooltip>
             <Tooltip title="Scheduled Tests">
               <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/tests")}
+                onClick={() => this.props.history.push("./all-patients", {lab_assigned: record.id, progress_status: "1"})}
               >
                 <SolutionOutlined />
               </Button>
             </Tooltip>
-             {/* <Tooltip title="Pending Results">
-              <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/reports")}
-              >
-                <FileProtectOutlined />
-              </Button>
-            </Tooltip> */}
           </span>
         )
       }

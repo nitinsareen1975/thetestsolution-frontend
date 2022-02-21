@@ -29,3 +29,9 @@ export function updatePagination(data) {
       dispatch({type: Types.CLEAR_PAGINATION_EXCEPT_ME,payload:{module : module}});
     };
   }
+
+  export function clearFilters(module) {
+    return async function(dispatch, _getState) {
+      dispatch({type: Types.CLEAR_FILTERS,payload:{module : module}});
+    };
+  }

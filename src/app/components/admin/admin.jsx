@@ -7,6 +7,7 @@ import SideBar from "../sidebar/sidebar.jsx";
 import AdminHeader from "./common/header/header.jsx";
 import AdminRouter from "../../routes/admin-router";
 import * as adminActions from "../../redux/actions/admin-actions";
+import * as userActions from "../../redux/actions/user-actions";
 import { Layout, Modal, Form } from "antd";
 import options from "../sidebar/options.js";
 
@@ -27,6 +28,9 @@ class AdminDash extends Component {
     }
     if(typeof this.props.adminConfig.payment_methods === "undefined" || this.props.adminConfig.payment_methods.length <= 0){
       await this.props.getPaymentMethods();
+    }
+    if(typeof this.props.userData === "undefined" || Object.keys(this.props.userData).length <= 0){
+      await this.props.getUserData();
     }
   }
   onCollapse = () => {
@@ -71,7 +75,7 @@ class AdminDash extends Component {
           //userData={this.props.userData}
           
           >
-            <AdminHeader collapsed={this.state.collapsed} onCollapse={this.onCollapse} />
+            <AdminHeader collapsed={this.state.collapsed} onCollapse={this.onCollapse} {...this.props}/>
           </Header>
             
             <Content
@@ -96,12 +100,13 @@ class AdminDash extends Component {
 
 function mapStateToProps(state) {
   return {
-    adminConfig: state.adminConfig
+    adminConfig: state.adminConfig,
+    ...state.userConfig
   };
 }
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { ...adminActions },
+    { ...userActions, ...adminActions },
     dispatch
   );
 }

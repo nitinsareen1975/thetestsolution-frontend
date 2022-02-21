@@ -106,7 +106,7 @@ class AddPatient extends React.Component {
 			if (response.status && response.status === true) {
 				notifyUser(response.message, "success");
 				this.setState({ loading: false });
-				this.props.history.push("../");
+				this.props.history.goBack();
 			} else {
 				if (response.message) {
 					notifyUser(response.message, "error");

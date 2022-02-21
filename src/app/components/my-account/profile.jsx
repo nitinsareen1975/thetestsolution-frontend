@@ -2,17 +2,18 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import * as adminActions from "../../../redux/actions/admin-actions";
-import * as userActions from "../../../redux/actions/user-actions";
-import * as RolesActions from "../../../redux/actions/roles-actions";
-import * as labsActions from "../../../redux/actions/lab-actions";
-import { notifyUser } from "../../../services/notification-service";
+import * as adminActions from "../../redux/actions/admin-actions";
+import * as userActions from "../../redux/actions/user-actions";
+import * as RolesActions from "../../redux/actions/roles-actions";
+import * as labsActions from "../../redux/actions/lab-actions";
+import { notifyUser } from "../../services/notification-service";
 import { Typography, Form, Input, Select, Button, Row, Col, Spin, Switch, Radio } from "antd";
-import IntlMessages from "../../../services/intlMesseges";
-import { PlusCircleOutlined, ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
+import IntlMessages from "../../services/intlMesseges";
+import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
+import * as Permission from "../../services/permissions";
 const { Option } = Select;
 
-class EditUser extends React.Component {
+class MyAccount extends React.Component {
   state = {
     loading: true,
     user: [],
@@ -34,13 +35,16 @@ class EditUser extends React.Component {
       pagination: {},
       sorter: { column: "name", order: "asc" }
     }
+    var user = JSON.parse(localStorage.getItem("user"));
     var roles = await this.props.getAllRoles(args);
-    var user = await this.props.getUser(this.props.match.params.employeeId);
+    var user = await this.props.getUser(user.id);
+    var labs = await this.props.getLabs(args);
     this.setState({
       loading: false,
       countries: _countries,
       allRoles: roles,
       user: user.status == true ? user.data : [],
+      labs: labs.data,
       dataLoaded: true
     });
   }
@@ -48,11 +52,20 @@ class EditUser extends React.Component {
   handleSubmit = (data) => {
     this.setState({ loading: true });
     delete data.email;
-    data.id = this.props.match.params.employeeId;
-    this.props.updateUser(data).then(response => {
+    this.props.updateProfile(data).then(response => {
       if (response.status && response.status == true) {
+        var user = JSON.parse(localStorage.getItem("user"));
+        user.firstname = data.firstname;
+        user.lastname = data.lastname;
+        user.phone = data.phone;
+        user.street = data.street;
+        user.city = data.city;
+        user.state = data.state;
+        user.country = data.country;
+        user.zip = data.zip;
+        localStorage.setItem("user", JSON.stringify(user));
+        this.props.history.push("./account");
         notifyUser(response.message, "success");
-        this.props.history.push("../../employees");
         this.setState({ loading: false });
       } else {
         if (response.message) {
@@ -102,7 +115,7 @@ class EditUser extends React.Component {
         <Row gutter={24}>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
-              Edit Employee
+              Edit Profile
             </Typography.Title>
           </Col>
 
@@ -211,7 +224,6 @@ class EditUser extends React.Component {
                   </Col>
                 </Row>
                 <Row gutter={24}>
-
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -259,33 +271,50 @@ class EditUser extends React.Component {
                       <Input />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item
-                      {...formItemLayout}
-                      label={<IntlMessages id="admin.userlisting.role" />}
-                      name="roles"
-                    >
-                      <Select>
-                        {this.state.allRoles.map(function (item) {
-                          return <Option key={item.id}>{item.name}</Option>;
-                        })}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item name="can_read_reports" label="Can Read Test Report?">
-                      <Radio.Group defaultChecked={this.state.user.can_read_reports}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={0}>No</Radio>
-                      </Radio.Group>
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item name="status" label="Status">
-                      <Switch checkedChildren="Active" unCheckedChildren="Inactive" defaultChecked={this.state.user.status == 1} />
-                    </Form.Item>
-                  </Col>
+                  {Permission.canAccess("admin") ?
+                    <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                      <Form.Item
+                        {...formItemLayout}
+                        label={<IntlMessages id="admin.userlisting.role" />}
+                        name="roles"
+                      >
+                        <Select>
+                          {this.state.allRoles.map(function (item) {
+                            return <Option key={item.id}>{item.name}</Option>;
+                          })}
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                    : ""}
                 </Row>
+                {/* <Row gutter={24}>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                      <Form.Item
+                        {...formItemLayout}
+                        label="Lab Assigned"
+                        name="lab_assigned"
+                      >
+                        <Select>
+                          {this.state.labs.map(function (item) {
+                            return <Option key={item.id} value={item.id}>{item.name} ({item.state}, {item.zip})</Option>;
+                          })}
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                      <Form.Item name="can_read_reports" label="Can Read Test Report?">
+                        <Radio.Group defaultChecked={this.state.user.can_read_reports}>
+                          <Radio value={1}>Yes</Radio>
+                          <Radio value={0}>No</Radio>
+                        </Radio.Group>
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                      <Form.Item name="status" label="Status">
+                        <Switch checkedChildren="Active" unCheckedChildren="Inactive" defaultChecked={this.state.user.status == 1} />
+                      </Form.Item>
+                    </Col>
+                  </Row> */}
                 <Row>
                   <Col>
                     <Form.Item>
@@ -296,7 +325,7 @@ class EditUser extends React.Component {
                         htmlType="submit"
                         size="large"
                       >
-                        Update
+                        Save
                         <SaveOutlined />
                       </Button>
                     </Form.Item>
@@ -319,6 +348,6 @@ function mapDispatchToProps(dispatch) {
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-    EditUser
+    MyAccount
   )
 );

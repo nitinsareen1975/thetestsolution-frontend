@@ -3,25 +3,30 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { PlusCircleOutlined } from '@ant-design/icons';
-import * as userActions from "../../../redux/actions/user-actions";
+import * as patientActions from "../../../redux/actions/patient-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
+import * as adminActions from "../../../redux/actions/admin-actions";
+import * as labsActions from "../../../redux/actions/lab-actions";
 import {
-  Switch,
   Table,
   Input,
   Button,
   Row,
   Col,
   Typography,
-  Tooltip
+  Tooltip,
+  Tag,
+  Select
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
+import IntlMessages from "../../../services/intlMesseges";
 import { EditOutlined, CloseOutlined, SearchOutlined, ArrowLeftOutlined } from '@ant-design/icons';
-
-class ManageEmployees extends Component {
+import moment from "moment";
+const { Option } = Select;
+class AllPatients extends Component {
   constructor(props) {
     super(props);
-    this.module = 'employees';
+    this.module = 'all_patients';
     this.state = {
       dataLoaded: false,
       loading: false,
@@ -40,7 +45,13 @@ class ManageEmployees extends Component {
         pageSize: 10,
         current: 1
       },
-      filters: {}
+      filters: {},
+      customFilters: {
+        progress_status:[],
+        lab_assigned:[]
+      },
+      tagColors: ['red', 'volcano', 'gold', 'cyan', 'green', 'blue', 'gold'],
+      labs: []
     };
     this.handleTableChange = this.handleTableChange.bind(this);
   }
@@ -55,49 +66,54 @@ class ManageEmployees extends Component {
         dataIndex: "firstname",
         filteredValue: this.getSelectedFilterValue('firstname'),
         ...this.getColumnSearchProps("firstname")
-        //width: "200px"
-        //sorter: true
       },
       {
         title: "Last Name",
         dataIndex: "lastname",
         filteredValue: this.getSelectedFilterValue('lastname'),
         ...this.getColumnSearchProps("lastname")
-        // width: "200px"
       },
       {
         title: "Email Address",
         dataIndex: "email",
         filteredValue: this.getSelectedFilterValue('email'),
         ...this.getColumnSearchProps("email")
-        //width: "250px"
       },
       {
         title: "Phone",
         dataIndex: "phone",
-        // width: "250px",
         filteredValue: this.getSelectedFilterValue('phone'),
         ...this.getColumnSearchProps("phone")
       },
       {
-        title: "Role",
-        dataIndex: "roles"
-        // width: "200px"
+        title: "Scheduled Date/Time",
+        dataIndex: "scheduled_date",
+        render: (_text, row) => (
+          <span>{row.scheduled_date}<br></br>{moment(row.scheduled_time).format("hh:mm a")}</span>
+        )
+      },
+      {
+        title: "Lab Assigned",
+        render: (_text, record) => (
+          <span>
+            {record.lab_assigned}
+          </span>
+        )
       },
       {
         title: "Status",
-        render: (_text, record) => (
-          <span>
-            <Switch
-              checkedChildren={"Active"}
-              unCheckedChildren={"Inactive"}
-              checked={record.status}
-              onClick={() =>
-                this.updateUserStatus(!record.status, record.id)
-              }
-            />
-          </span>
-        )
+        render: (_text, record) => {
+          var statusStr = "--";
+          var tagColor = this.state.tagColors[1];
+          if (typeof this.props.patient_status_list !== "undefined" && this.props.patient_status_list.length > 0 && record.progress_status != null) {
+            var statusObj = this.props.patient_status_list.find(l => l.id == record.progress_status);
+            if (typeof statusObj.name !== "undefined") {
+              statusStr = statusObj.name;
+              tagColor = this.state.tagColors[record.progress_status];
+            }
+          }
+          return <Tag color={tagColor}>{statusStr}</Tag>
+        }
       },
       {
         title: "Actions",
@@ -105,11 +121,9 @@ class ManageEmployees extends Component {
         // width: "200px",
         render: (_text, record) => (
           <span>
-            <Tooltip title="Edit User">
+            <Tooltip title="Edit Patient">
               <Button
-                onClick={() => {
-                  this.editItem(record.id);
-                }}
+                onClick={() => this.props.history.push("./patients/edit/" + record.id)}
               >
                 <EditOutlined />
               </Button>
@@ -223,7 +237,7 @@ class ManageEmployees extends Component {
     }
     if (filters[dataIndex] && !filters[dataIndex].auto) {
       delete this.props.paginginfo[this.module].filter[dataIndex];
-      this.handleTableChange({ current: 1, pageSize: 10 }, this.props.paginginfo[this.module].filter, {});
+      this.handleTableChange({ current: 1, pageSize: 10 }, {...this.props.paginginfo[this.module].filter,...this.state.customFilters}, {});
 
     }
     filters[dataIndex] = { val: "", clearf: "", filter: false };
@@ -233,23 +247,37 @@ class ManageEmployees extends Component {
   };
 
   async componentDidMount() {
-    this.initComponent();
-  }
-
-  initComponent = async () => {
+    var historyState = this.props.history.location.state;
+    var historyStateObj = this.state.customFilters;
+    if(typeof historyState !== "undefined" && typeof historyState.lab_assigned !== "undefined"){
+      historyStateObj.lab_assigned = [historyState.lab_assigned.toString()];
+    }
+    if(typeof historyState !== "undefined" && typeof historyState.progress_status !== "undefined"){
+      historyStateObj.progress_status = [historyState.progress_status.toString()];
+    }
+    this.setState({ customFilters: historyStateObj });
+    
+    var args = {
+			filters: {},
+			pagination: {},
+			sorter: {column: "name", order: "asc"}
+		}
+    var labs = await this.props.getLabs(args);
+    if(labs.status && labs.status === true){
+      this.setState({ labs: labs.data });
+    }
     if (this.props.paginginfo && this.props.currentModule !== "" && this.props.currentModule !== this.module) {
       this.props.clearPaginationExceptMe(this.module);
-    } else {
-      if (this.props.paginginfo && this.props.paginginfo[this.module]) {
-        this.handleTableChange(this.props.paginginfo[this.module].pagination, this.props.paginginfo[this.module].filter, {}, true);
-        if (this.props.paginginfo[this.module].filters) {
-          let filters = this.props.paginginfo[this.module].filters
-          Object.keys(filters).map(k => { filters[k].auto = false });
-          this.setState({ filters: filters });
-        }
-      } else {
-        this.handleTableChange({ current: 1, pageSize: 10 }, {}, {}, true);
+    }
+    if (this.props.paginginfo && this.props.paginginfo[this.module]) {
+      this.handleTableChange(this.props.paginginfo[this.module].pagination, {...this.props.paginginfo[this.module].filter,...this.state.customFilters}, {}, true);
+      if (this.props.paginginfo[this.module].filters) {
+        let filters = this.props.paginginfo[this.module].filters
+        Object.keys(filters).map(k => { filters[k].auto = false });
+        this.setState({ filters: filters });
       }
+    } else {
+      this.handleTableChange({ current: 1, pageSize: 10 }, this.state.customFilters, {}, true);
     }
   }
 
@@ -267,10 +295,6 @@ class ManageEmployees extends Component {
       });
   };
 
-  editItem = id => {
-    this.props.history.push("./employees/edit/" + id);
-  };
-
   handleTableChange = (pagination, filters, sorter, manual) => {
     if (filters === undefined) filters = {};
     Object.keys(filters).map(key => { if ((!filters[key]) || (Array.isArray(filters[key]) && filters[key].length === 0)) { delete filters[key] } })
@@ -282,10 +306,9 @@ class ManageEmployees extends Component {
         pagination: { current: pagination.current, pageSize: pagination.pageSize }
       })
     }
-    filters = { ...filters, lab_assigned: this.props.match.params.id };
     this.setState({ loading: true });
     this.props
-      .getUserListing({
+      .getPatients({
         filters: filters,
         pagination: { page: pagination.current, pageSize: pagination.pageSize },
         sorter: sorter
@@ -303,24 +326,48 @@ class ManageEmployees extends Component {
       });
   };
 
-  updateUserStatus = async (selected, userId) => {
-    this.setState({ loading: true });
-    try {
-      this.props.updateUser({ id: userId, status: selected }).then(response => {
-        if (response.status && response.status == true) {
-          notifyUser(response.message, "success");
-          this.setState({ loading: false });
-          this.initComponent();
+  checkInPatient = async (id) => {
+    await this.props.updatePatient(id, { progress_status: 2 }).then(response => {
+      if (response.status && response.status == true) {
+        notifyUser(response.message, "success");
+        if (this.props.paginginfo && this.props.paginginfo[this.module]) {
+          this.handleTableChange(this.props.paginginfo[this.module].pagination, {...this.props.paginginfo[this.module].filter,...this.state.customFilters}, {}, true);
+          if (this.props.paginginfo[this.module].filters) {
+            let filters = this.props.paginginfo[this.module].filters
+            Object.keys(filters).map(k => { filters[k].auto = false });
+            this.setState({ filters: filters });
+          }
         } else {
-          notifyUser(response.message, "error");
-          this.setState({ loading: false });
+          this.handleTableChange({ current: 1, pageSize: 10 }, this.state.customFilters, {}, true);
         }
-      });
-    } catch (e) {
-      console.log("Error:", e);
-      this.setState({ loading: false });
+      } else {
+        if (response.message) {
+          notifyUser(response.message, "error");
+        } else {
+          notifyUser("Unknown error. Please try again!", "error");
+        }
+        this.setState({ loading: false });
+      }
+    });
+  }
+
+  onCustomFilter = (filterKey, filterValue) => {
+    this.setState({ filters: {} });
+    this.props.clearFilters(this.module);
+    this.props.clearPagination(this.module);
+    var filtersMain = {...this.state.customFilters, [filterKey]: filterValue };
+    if (this.props.paginginfo && this.props.paginginfo[this.module]) {
+      this.handleTableChange(this.props.paginginfo[this.module].pagination, filtersMain, {}, true);
+      if (this.props.paginginfo[this.module].filters) {
+        let filters = this.props.paginginfo[this.module].filters
+        Object.keys(filters).map(k => { filters[k].auto = false });
+        this.setState({ filters: filters });
+      }
+    } else {
+      this.handleTableChange({ current: 1, pageSize: 10 }, filtersMain, {}, true);
     }
-  };
+    this.setState({ customFilters: filtersMain });
+  }
 
   render() {
     let _state = this.state;
@@ -351,27 +398,87 @@ class ManageEmployees extends Component {
       }
     });
 
+    const labFilter = () => {
+      return (this.state.labs.length > 0) ?
+        <Select
+          showSearch
+          mode="multiple"
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          style={{ width: '100%' }}
+          placeholder="Filter by lab"
+          onChange={(v) => this.onCustomFilter("lab_assigned", v)}
+          maxTagCount="responsive"
+          defaultValue={this.state.customFilters.lab_assigned}
+          value={this.state.customFilters.lab_assigned}
+        >
+          {this.state.labs.map(function (item) {
+            return (
+              <Option key={item.id.toString()} value={item.id.toString()}>
+                {item.name}
+              </Option>
+            );
+          })}
+        </Select>
+        :
+        <Select style={{ width: '100%' }} placeholder="Filter by lab"></Select>
+    }
+
+    const statusFilter = () => {
+      return (typeof this.props.patient_status_list !== "undefined" && this.props.patient_status_list.length > 0) ?
+        <Select
+          showSearch
+          mode="multiple"
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          style={{ width: '100%' }}
+          placeholder="Filter by progress"
+          onChange={(v) => this.onCustomFilter("progress_status", v)}
+          maxTagCount="responsive"
+          defaultValue={this.state.customFilters.progress_status}
+          value={this.state.customFilters.progress_status}
+        >
+          {this.props.patient_status_list.map(function (item) {
+            return (
+              <Option key={item.id.toString()} value={item.id.toString()}>
+                {item.name}
+              </Option>
+            );
+          })}
+        </Select>
+        :
+        <Select style={{ width: '100%' }} placeholder="Filter by progress"></Select>
+    }
     return (
       <div className="gray-bg">
         <Row gutter={24}>
-          <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+          <Col xs={12} sm={3} md={3} lg={3} xl={3}>
             <Typography.Title level={4}>
-              Manage Employees
+              All Patients
             </Typography.Title>
           </Col>
-          <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+          <Col xs={12} sm={6} md={6} lg={6} xl={6}>
+            {labFilter()}
+          </Col>
+          <Col xs={12} sm={6} md={6} lg={6} xl={6}>
+            {statusFilter()}
+          </Col>
+          <Col xs={9}>
+            <Button
+							type="primary"
+							className="right-fl def-blue"
+							htmlType="button"
+							onClick={() => this.props.history.goBack()}
+              style={{ marginLeft: 5}}
+						>
+							<ArrowLeftOutlined />
+							<IntlMessages id="admin.userlisting.back" />
+						</Button>
             <Button
               type="primary"
-              onClick={() => this.props.history.goBack()}
-              className="right-fl def-blue"
-              style={{ marginLeft: 5 }}
-            >
-              Back
-              <ArrowLeftOutlined />
-            </Button>
-            <Button
-              type="primary"
-              onClick={() => this.props.history.push("./employees/add")}
+              onClick={() => this.props.history.push("./patients/add")}
               className="right-fl def-blue"
             >
               Add New
@@ -403,16 +510,16 @@ class ManageEmployees extends Component {
 
 function mapStateToProps(state) {
   return {
-    ...state.userConfig,
     ...state.pagination,
-    ...state.language
+    ...state.language,
+    ...state.adminConfig
   };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...userActions, ...paginationActions }, dispatch);
+  return bindActionCreators({ ...adminActions, ...labsActions, ...patientActions, ...paginationActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-    ManageEmployees
+    AllPatients
   )
 );

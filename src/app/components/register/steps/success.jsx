@@ -29,7 +29,7 @@ const output = ({...props}) => {
 
 	let html = [];
     html.push('"'+props.formdata.firstname+' '+props.formdata.lastname+'," Thank you for choosing The Test Solution. Your Covid-19 Test has been scheduled for '+ moment(props.formdata.scheduled_time).format("hh:mm A")+' on '+moment(props.formdata.scheduled_date).format("YYYY-MM-DD")+', at our '+labAssigned+' location. In the next few minutes, you will be receiving an e-mail confirmation with the appointment information, name, address, confirmation code, and google maps link. If you do not receive the e-mail in your inbox within the next 3 minutes, please check your junk folder and/or select the email re-send link');
-	html.push(<Button type="link" onClick={() => resendEmail()}>Click Here</Button>);
+	html.push(<Button type="link" onClick={() => resendEmail()} style={{ padding: '0 3px', height: 'auto'}}>Click Here</Button>);
 	html.push(".");
 	return <Spin spinning={submitting}>
 		<Result
@@ -37,7 +37,7 @@ const output = ({...props}) => {
 			title="Thank you, your appointment is scheduled successfully!"
 			subTitle={html}
 			extra={[
-				<Button style={{ padding: "0 4px" }} onClick={() => window.location = Config.WEB_URL} type="primary" key="homebtn">
+				<Button onClick={() => window.location = Config.WEB_URL} type="primary" key="homebtn">
 					Go to Homepage
 				</Button>
 			]}

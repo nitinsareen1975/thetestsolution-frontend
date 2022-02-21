@@ -46,7 +46,7 @@ const adminOptions = [{
     children: [
       {
         key: "/admin/users",
-        label: "Manage Users",
+        label: "All Users",
         roles: ["Administrator"]
       },
       {
@@ -112,8 +112,8 @@ const labAdminOptions = [{
         roles: ["Doctor"]
       },
       {
-        key: "/lab/patients/checkin",
-        label: "CheckIn List",
+        key: "/lab/patients/checkedin",
+        label: "CheckedIn List",
         roles: ["Doctor"]
       },
       {

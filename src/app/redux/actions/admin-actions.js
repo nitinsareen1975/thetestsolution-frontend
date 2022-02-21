@@ -20,29 +20,6 @@ export function getCountries() {
   };
 }
 
-
-export function myAccount() {
-  return async function(_dispatch, _getState) {
-    try {
-      let resp = await API.getMyAccount();
-      return resp;
-    } catch (e) {
-      return { error: true };
-    }
-  };
-}
-
-export function updateMyAccount(data) {
-  return async function(_dispatch, _getState) {
-    try {
-      let resp = await API.updateMyAccount(data);
-      return resp;
-    } catch (e) {
-      return { error: true };
-    }
-  };
-}
-
 export function getPaymentMethods() {
   return async function(dispatch, _getState) {
     try {

@@ -108,14 +108,6 @@ class EditPatient extends React.Component {
       transaction_id: data.transaction_id ? data.transaction_id : UserService.getRandomString(24, data.email),
       confirmation_code: UserService.getRandomString(24, data.email)
     };
-    var historyState = this.props.history.location.state;
-    if(typeof historyState !== "undefined" && typeof historyState.showCheckIn !== "undefined" && historyState.showCheckIn === true){
-      var patients_statuses = this.props.patient_status_list;
-      if (patients_statuses.length > 0) {
-        var statusObj = patients_statuses.find(i => i.code == 'checked-in');
-        args['progress_status'] = statusObj.id;
-      }
-    }
     if (typeof this.state.identifierDocUpload !== "undefined" && this.state.identifierDocUpload !== null && typeof this.state.identifierDocUpload !== "string" && this.state.identifierDocUpload.name) {
       const formData = new FormData();
       formData.append('identifier_doc', this.state.identifierDocUpload);
@@ -181,11 +173,6 @@ class EditPatient extends React.Component {
 	}
 
   render() {
-    var historyState = this.props.history.location.state;
-    var showCheckinBtn = false;
-    if(typeof historyState !== "undefined" && typeof historyState.showCheckIn !== "undefined" && historyState.showCheckIn === true){
-      showCheckinBtn = true;
-    }
     return (
       <div>
         <Row gutter={24}>
@@ -233,7 +220,7 @@ class EditPatient extends React.Component {
                       htmlType="submit"
                       size="large"
                     >
-                      {showCheckinBtn ? "Update and Checkin" : <IntlMessages id="admin.userlisting.update" />}
+                      <IntlMessages id="admin.userlisting.update" />
                       <SaveOutlined />
                     </Button>
                   </Form.Item>
