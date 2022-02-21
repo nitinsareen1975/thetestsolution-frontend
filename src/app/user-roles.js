@@ -44,6 +44,6 @@ export default{
         }
     },
     permissions: {
-		manage_labs: ['Administrator']
+		admin: ['Administrator']
 	}
 }

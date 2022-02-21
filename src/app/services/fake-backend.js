@@ -233,7 +233,7 @@ export function configureFakeBackend() {
           progress_status: 1,
           race: "Black",
           scheduled_date: "2022-02-11",
-          scheduled_time: "2022-02-09",
+          scheduled_time: "09:00 AM",
           state: "Georgia",
           status: 1,
           street: "3213 Campus Loop Road, Kennesaw, GA, USA",

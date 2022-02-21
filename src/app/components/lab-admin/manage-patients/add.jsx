@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import * as adminActions from "../../../redux/actions/admin-actions";
 import * as patientActions from "../../../redux/actions/patient-actions";
 import { notifyUser } from "../../../services/notification-service";
-import { Form, Button, Row, Col, Spin, Typography } from "antd";
+import { Form, Button, Row, Col, Spin, Typography, message } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
 import { PlusCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import ContactInfo from "../manage-patients/manage-patients-information/contact-info.jsx";
@@ -20,11 +20,17 @@ import moment from "moment";
 import GlobalAPI from "../../../redux/api/global-api";
 
 class AddPatient extends React.Component {
+	formRef = React.createRef();
 	state = {
 		loading: true,
 		countries: [],
 		dataLoaded: false,
-		identifierDoc: null
+		identifierDoc: null,
+		pricingId: 0,
+		transactionId: null,
+		patient: {},
+		pricingArray: [],
+		formdata: []
 	};
 
 	async componentDidMount() {
@@ -42,6 +48,14 @@ class AddPatient extends React.Component {
 	}
 
 	handleSubmit = async (data) => {
+		if (this.state.pricingId <= 0) {
+			message.error("Please choose a pricing.");
+			return false;
+		}
+		if (this.state.transactionId === null) {
+			message.error("Payment transaction ID found. Please make sure patient has made a payment.");
+			return false;
+		}
 		var lab = JSON.parse(localStorage.getItem("lab"));
 		var args = {
 			city: data.city,
@@ -69,15 +83,16 @@ class AddPatient extends React.Component {
 			phone: data.phone,
 			race: data.race,
 			scheduled_date: moment(data.scheduled_date).format("YYYY-MM-DD"),
-			scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD"),
+			scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD HH:mm:ss"),
 			state: data.state,
 			street: data.street,
 			test_type: data.test_type,
 			zip: data.zip,
-			transaction_id: data.transaction_id ? data.transaction_id : UserService.getRandomString(24, data.email),
+			pricing_id: this.state.pricingId,
+			transaction_id: this.state.transactionId,
 			confirmation_code: UserService.getRandomString(24, data.email)
 		};
-		if (typeof data.identifier_doc.file !== "undefined" && data.identifier_doc.file !== null && typeof data.identifier_doc.file !== "string" && data.identifier_doc.file.name) {
+		if (typeof data.identifier_doc !== "undefined" && typeof data.identifier_doc.file !== "undefined" && data.identifier_doc.file !== null && typeof data.identifier_doc.file !== "string" && data.identifier_doc.file.name) {
 			const formData = new FormData();
 			formData.append('identifier_doc', data.identifier_doc.file);
 			await GlobalAPI.uploadIdentifierDoc('patient-identifier-doc', formData).then((response) => {
@@ -91,7 +106,7 @@ class AddPatient extends React.Component {
 			if (response.status && response.status === true) {
 				notifyUser(response.message, "success");
 				this.setState({ loading: false });
-				this.props.history.push("../patients");
+				this.props.history.push("../");
 			} else {
 				if (response.message) {
 					notifyUser(response.message, "error");
@@ -105,6 +120,30 @@ class AddPatient extends React.Component {
 				this.setState({ loading: false });
 			});
 	};
+
+	onChangeFormFieldValue = (key, value) => {
+		this.formRef.current.setFieldsValue({ [key]: value });
+	}
+
+	setPricingId = (pricing) => {
+		this.setState({ pricingId: pricing });
+	}
+
+	setTransactionId = (id) => {
+		this.setState({ transactionId: id });
+	}
+
+	setPricingArray = (data) => {
+		this.setState({ pricingArray: data });
+	}
+
+	onValuesChange = (changedFields, allFields) => {
+		this.setState({ formdata: allFields })
+	}
+
+	setLoading = (value) => {
+		this.setState({ loading: value });
+	}
 
 	render() {
 		return (
@@ -135,15 +174,15 @@ class AddPatient extends React.Component {
 				</Row>
 				<hr /><br />
 				<Spin spinning={this.state.loading}>
-					<Form layout="vertical" onFinish={this.handleSubmit}>
+					<Form ref={this.formRef} layout="vertical"/*  onFinish={this.handleSubmit} */ onValuesChange={this.onValuesChange}>
 						<ContactInfo />
 						<PersonalInfo />
 						<HomeAddressInfo countries={this.state.countries} />
 						<SymptomsInfo data={[]} />
 						<Identification removeIdentifierDocInline={() => { }} identifier_doc={this.state.identifierDoc} countries={this.state.countries} setIdentifierDocUpload={() => { }} />
-						<TestType />
-						<PaymentInfo />
-						<Row>
+						<TestType data={this.state.patient} changeFormFieldValue={this.onChangeFormFieldValue} setPricingId={this.setPricingId} setPricingArray={this.setPricingArray} setLoading={this.setLoading}/>
+						<PaymentInfo paymentDone={false} data={this.state.formdata} setTransactionId={this.setTransactionId} pricingId={this.state.pricingId} pricingArray={this.state.pricingArray} onSubmit={this.handleSubmit} setLoading={this.setLoading}/>
+						{/* <Row>
 							<Col>
 								<Form.Item>
 									<Button
@@ -158,7 +197,7 @@ class AddPatient extends React.Component {
 									</Button>
 								</Form.Item>
 							</Col>
-						</Row>
+						</Row> */}
 					</Form>
 				</Spin>
 			</div>

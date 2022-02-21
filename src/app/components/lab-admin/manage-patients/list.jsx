@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import { PlusCircleOutlined } from '@ant-design/icons';
 import * as patientActions from "../../../redux/actions/patient-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
+import * as adminActions from "../../../redux/actions/admin-actions";
 import {
   Table,
   Input,
@@ -12,10 +13,12 @@ import {
   Row,
   Col,
   Typography,
-  Tooltip
+  Tooltip,
+  Modal
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
-import { EditOutlined, CloseOutlined, SearchOutlined, ImportOutlined } from '@ant-design/icons';
+import { EditOutlined, CloseOutlined, SearchOutlined, ImportOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import moment from "moment";
 
 class AllPatients extends Component {
   constructor(props) {
@@ -39,7 +42,9 @@ class AllPatients extends Component {
         pageSize: 10,
         current: 1
       },
-      filters: {}
+      filters: {},
+      checkInModalVisible: false,
+      checkInPatientId: 0
     };
     this.handleTableChange = this.handleTableChange.bind(this);
   }
@@ -77,21 +82,17 @@ class AllPatients extends Component {
         title: "Scheduled Date/Time",
         dataIndex: "scheduled_date",
         render: (_text, row) => (
-          <span>{row.scheduled_date}<br></br>{row.scheduled_time}</span>
+          <span>{row.scheduled_date}<br></br>{moment(row.scheduled_time).format("hh:mm a")}</span>
         )
       },
       {
-        title: "Lab Assigned",
-        render: (_text, record) => (
-          <span>
-            {record.lab_assigned}
-          </span>
-        )
+        title: "Confirmation Code",
+        dataIndex: "confirmation_code"
       },
       {
         title: "Actions",
         rowKey: "action",
-        // width: "200px",
+        width: 130,
         render: (_text, record) => (
           <span>
             <Tooltip title="Edit Patient">
@@ -101,14 +102,13 @@ class AllPatients extends Component {
                 <EditOutlined />
               </Button>
             </Tooltip>
-            <Tooltip title="CheckIn Patient">
+            <Tooltip title="Check In Patient">
               <Button
                 type="primary"
-                icon={<ImportOutlined />}
-                onClick={() => this.checkInPatient(record.id)}
-                style={{ color: '#222'}}
+                onClick={() => this.confirmCheckInPatient(record.id)}
+                style={{ color: '#222' }}
               >
-                Check In
+                <ImportOutlined />
               </Button>
             </Tooltip>
           </span>
@@ -272,9 +272,16 @@ class AllPatients extends Component {
       })
     }
     this.setState({ loading: true });
+    var patients_statuses = this.props.patient_status_list;
+    var lab = JSON.parse(localStorage.getItem("lab"));
+    var patientTypeFilter = {lab_assigned: lab.id};
+    if (patients_statuses.length > 0) {
+      var statusObj = patients_statuses.find(i => i.code == 'scheduled');
+      patientTypeFilter["progress_status"] = statusObj.id;
+    }
     this.props
       .getScheduledPatients({
-        filters: filters,
+        filters: {...filters, ...patientTypeFilter},
         pagination: { page: pagination.current, pageSize: pagination.pageSize },
         sorter: sorter
       })
@@ -291,29 +298,54 @@ class AllPatients extends Component {
       });
   };
 
-  checkInPatient = async(id) => {
-    await this.props.updatePatient(id, {progress_status: 2}).then(response => {
-      if (response.status && response.status == true) {
-				notifyUser(response.message, "success");
-        if (this.props.paginginfo && this.props.paginginfo[this.module]) {
-          this.handleTableChange(this.props.paginginfo[this.module].pagination, this.props.paginginfo[this.module].filter, {}, true);
-          if (this.props.paginginfo[this.module].filters) {
-            let filters = this.props.paginginfo[this.module].filters
-            Object.keys(filters).map(k => { filters[k].auto = false });
-            this.setState({ filters: filters });
-          }
-        } else {
-          this.handleTableChange({ current: 1, pageSize: 10 }, {}, {}, true);
-        }
-			} else {
-				if (response.message) {
-					notifyUser(response.message, "error");
-				} else {
-					notifyUser("Unknown error. Please try again!", "error");
-				}
-				this.setState({ loading: false });
-			}
+  confirmCheckInPatient = (id) => {
+    this.setState({
+      checkInPatientId: id
+    }, () => {
+      this.setState({ checkInModalVisible: true });
     });
+  }
+
+  checkInPatient = async (id) => {
+    var patients_statuses = this.props.patient_status_list;
+    if (patients_statuses.length > 0) {
+      var statusObj = patients_statuses.find(i => i.code == 'checked-in');
+      await this.props.updatePatient(id, { progress_status: statusObj.id }).then(response => {
+        if (response.status && response.status == true) {
+          notifyUser(response.message, "success");
+          if (this.props.paginginfo && this.props.paginginfo[this.module]) {
+            this.handleTableChange(this.props.paginginfo[this.module].pagination, this.props.paginginfo[this.module].filter, {}, true);
+            if (this.props.paginginfo[this.module].filters) {
+              let filters = this.props.paginginfo[this.module].filters
+              Object.keys(filters).map(k => { filters[k].auto = false });
+              this.setState({ filters: filters });
+            }
+          } else {
+            this.handleTableChange({ current: 1, pageSize: 10 }, {}, {}, true);
+          }
+          this.setState({ checkInModalVisible: false, checkInPatientId: 0 });
+        } else {
+          if (response.message) {
+            notifyUser(response.message, "error");
+          } else {
+            notifyUser("Unknown error. Please try again!", "error");
+          }
+          this.setState({ checkInModalVisible: false, checkInPatientId: 0, loading: false });
+        }
+      });
+    }
+  }
+
+  editPatientInfo = () => {
+    this.props.history.push("./patients/edit/" + this.state.checkInPatientId, { showCheckIn: true });
+  }
+
+  checkinWithoutEdit = () => {
+    if (this.state.checkInPatientId > 0) {
+      this.checkInPatient(this.state.checkInPatientId);
+    } else {
+      this.setState({ checkInModalVisible: false });
+    }
   }
 
   render() {
@@ -347,6 +379,22 @@ class AllPatients extends Component {
 
     return (
       <div className="gray-bg">
+        <Modal
+          title="Please confirm"
+          visible={this.state.checkInModalVisible}
+          onOk={this.editPatientInfo}
+          onCancel={() => this.setState({ checkInModalVisible: false, checkInPatientId: 0 })}
+          footer={[
+            <Button type="primary" onClick={this.editPatientInfo}>
+              Yes, Edit and CheckIn
+            </Button>,
+            <Button type="default" onClick={this.checkinWithoutEdit}>
+              No, CheckIn without editing
+            </Button>
+          ]}
+        >
+          <p>Do you want to edit patient info before checkin?</p>
+        </Modal>
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
@@ -355,8 +403,17 @@ class AllPatients extends Component {
           </Col>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Button
+              style={{ marginLeft: 10}}
               type="primary"
-              onClick={() => this.props.history.push("../patients/add")}
+              onClick={() => this.props.history.goBack()}
+              className="right-fl def-blue"
+            >
+              <ArrowLeftOutlined />
+              Back
+            </Button>
+            <Button
+              type="primary"
+              onClick={() => this.props.history.push("./patients/add")}
               className="right-fl def-blue"
             >
               Add New
@@ -389,11 +446,12 @@ class AllPatients extends Component {
 function mapStateToProps(state) {
   return {
     ...state.pagination,
-    ...state.language
+    ...state.language,
+    ...state.adminConfig
   };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...patientActions, ...paginationActions }, dispatch);
+  return bindActionCreators({ ...adminActions, ...patientActions, ...paginationActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(

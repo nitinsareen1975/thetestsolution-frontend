@@ -12,6 +12,15 @@ import EditLab  from "../components/admin/manage-lab/edit.jsx"
 import ManageTestTypes from "../components/admin/test-types/list.jsx";
 import AddTestType from "../components/admin/test-types/add.jsx";
 import EditTestType  from "../components/admin/test-types/edit.jsx"
+import EmployeesList  from "../components/admin/manage-employees/list.jsx"
+import EditEmployee  from "../components/admin/manage-employees/edit.jsx"
+import AddEmployee  from "../components/admin/manage-employees/add.jsx"
+import AllPatients from "../components/admin/manage-patients/all.jsx";
+import AddPatient from "../components/admin/manage-patients/add.jsx";
+import EditPatient from "../components/admin/manage-patients/edit.jsx";
+import MyAccount from "../components/my-account/profile.jsx";
+import ChangePassword from "../components/my-account/change-password.jsx";
+
 const routes = [
   {
     path: "",
@@ -52,6 +61,38 @@ const routes = [
   {
     path: "test-types/edit/:id",
     component: EditTestType
+  },
+  {
+    path: "labs/edit/:id/employees",
+    component: EmployeesList
+  },
+  {
+    path: "labs/edit/:id/employees/edit/:employeeId",
+    component: EditEmployee
+  },
+  {
+    path: "labs/edit/:id/employees/add",
+    component: AddEmployee
+  },
+  {
+    path: "all-patients",
+    component: AllPatients
+  },
+  {
+    path: "patients/add",
+    component: AddPatient
+  },
+  {
+    path: "patients/edit/:id",
+    component: EditPatient
+  },
+  {
+    path: "account",
+    component: MyAccount
+  },
+  {
+    path: "account/change-password",
+    component: ChangePassword
   }
 ];
 

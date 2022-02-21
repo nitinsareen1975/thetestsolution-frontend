@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import { PlusCircleOutlined } from '@ant-design/icons';
 import * as patientActions from "../../../redux/actions/patient-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
+import * as adminActions from "../../../redux/actions/admin-actions";
 import {
   Table,
   Input,
@@ -12,15 +13,16 @@ import {
   Row,
   Col,
   Typography,
-  Tooltip
+  Tooltip,
+  Modal
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
-import { EditOutlined, CloseOutlined, SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { EditOutlined, CloseOutlined, SearchOutlined, FilePdfOutlined, ArrowLeftOutlined, ClockCircleOutlined } from '@ant-design/icons';
 
-class AllPatients extends Component {
+class CheckedinList extends Component {
   constructor(props) {
     super(props);
-    this.module = 'patients_checkedin';
+    this.module = 'checkedin_list';
     this.state = {
       dataLoaded: false,
       loading: false,
@@ -39,7 +41,9 @@ class AllPatients extends Component {
         pageSize: 10,
         current: 1
       },
-      filters: {}
+      filters: {},
+      checkInModalVisible: false,
+      checkInPatientId: 0
     };
     this.handleTableChange = this.handleTableChange.bind(this);
   }
@@ -81,12 +85,8 @@ class AllPatients extends Component {
         )
       },
       {
-        title: "Lab Assigned",
-        render: (_text, record) => (
-          <span>
-            {record.lab_assigned}
-          </span>
-        )
+        title: "Test Selected",
+        dataIndex: "test_type_name"
       },
       {
         title: "Actions",
@@ -96,19 +96,27 @@ class AllPatients extends Component {
           <span>
             <Tooltip title="Edit Patient">
               <Button
-                onClick={() => this.props.history.push("../../patients/edit/" + record.id)}
+                onClick={() => this.props.history.push("./patients/edit/" + record.id)}
               >
                 <EditOutlined />
               </Button>
             </Tooltip>
-            <Tooltip title="Mark as Complete">
+            <Tooltip title="Print Patient Form">
               <Button
                 type="primary"
-                icon={<CheckCircleOutlined />}
-                onClick={() => this.markAsComplete(record.id)}
-                style={{ color: '#222'}}
+                onClick={() => this.printPatientForm(record.id)}
+                style={{ color: '#222' }}
               >
-                Mark as Complete
+                <FilePdfOutlined />
+              </Button>
+            </Tooltip>
+            <Tooltip title="Samples Collected">
+              <Button
+                type="primary"
+                onClick={() => this.samplesCollected(record.id)}
+                style={{ color: '#222' }}
+              >
+                <ClockCircleOutlined />
               </Button>
             </Tooltip>
           </span>
@@ -272,9 +280,17 @@ class AllPatients extends Component {
       })
     }
     this.setState({ loading: true });
+
+    var patients_statuses = this.props.patient_status_list;
+    var lab = JSON.parse(localStorage.getItem("lab"));
+    var patientTypeFilter = {lab_assigned: lab.id};
+    if (patients_statuses.length > 0) {
+      var statusObj = patients_statuses.find(i => i.code == 'checked-in');
+      patientTypeFilter["progress_status"] = statusObj.id;
+    }
     this.props
-      .getCheckedinPatients({
-        filters: filters,
+      .getPatients({
+        filters: {...filters, ...patientTypeFilter},
         pagination: { page: pagination.current, pageSize: pagination.pageSize },
         sorter: sorter
       })
@@ -291,29 +307,37 @@ class AllPatients extends Component {
       });
   };
 
-  markAsComplete = async(id) => {
-    await this.props.updatePatient(id, {progress_status: 3}).then(response => {
-      if (response.status && response.status == true) {
-				notifyUser(response.message, "success");
-        if (this.props.paginginfo && this.props.paginginfo[this.module]) {
-          this.handleTableChange(this.props.paginginfo[this.module].pagination, this.props.paginginfo[this.module].filter, {}, true);
-          if (this.props.paginginfo[this.module].filters) {
-            let filters = this.props.paginginfo[this.module].filters
-            Object.keys(filters).map(k => { filters[k].auto = false });
-            this.setState({ filters: filters });
+  printPatientForm = (patientId) => {
+    window.open("/print-patient-form?pid="+patientId,"_blank");
+  }
+
+  samplesCollected = async(patientId) => {
+    var patients_statuses = this.props.patient_status_list;
+    if (patients_statuses.length > 0) {
+      var statusObj = patients_statuses.find(i => i.code == 'pending-results');
+      await this.props.updatePatient(patientId, { progress_status: statusObj.id }).then(response => {
+        if (response.status && response.status == true) {
+          notifyUser("Patient moved to Pending Results.", "success");
+          if (this.props.paginginfo && this.props.paginginfo[this.module]) {
+            this.handleTableChange(this.props.paginginfo[this.module].pagination, this.props.paginginfo[this.module].filter, {}, true);
+            if (this.props.paginginfo[this.module].filters) {
+              let filters = this.props.paginginfo[this.module].filters
+              Object.keys(filters).map(k => { filters[k].auto = false });
+              this.setState({ filters: filters });
+            }
+          } else {
+            this.handleTableChange({ current: 1, pageSize: 10 }, {}, {}, true);
           }
         } else {
-          this.handleTableChange({ current: 1, pageSize: 10 }, {}, {}, true);
+          if (response.message) {
+            notifyUser(response.message, "error");
+          } else {
+            notifyUser("Unknown error. Please try again!", "error");
+          }
+          this.setState({ loading: false });
         }
-			} else {
-				if (response.message) {
-					notifyUser(response.message, "error");
-				} else {
-					notifyUser("Unknown error. Please try again!", "error");
-				}
-				this.setState({ loading: false });
-			}
-    });
+      });
+    }
   }
 
   render() {
@@ -350,8 +374,18 @@ class AllPatients extends Component {
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
-              CheckedIn Patients
+              Checked In List
             </Typography.Title>
+          </Col>
+          <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+            <Button
+              type="primary"
+              onClick={() => this.props.history.goBack()}
+              className="right-fl def-blue"
+            >
+              <ArrowLeftOutlined />
+              Back
+            </Button>
           </Col>
         </Row>
         <hr />
@@ -379,14 +413,15 @@ class AllPatients extends Component {
 function mapStateToProps(state) {
   return {
     ...state.pagination,
-    ...state.language
+    ...state.language,
+    ...state.adminConfig
   };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...patientActions, ...paginationActions }, dispatch);
+  return bindActionCreators({ ...adminActions, ...patientActions, ...paginationActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-    AllPatients
+    CheckedinList
   )
 );

@@ -21,6 +21,12 @@ const deletePatient = data => {
 const removeIdentifierDoc = (key, id) => {
   return Axios.delete("/api/upload/"+key+"/"+id, undefined, undefined);
 };
+const getTransactionDetails = (data) => {
+  return Axios.get("/api/payments", data, undefined);
+};
+const refundTransaction = (data) => {
+  return Axios.post("/api/payments/refund", data, undefined);
+};
 export default {
   getPatients,
   addPatient,
@@ -28,5 +34,7 @@ export default {
   updatePatient,
   getPatient,
   deletePatient,
-  removeIdentifierDoc
+  removeIdentifierDoc,
+  getTransactionDetails,
+  refundTransaction
 };

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import logo from "../../assets/images/horizontal-logo.png";
+import logo from "../../assets/images/logo.png";
 import { notifyUser } from "../../services/notification-service";
 import * as UserActions from "../../redux/actions/user-actions";
 import * as adminActions from "../../redux/actions/admin-actions";
@@ -58,8 +58,10 @@ class Register extends Component {
   }
 
   submitStep = (data) => {
+    var mergedData = { ...data, ...this.state.data };
+    mergedData.lab_assigned = data.lab_assigned;
     this.setState({
-      data: { ...data, ...this.state.data }
+      data: mergedData
     }, () => {
       this.gotoNextStep();
     });
@@ -84,6 +86,7 @@ class Register extends Component {
       have_sore_throat: data.have_sore_throat,
       have_vaccinated: data.have_vaccinated,
       identifier: data.identifier,
+      identifier_state: data.identifier_state,
       identifier_country: data.identifier_country,
       identifier_doc: "",
       identifier_type: data.identifier_type,
@@ -93,15 +96,15 @@ class Register extends Component {
       phone: data.phone,
       race: data.race,
       scheduled_date: moment(data.scheduled_date).format("YYYY-MM-DD"),
-      scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD"),
+      scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD HH:mm:ss"),
       state: data.state,
       street: data.street,
-      test_type: data.test_type,
+      pricing_id: data.pricing_id,
       zip: data.zip,
-      transaction_id: UserService.getRandomString(24, data.email),
+      transaction_id: data.transaction_id,
       confirmation_code: UserService.getRandomString(24, data.email)
     };
-    if (typeof data.identifier_doc.file !== "undefined" && data.identifier_doc.file !== null && typeof data.identifier_doc.file !== "string" && data.identifier_doc.file.name) {
+    if (typeof data.identifier_doc !== "undefined" && typeof data.identifier_doc.file !== "undefined" && data.identifier_doc.file !== null && typeof data.identifier_doc.file !== "string" && data.identifier_doc.file.name) {
       const formData = new FormData();
       formData.append('identifier_doc', data.identifier_doc.file);
       await GlobalAPI.uploadIdentifierDoc('patient-identifier-doc', formData).then((response) => {
@@ -114,7 +117,7 @@ class Register extends Component {
     await this.props.registerPatient(args).then((response) => {
         if (response.status && response.status === true) {
           notifyUser(response.message, "success");
-          this.setState({ submitted: false, paymentDone: true });
+          this.setState({ data: { ...args, ...this.state.data }, submitted: false, paymentDone: true });
         } else {
           if (response.message) {
             notifyUser(response.message, "error");
@@ -162,7 +165,7 @@ class Register extends Component {
                     <div className="form-column">
                       <div className="form-column-inner" style={{ maxWidth: '100%' }}>
                         {this.state.paymentDone === true ?
-                          <Success {...this.props} />
+                          <Success {...this.props} formdata={this.state.data}/>
                           : <>
                             <Steps current={current} className="form-type">
                               {steps.map(item => (
@@ -176,6 +179,7 @@ class Register extends Component {
                                 handleSubmit={this.handleSubmit}
                                 parentNext={this.gotoNextStep}
                                 parentPrev={this.gotoPreviousStep}
+                                data={this.state.data}
                                 {...this.props}
                               />
                             </div>

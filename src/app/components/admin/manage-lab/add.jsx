@@ -24,17 +24,25 @@ import IntlMessages from "../../../services/intlMesseges";
 import { PlusCircleOutlined, ArrowLeftOutlined, UploadOutlined, PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import Config from "../../../config";
+import Locator from "./locator.jsx";
 
 const { Option } = Select;
 
 class AddLab extends React.Component {
+  formRef = React.createRef();
+  radiusRef = React.createRef();
   state = {
     loading: true,
     dataLoaded: false,
     logo: null,
     testTypes: [],
     countries: [],
-    lab_pricing: []
+    lab_pricing: [],
+    location: {
+      lat: 0,
+      lng: 0
+    },
+    minRadius: 50
   };
 
   async componentDidMount() {
@@ -79,11 +87,15 @@ class AddLab extends React.Component {
         }
       });
     }
+    if (this.state.location.lat) {
+      args['geo_lat'] = this.state.location.lat;
+      args['geo_long'] = this.state.location.lng;
+    }
     this.setState({ loading: true });
-    await this.props.addLab(args).then(async(response) => {
+    await this.props.addLab(args).then(async (response) => {
       if (response.status && response.status === true) {
-        if(data.lab_pricing && data.lab_pricing.length > 0){
-          await this.props.updateLabPricing(response.data.id, {pricing: data.lab_pricing}).then(res =>{
+        if (data.lab_pricing && data.lab_pricing.length > 0) {
+          await this.props.updateLabPricing(response.data.id, { pricing: data.lab_pricing }).then(res => {
             if (!res.status || res.status === false) {
               if (res.message) {
                 notifyUser(res.message, "error");
@@ -141,10 +153,30 @@ class AddLab extends React.Component {
     this.setState({ lab_pricing: allFields.lab_pricing })
   }
 
+  setLatLong = (cords, locationObj) => {
+    var _cords = this.state.location;
+    if (cords && cords !== null && cords !== undefined) {
+      _cords.lat = cords.lat;
+      _cords.lng = cords.lng;
+    }
+    this.setState({
+      location: _cords
+    }, () => {
+      if (locationObj && locationObj.state) {
+        this.formRef.current.setFieldsValue({
+          street: locationObj.address,
+          city: locationObj.city,
+          state: locationObj.state,
+          zip: locationObj.zip
+        });
+      }
+    });
+  }
+
   render() {
     const { formLayout } = this.state;
     var lab_pricing = this.state.lab_pricing;
-    if(lab_pricing.length > 0 && typeof lab_pricing[0] === "undefined"){
+    if (lab_pricing.length > 0 && typeof lab_pricing[0] === "undefined") {
       lab_pricing = [];
     }
     const formItemLayout =
@@ -183,7 +215,7 @@ class AddLab extends React.Component {
         <hr />
         <div>
           <Spin spinning={this.state.loading}>
-            <Form onValuesChange={this.onValuesChange} layout="vertical" onFinish={this.handleSubmit}>
+            <Form  ref={this.formRef} onValuesChange={this.onValuesChange} layout="vertical" onFinish={this.handleSubmit}>
               <Row gutter={24}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
@@ -310,7 +342,7 @@ class AddLab extends React.Component {
                     name="payment_mode"
                   >
                     <Select>
-                      {Config.PaymentModes.map(mode => {
+                      {this.props.payment_methods && this.props.payment_methods.length > 0 && this.props.payment_methods.map(mode => {
                         return <Option key={mode.id.toString()} value={mode.id.toString()}>{mode.name}</Option>
                       })}
                     </Select>
@@ -503,7 +535,18 @@ class AddLab extends React.Component {
                   </Form.List>
                 </Col>
               </Row>
-              <Row>
+              <Row gutter={24}>
+                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                  <Typography.Title level={4}>Location</Typography.Title>
+                </Col>
+              </Row>
+              <hr />
+              <Row gutter={24}>
+                <Col xs={24} sm={24}>
+                  <Locator on_locate={this.setLatLong} cords={this.state.location} radius={this.state.lab && this.state.lab.radius ? this.state.lab.radius : this.state.minRadius} radius_input={this.radiusRef} defaultAddress={this.state.lab && this.state.lab.street ? this.state.lab.street : null} />
+                </Col>
+              </Row>
+              <Row style={{ marginTop: 10 }}>
                 <Col>
                   <Form.Item>
                     <Button

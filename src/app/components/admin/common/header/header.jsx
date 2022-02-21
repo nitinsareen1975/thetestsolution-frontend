@@ -1,6 +1,6 @@
 import React from "react";
 import { Row, Button, Badge, Dropdown, Menu } from "antd";
-import { BellOutlined, UserOutlined } from '@ant-design/icons';
+import { BellOutlined, UserOutlined, SettingOutlined, UnlockOutlined, PoweroffOutlined } from '@ant-design/icons';
 // import LanguageSwitcher from "../../../../services/languageProvider/switcher";
 import * as UserService from "../../../../services/user-service";
 import {
@@ -11,7 +11,17 @@ const AdminHeader = ({ ...props }) => {
   var user = JSON.parse(localStorage.getItem("user"));
   const menu = (
     <Menu>
-      <Menu.Item key="1" icon={<UserOutlined />}>
+      <Menu.Item key="admin-account" icon={<SettingOutlined />}>
+        <a onClick={() => props.history.push("/admin/account")}>
+          My Account
+        </a>
+      </Menu.Item>
+      <Menu.Item key="admin-account-changepassword" icon={<UnlockOutlined />}>
+        <a onClick={() => props.history.push("/admin/account/change-password")}>
+          Change Password
+        </a>
+      </Menu.Item>
+      <Menu.Item key="logout" icon={<PoweroffOutlined />}>
         <a onClick={() => UserService.logOut()}>
           Logout
         </a>

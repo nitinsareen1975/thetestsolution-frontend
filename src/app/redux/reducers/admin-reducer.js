@@ -1,6 +1,8 @@
 import { Types } from "../constants/admin-types";
 const initialState = {
-  countries: []
+  countries: [],
+  payment_methods: [],
+  patient_status_list: []
 };
 export default function adminReducer(state = initialState, action) {
   switch (action.type) {
@@ -18,6 +20,16 @@ export default function adminReducer(state = initialState, action) {
       return {
         ...state,
         countries: action.payload
+      };
+    case Types.PATIENT_STATUS_LIST:
+      return {
+        ...state,
+        patient_status_list: action.payload
+      };
+    case Types.PAYMENT_METHODS:
+      return {
+        ...state,
+        payment_methods: action.payload
       };
     default:
       return state;
