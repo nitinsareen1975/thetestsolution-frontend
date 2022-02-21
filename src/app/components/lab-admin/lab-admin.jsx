@@ -22,6 +22,12 @@ class LabAdminDash extends Component {
     if(typeof this.props.adminConfig.countries === "undefined" || this.props.adminConfig.countries.length <= 0){
       await this.props.getCountriesList();
     }
+    if(typeof this.props.adminConfig.patient_status_list === "undefined" || this.props.adminConfig.patient_status_list.length <= 0){
+      await this.props.getPatientStatusList();
+    }
+    if(typeof this.props.adminConfig.payment_methods === "undefined" || this.props.adminConfig.payment_methods.length <= 0){
+      await this.props.getPaymentMethods();
+    }
   }
   onCollapse = () => {
     this.setState({ collapsed: !this.state.collapsed });
@@ -45,7 +51,7 @@ class LabAdminDash extends Component {
               }}
               width={280}
             >
-              <SideBar  options={options.labAdminOptions} userType="admin" />
+              <SideBar collapsed={this.state.collapsed} options={options.labAdminOptions} userType="admin" />
             </Sider>
           <Layout>
          
@@ -65,7 +71,7 @@ class LabAdminDash extends Component {
           //userData={this.props.userData}
           
           >
-            <AdminHeader collapsed={this.state.collapsed} onCollapse={this.onCollapse} />
+            <AdminHeader collapsed={this.state.collapsed} onCollapse={this.onCollapse} {...this.props}/>
           </Header>
             
             <Content

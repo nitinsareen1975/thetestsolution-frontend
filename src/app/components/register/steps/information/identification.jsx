@@ -35,7 +35,7 @@ const output = ({ ...props }) => {
 	return <Form layout="vertical" onFinish={(values) => props.next(values)} initialValues={props.data}>
 		<h2 className="form-section-title">Identification</h2>
 		<Row gutter={15}>
-			<Col xs={24} md={8}>
+			<Col xs={24} md={6}>
 				<Form.Item name="identifier_type" label="ID Type" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
 					<Select placeholder="ID Type">
 						<Select.Option value="Driver License">Driver License</Select.Option>
@@ -43,13 +43,13 @@ const output = ({ ...props }) => {
 					</Select>
 				</Form.Item>
 			</Col>
-			<Col xs={24} md={8}>
+			<Col xs={24} md={6}>
 				<Form.Item name="identifier" label="ID Number" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
 					<Input placeholder="ID Number" />
 				</Form.Item>
 			</Col>
-			<Col xs={24} md={8}>
-				<Form.Item name="identifier_country" label="ID Country" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+			<Col xs={24} md={6}>
+				<Form.Item name="identifier_country" label="Issuing Country" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
 					<Select
 						showSearch
 						filterOption={(input, option) =>
@@ -66,7 +66,14 @@ const output = ({ ...props }) => {
 					</Select>
 				</Form.Item>
 			</Col>
-			<Col xs={24}>
+			<Col xs={24} md={6}>
+				<Form.Item name="identifier_state" label="Issuing State" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+					<Input placeholder="State" />
+				</Form.Item>
+			</Col>
+		</Row>
+		<Row>
+			<Col xs={24} md={8}>
 				<Form.Item name="identifier_doc" label="Select identification image to upload:" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
 					<Upload {...uploaderProps('identifier_doc', '.jpg,.jpeg,.png')}>
 						<Button icon={<UploadOutlined />}>Click to Upload</Button>

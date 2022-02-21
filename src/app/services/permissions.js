@@ -15,17 +15,6 @@ export function canAccess(permission) {
 	return status;
 }
 
-export function isTopLevelManager() {
-	let status = false;
-	let currentUser = UserService.getUser();
-	if(currentUser.companyID === currentUser.parentOrgId){
-		status = true;
-	} else {
-		status = false;
-	}
-	return status;
-}
-
 export function isRole(role) {
 	let status = false;
 	if(role === '') return status;

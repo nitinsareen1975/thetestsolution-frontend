@@ -57,6 +57,14 @@ export default function paginationReducer(state = initialState, action) {
       newState4.paginginfo = {};
       newState4.currentModule = action.payload.module;
       return newState4;
+    case Types.CLEAR_FILTERS:
+      let newState6 = { ...state };
+      if(typeof newState6.paginginfo[action.payload.module] === "undefined"){
+        newState6.paginginfo[action.payload.module] = {pagination: {}, filters: {}, sorter: {}};
+      }
+      newState6.paginginfo[action.payload.module].filters = {};
+      newState6.currentModule = action.payload.module;
+      return newState6;
     default:
       return state;
   }

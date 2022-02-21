@@ -49,3 +49,24 @@ export function getToken() {
 	}
 	return undefined;
 }
+
+export function getRandomString(length, salt = '') {
+    var randomChars = salt+'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var result = '';
+    for ( var i = 0; i < length; i++ ) {
+        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    return result;
+}
+
+export function secondsToHms(d) {
+    d = Number(d);
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
+
+    var hDisplay = h > 0 ? h + (h == 1 ? " hour " : " hours ") : "";
+    var mDisplay = m > 0 ? m + (m == 1 ? " minute " : " mins ") : "";
+    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " secs") : "";
+    return hDisplay + mDisplay + sDisplay; 
+}

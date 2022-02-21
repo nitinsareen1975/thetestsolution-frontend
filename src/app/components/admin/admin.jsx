@@ -7,6 +7,7 @@ import SideBar from "../sidebar/sidebar.jsx";
 import AdminHeader from "./common/header/header.jsx";
 import AdminRouter from "../../routes/admin-router";
 import * as adminActions from "../../redux/actions/admin-actions";
+import * as userActions from "../../redux/actions/user-actions";
 import { Layout, Modal, Form } from "antd";
 import options from "../sidebar/options.js";
 
@@ -21,6 +22,15 @@ class AdminDash extends Component {
   async componentDidMount() {
     if(typeof this.props.adminConfig.countries === "undefined" || this.props.adminConfig.countries.length <= 0){
       await this.props.getCountriesList();
+    }
+    if(typeof this.props.adminConfig.patient_status_list === "undefined" || this.props.adminConfig.patient_status_list.length <= 0){
+      await this.props.getPatientStatusList();
+    }
+    if(typeof this.props.adminConfig.payment_methods === "undefined" || this.props.adminConfig.payment_methods.length <= 0){
+      await this.props.getPaymentMethods();
+    }
+    if(typeof this.props.userData === "undefined" || Object.keys(this.props.userData).length <= 0){
+      await this.props.getUserData();
     }
   }
   onCollapse = () => {
@@ -45,7 +55,7 @@ class AdminDash extends Component {
               }}
               width={280}
             >
-              <SideBar  options={options.adminOptions} userType="admin" />
+              <SideBar collapsed={this.state.collapsed} options={options.adminOptions} userType="admin" />
             </Sider>
           <Layout>
          
@@ -65,7 +75,7 @@ class AdminDash extends Component {
           //userData={this.props.userData}
           
           >
-            <AdminHeader collapsed={this.state.collapsed} onCollapse={this.onCollapse} />
+            <AdminHeader collapsed={this.state.collapsed} onCollapse={this.onCollapse} {...this.props}/>
           </Header>
             
             <Content
@@ -90,12 +100,13 @@ class AdminDash extends Component {
 
 function mapStateToProps(state) {
   return {
-    adminConfig: state.adminConfig
+    adminConfig: state.adminConfig,
+    ...state.userConfig
   };
 }
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { ...adminActions },
+    { ...userActions, ...adminActions },
     dispatch
   );
 }

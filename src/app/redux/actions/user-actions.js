@@ -51,7 +51,6 @@ export function login(username, password) {
       });
       
     } catch (e) {
-      console.log("E", e)
       if (e && e.response && e.response.data && e.response.data.error && e.response.data.error.length > 0) {
         notifyUser(e.response.data.error[0].externalMessage, 'error');
         /* dispatch({
@@ -75,7 +74,7 @@ export function getUserData() {
       });
       dispatch({
         type: Types.VALIDATE_USER,
-        payload: oldUser
+        payload: {user: oldUser}
       });
       if (oldUser.logo && oldUser.logo !== "" && oldUser.logo !== null) {
         dispatch({
@@ -126,7 +125,6 @@ export function getUserListing({
     }
   };
 }
-
 
 export function addUser(data) {
   return async function (dispatch, getState) {
@@ -226,25 +224,12 @@ export function updateToken(objToken) {
 
 export function updateProfile(data) {
   return async function (_dispatch, _getState) {
-    try {
-      return await API.updateProfile(data);
-    } catch (e) {
-      return {
-        "error": true
-      };
-    }
+    return await API.updateProfile(data);
   };
 }
 
-export function updateStatus(userId, status) {
+export function updatePassword(data) {
   return async function (_dispatch, _getState) {
-    try {
-      let resp = await API.updateStatus(userId, status);
-      return resp;
-    } catch (e) {
-      return {
-        "error": true
-      };
-    }
+    return await API.updatePassword(data);
   };
 }

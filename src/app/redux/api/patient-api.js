@@ -18,12 +18,23 @@ const getPatient = idx => {
 const deletePatient = data => {
   return Axios.delete("/api/patients/"+ data.id, data, undefined);
 };
-
+const removeIdentifierDoc = (key, id) => {
+  return Axios.delete("/api/upload/"+key+"/"+id, undefined, undefined);
+};
+const getTransactionDetails = (data) => {
+  return Axios.get("/api/payments", data, undefined);
+};
+const refundTransaction = (data) => {
+  return Axios.post("/api/payments/refund", data, undefined);
+};
 export default {
   getPatients,
   addPatient,
   registerPatient,
   updatePatient,
   getPatient,
-  deletePatient
+  deletePatient,
+  removeIdentifierDoc,
+  getTransactionDetails,
+  refundTransaction
 };

@@ -17,16 +17,20 @@ import {
   Spin,
   DatePicker,
   Switch,
-  Upload
+  Upload,
+  Space
 } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
-import { PlusCircleOutlined, ArrowLeftOutlined, UploadOutlined, DeleteOutlined, SaveOutlined } from "@ant-design/icons";
+import { PlusOutlined, ArrowLeftOutlined, UploadOutlined, DeleteOutlined, SaveOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import Config from "../../../config";
+import Locator from "./locator.jsx";
 
 const { Option } = Select;
 
 class EditLab extends React.Component {
+  formRef = React.createRef();
+  radiusRef = React.createRef();
   state = {
     loading: true,
     dataLoaded: false,
@@ -34,7 +38,13 @@ class EditLab extends React.Component {
     logoRemoved: false,
     countries: [],
     testTypes: [],
-    lab: {}
+    lab: {},
+    lab_pricing: [],
+    location: {
+      lat: 0,
+      lng: 0
+    },
+    minRadius: 50
   };
 
   async componentDidMount() {
@@ -52,12 +62,18 @@ class EditLab extends React.Component {
       lab.data.tests_available = lab.data.tests_available.split(",");
     }
     var _testTypes = await this.props.getTestTypes({});
+    var _pricing = await this.props.getLabPricing(this.props.match.params.id);
     this.setState({
       loading: false,
       countries: _countries,
       lab: lab.data,
+      lab_pricing: _pricing.status === true ? _pricing.data : [],
       testTypes: _testTypes.data,
       logo: (lab.data.logo && lab.data.logo != null) ? Config.DASHBOARD_URL + lab.data.logo : this.state.logo,
+      location: {
+        lat: lab.data.geo_lat !== null ? lab.data.geo_lat : this.state.location.lat,
+        lng: lab.data.geo_long !== null ? lab.data.geo_long : this.state.location.lng
+      },
       dataLoaded: true
     });
   }
@@ -92,8 +108,23 @@ class EditLab extends React.Component {
     if (this.state.logoRemoved === true) {
       args['logo'] = "";
     }
-    this.props.updateLab(this.props.match.params.id, args).then((response) => {
+    if (this.state.location.lat) {
+      args['geo_lat'] = this.state.location.lat;
+      args['geo_long'] = this.state.location.lng;
+    }
+    await this.props.updateLab(this.props.match.params.id, args).then(async (response) => {
       if (response.status && response.status === true) {
+        if (data.lab_pricing && data.lab_pricing.length > 0) {
+          await this.props.updateLabPricing(this.props.match.params.id, { pricing: data.lab_pricing }).then(res => {
+            if (!res.status || res.status === false) {
+              if (res.message) {
+                notifyUser(res.message, "error");
+              } else {
+                notifyUser("Pricing was not updated!", "error");
+              }
+            }
+          });
+        }
         notifyUser(response.message, "success");
         this.props.history.push("../../labs");
         this.setState({ loading: false });
@@ -146,8 +177,36 @@ class EditLab extends React.Component {
     });
   }
 
+  onValuesChange = (changedFields, allFields) => {
+    this.setState({ lab_pricing: allFields.lab_pricing })
+  }
+
+  setLatLong = (cords, locationObj) => {
+    var _cords = this.state.location;
+    if (cords && cords !== null && cords !== undefined) {
+      _cords.lat = cords.lat;
+      _cords.lng = cords.lng;
+    }
+    this.setState({
+      location: _cords
+    }, () => {
+      if (locationObj && locationObj.state) {
+        this.formRef.current.setFieldsValue({
+          street: locationObj.address,
+          city: locationObj.city,
+          state: locationObj.state,
+          zip: locationObj.zip
+        });
+      }
+    });
+  }
+
   render() {
     const { formLayout } = this.state;
+    var lab_pricing = this.state.lab_pricing;
+    if (lab_pricing.length > 0 && typeof lab_pricing[0] === "undefined") {
+      lab_pricing = [];
+    }
     const formItemLayout =
       formLayout === "horizontal"
         ? {
@@ -185,7 +244,7 @@ class EditLab extends React.Component {
         <div>
           <Spin spinning={this.state.loading}>
             {this.state.lab.id ?
-              <Form layout="vertical" onFinish={this.handleSubmit} initialValues={this.state.lab}>
+              <Form ref={this.formRef} onValuesChange={this.onValuesChange} layout="vertical" onFinish={this.handleSubmit} initialValues={this.state.lab}>
                 <Row gutter={24}>
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
@@ -309,6 +368,8 @@ class EditLab extends React.Component {
                       <Input />
                     </Form.Item>
                   </Col>
+                </Row>
+                <Row gutter={24}>
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -316,7 +377,7 @@ class EditLab extends React.Component {
                       name="payment_mode"
                     >
                       <Select>
-                        {Config.PaymentModes.map(mode => {
+                        {this.props.payment_methods && this.props.payment_methods.length > 0 && this.props.payment_methods.map(mode => {
                           return <Option key={mode.id.toString()} value={mode.id.toString()}>{mode.name}</Option>
                         })}
                       </Select>
@@ -357,6 +418,8 @@ class EditLab extends React.Component {
                       <Input />
                     </Form.Item>
                   </Col>
+                </Row>
+                <Row gutter={24}>
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -366,7 +429,6 @@ class EditLab extends React.Component {
                       <Input />
                     </Form.Item>
                   </Col>
-                
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -407,6 +469,9 @@ class EditLab extends React.Component {
                       </Select>
                     </Form.Item>
                   </Col>
+                </Row>
+                <Row gutter={24}>
+
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -431,67 +496,96 @@ class EditLab extends React.Component {
                     </Form.Item>
                   </Col>
                 </Row>
-                
                 <Row gutter={24}>
-                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                  <Typography.Title level={4}>Add Price & Test Type</Typography.Title>
-                </Col>
+                  <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                    <Typography.Title level={4}>Add Price & Test Type</Typography.Title>
+                  </Col>
+                </Row>
                 <hr />
+                <Row>
+                  <Col>
+                    <Form.List name="lab_pricing" initialValue={lab_pricing}>
+                      {(fields, { add, remove }) => (
+                        <>
+                          {fields.map(({ key, name, ...restField }) => (
+                            <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+
+                              <Form.Item
+                                {...restField}
+                                name={[name, 'price']}
+                                style={{ width: 300 }}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: <IntlMessages id="admin.input.required" />,
+                                  }
+                                ]}
+                              >
+                                <Input
+                                  style={{ width: "100%" }}
+                                  placeholder="Price per test"
+                                />
+                              </Form.Item>
+
+                              <Form.Item
+                                {...restField}
+                                name={[name, 'test_type']}
+                                style={{ width: 300 }}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: <IntlMessages id="admin.input.required" />,
+                                  },
+                                ]}
+                              >
+                                <Select placeholder="Type Of Test">
+                                  {this.state.testTypes.map(test => {
+                                    var optDisabled = false;
+                                    if (lab_pricing.length > 0) {
+                                      lab_pricing.map(i => {
+                                        if (typeof i !== "undefined" && typeof i.test_type !== "undefined" && i.test_type == test.id.toString()) {
+                                          optDisabled = true;
+                                        }
+                                      });
+                                    }
+                                    return <Option key={test.id} value={test.id} disabled={optDisabled}>{test.name}</Option>
+                                  })}
+                                </Select>
+                              </Form.Item>
+
+                              <Form.Item
+                                {...restField}
+                                name={[name, 'test_codes']}
+                                style={{ width: 300 }}
+                              >
+                                <Input placeholder="Test Codes" />
+                              </Form.Item>
+
+                              <MinusCircleOutlined onClick={() => remove(name)} />
+                            </Space>
+                          ))}
+                          <Form.Item>
+                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                              Add Pricing
+                            </Button>
+                          </Form.Item>
+                        </>
+                      )}
+                    </Form.List>
+                  </Col>
                 </Row>
                 <Row gutter={24}>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item
-                      {...formItemLayout}
-                      label="Price per test"
-                      name="price_per_test"
-                      rules={[
-                        {
-                          required: true,
-                          message: <IntlMessages id="admin.input.required" />,
-                        }
-                      ]}
-                    >
-                      <Input
-                        style={{ width: "100%" }}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item
-                      {...formItemLayout}
-                      label="Type Of Tests Available"
-                      name="tests_available"
-                      rules={[
-                        {
-                          required: true,
-                          message: <IntlMessages id="admin.input.required" />,
-                        },
-                      ]}
-                    >
-                      <Select
-                        mode="multiple"
-                        showSearch
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {this.state.testTypes.map(test => {
-                          return <Option key={test.id.toString()} value={test.id.toString()}>{test.name}</Option>
-                        })}
-                      </Select>
-                    </Form.Item>
-                  </Col>   
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item
-                      {...formItemLayout}
-                      label="Test Codes"
-                      name="test_codes"
-                    >
-                      <Input />
-                    </Form.Item>
+                  <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                    <Typography.Title level={4}>Location</Typography.Title>
                   </Col>
                 </Row>
-                <Row>
+                <hr />
+                <Row gutter={24}>
+                  <Col xs={24} sm={24}>
+                    <Locator on_locate={this.setLatLong} cords={this.state.location} radius={this.state.lab && this.state.lab.radius ? this.state.lab.radius : this.state.minRadius} radius_input={this.radiusRef} defaultAddress={this.state.lab && this.state.lab.street ? this.state.lab.street : null} />
+                  </Col>
+                </Row>
+                <Row style={{ marginTop: 10 }}>
                   <Col>
                     <Form.Item>
                       <Button

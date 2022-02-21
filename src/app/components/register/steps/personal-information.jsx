@@ -52,11 +52,11 @@ class PersonalInfo extends Component {
           icon: <ExceptionOutlined />,
           content: Identification
         },
-        {
+        /* {
           title: "Test",
           icon: <ExperimentOutlined />,
           content: TestInfo
-        }
+        } */
       ],
       data: {},
       submitted: false
@@ -71,7 +71,6 @@ class PersonalInfo extends Component {
 
   gotoNextStep = (data) =>  {
     var mergedData = {...data, ...this.state.data};
-    console.log("md:", mergedData)
     var _current = this.state.current;
     if(_current === (this.state.steps.length - 1)){
       this.submitStep(mergedData);

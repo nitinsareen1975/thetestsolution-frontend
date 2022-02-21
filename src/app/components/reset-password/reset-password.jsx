@@ -162,7 +162,6 @@ class ResetPassword extends Component {
   }
 
   handleSubmit = async (values) => {
-    console.log("state:", this.state);
     const { npassword, rpassword } = this.state;
     this.setState({ submitted: true, submitButtonText: "Please wait..." });
     if (this.state.password.isValid === false) {

@@ -24,7 +24,18 @@ const getLab = idx => {
 const deleteLab = data => {
   return Axios.delete("/api/labs/"+ data.id, data, undefined);
 };
-
+const updateLabPricing = (id, data) => {
+  return Axios.post("/api/lab-pricing/"+ id, data, undefined);
+};
+const getLabPricing = (id) => {
+  return Axios.get("/api/lab-pricing/"+ id, undefined, undefined);
+};
+const getGlobalLabPricing = (id, data) => {
+  return Axios.get("/global/lab-pricing/"+id, data, undefined);
+};
+const getGlobalLab = id => {
+  return Axios.get("/global/labs/"+id, undefined, undefined);
+};
 export default {
   getLabs,
   getGlobalLabs,
@@ -33,5 +44,9 @@ export default {
   uploadLabLogo,
   removeLabLogo,
   getLab,
-  deleteLab
+  deleteLab,
+  updateLabPricing,
+  getLabPricing,
+  getGlobalLabPricing,
+  getGlobalLab
 };

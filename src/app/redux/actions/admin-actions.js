@@ -20,25 +20,20 @@ export function getCountries() {
   };
 }
 
-
-export function myAccount() {
-  return async function(_dispatch, _getState) {
+export function getPaymentMethods() {
+  return async function(dispatch, _getState) {
     try {
-      let resp = await API.getMyAccount();
-      return resp;
-    } catch (e) {
-      return { error: true };
-    }
+      let res = await API.getPaymentMethods();
+      dispatch({ type: Types.PAYMENT_METHODS, payload: res.data });
+    } catch (e) {}
   };
 }
 
-export function updateMyAccount(data) {
-  return async function(_dispatch, _getState) {
+export function getPatientStatusList() {
+  return async function(dispatch, _getState) {
     try {
-      let resp = await API.updateMyAccount(data);
-      return resp;
-    } catch (e) {
-      return { error: true };
-    }
+      let res = await API.getPatientStatusList();
+      dispatch({ type: Types.PATIENT_STATUS_LIST, payload: res.data });
+    } catch (e) {}
   };
 }

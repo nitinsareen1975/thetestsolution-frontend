@@ -17,7 +17,7 @@ import {
   Tooltip
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
-import { EditOutlined, CloseOutlined, SearchOutlined, SolutionOutlined, CreditCardOutlined, TeamOutlined } from '@ant-design/icons';
+import { EditOutlined, CloseOutlined, SearchOutlined, SolutionOutlined, CreditCardOutlined, TeamOutlined, FileProtectOutlined } from '@ant-design/icons';
 
 class ManageLabs extends Component {
   constructor(props) {
@@ -113,16 +113,16 @@ class ManageLabs extends Component {
                 <TeamOutlined />
               </Button>
             </Tooltip>
-            <Tooltip title="View Billing">
+            <Tooltip title="View Patients">
               <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/billing")}
+                onClick={() => this.props.history.push("./all-patients", {lab_assigned: record.id})}
               >
-                <CreditCardOutlined />
+                <FileProtectOutlined />
               </Button>
             </Tooltip>
             <Tooltip title="Scheduled Tests">
               <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/tests")}
+                onClick={() => this.props.history.push("./all-patients", {lab_assigned: record.id, progress_status: "1"})}
               >
                 <SolutionOutlined />
               </Button>
@@ -340,7 +340,7 @@ class ManageLabs extends Component {
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
-              Manage Users
+              Manage Labs
             </Typography.Title>
           </Col>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
