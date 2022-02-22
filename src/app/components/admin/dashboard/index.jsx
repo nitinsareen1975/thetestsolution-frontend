@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { RadialBar, Column } from "@ant-design/plots";
-import { Card, Row, Col } from "antd";
-import { TeamOutlined } from "@ant-design/icons";
+import { Card, Row, Col, Table, Space, Button, Tooltip } from "antd";
+import { TeamOutlined, EyeOutlined, CloseCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 const AdminDashboard = () => {
   const DemoRadialBar = () => {
     const data = [
@@ -140,10 +140,80 @@ const AdminDashboard = () => {
     };
     return <Column {...config} />;
   };
+  const AppointmentColumns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: text => <div>{text}</div>,
+    },
+    {
+      title: 'Gender',
+      dataIndex: 'gender',
+      key: 'gender',
+    },
+    {
+      title: 'Date',
+      dataIndex: 'date',
+      key: 'date',
+    },
+    {
+      title: 'Time',
+      key: 'time',
+      dataIndex: 'time',     
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <Space size="middle">
+            <Tooltip title="View">
+              <Button onClick={() => this.props.history.push("#")} >
+                <EyeOutlined />
+              </Button>
+            </Tooltip>
+            <Tooltip title="Accept">
+              <Button onClick={() => this.props.history.push("#")} >
+              <CheckCircleOutlined />
+              </Button>
+            </Tooltip>
+            <Tooltip title="Decline">
+              <Button onClick={() => this.props.history.push("#")} >
+              <CloseCircleOutlined />
+              </Button>
+            </Tooltip>
+        </Space>
+      ),
+    },
+  ];
+  
+  const data = [
+    {
+      key: '1',
+      name: 'John Brown',
+      gender: 'Male',
+      date: '2022-02-11',
+      time: '09:00 PM',
+    },
+    {
+      key: '2',
+      name: 'John Brown',
+      gender: 'Female',
+      date: '2022-02-11',
+      time: '09:00 PM',
+    },
+    {
+      key: '3',
+      name: 'John Brown',
+      gender: 'Male',
+      date: '2022-02-11',
+      time: '09:00 PM',
+    },
+  ];
   return (
     <div>
       <h1>Welcome to dashboard</h1>
-      <Row gutter={24}>
+      <Row gutter={24} style={{marginBottom: "24px",}}>
         <Col xs={12} sm={12} md={6}>
           <Card bordered={true}>
             <div style={{ display: "flex" }}>
@@ -197,9 +267,9 @@ const AdminDashboard = () => {
               </div>
             </div>
           </Card>
-        </Col>
+        </Col>      
         <Col xs={12} sm={12} md={6}>
-          <Card bordered={true}>
+        <Card bordered={true}>
             <div style={{ display: "flex" }}>
               <div
                 style={{
@@ -219,23 +289,8 @@ const AdminDashboard = () => {
                 />
               </div>
               <div>
-                <h4
-                  style={{
-                    display: "block",
-                    fontSize: "14px",
-                    fontWeight: "normal",
-                  }}>
-                  Total Patients
-                </h4>
-                <div
-                  style={{
-                    display: "block",
-                    fontSize: "20px",
-                    fontWeight: "bold",
-                    margin: "0",
-                  }}>
-                  23400
-                </div>
+                <h4 style={{ display: "block" }}>Total Patients</h4>
+                <p style={{ display: "block", margin: "0" }}>23400</p>
               </div>
             </div>
           </Card>
@@ -268,9 +323,135 @@ const AdminDashboard = () => {
           </Card>
         </Col>
       </Row>
-      <DemoRadialBar />
-      <DemosRadialBar />
-      <DemoColumn />
+      <Row gutter={24}  style={{marginBottom: "24px",}}>
+        <Col xs={12} sm={12} md={6}>
+          <Card bordered={true}>
+            <div style={{ display: "flex" }}>
+              <div
+                style={{
+                  background: "red",
+                  borderRadius: "100%",
+                  width: "50px",
+                  height: "50px",
+                  lineHeight: "50px",
+                  textAlign: "center",
+                  marginRight: "20px",
+                }}>
+                <TeamOutlined
+                  style={{
+                    color: "white",
+                    fontSize: "20px",
+                  }}
+                />
+              </div>
+              <div>
+                <h4 style={{ display: "block" }}>Total Patients</h4>
+                <p style={{ display: "block", margin: "0" }}>23400</p>
+              </div>
+            </div>
+          </Card>
+        </Col>
+        <Col xs={12} sm={12} md={6}>
+          <Card bordered={true}>
+            <div style={{ display: "flex" }}>
+              <div
+                style={{
+                  background: "red",
+                  borderRadius: "100%",
+                  width: "50px",
+                  height: "50px",
+                  lineHeight: "50px",
+                  textAlign: "center",
+                  marginRight: "20px",
+                }}>
+                <TeamOutlined
+                  style={{
+                    color: "white",
+                    fontSize: "20px",
+                  }}
+                />
+              </div>
+              <div>
+                <h4 style={{ display: "block" }}>Total Patients</h4>
+                <p style={{ display: "block", margin: "0" }}>23400</p>
+              </div>
+            </div>
+          </Card>
+        </Col>
+        <Col xs={12} sm={12} md={6}>
+        <Card bordered={true}>
+            <div style={{ display: "flex" }}>
+              <div
+                style={{
+                  background: "red",
+                  borderRadius: "100%",
+                  width: "50px",
+                  height: "50px",
+                  lineHeight: "50px",
+                  textAlign: "center",
+                  marginRight: "20px",
+                }}>
+                <TeamOutlined
+                  style={{
+                    color: "white",
+                    fontSize: "20px",
+                  }}
+                />
+              </div>
+              <div>
+                <h4 style={{ display: "block" }}>Total Patients</h4>
+                <p style={{ display: "block", margin: "0" }}>23400</p>
+              </div>
+            </div>
+          </Card>
+        </Col>
+        <Col xs={12} sm={12} md={6}>
+          <Card bordered={true}>
+            <div style={{ display: "flex" }}>
+              <div
+                style={{
+                  background: "red",
+                  borderRadius: "100%",
+                  width: "50px",
+                  height: "50px",
+                  lineHeight: "50px",
+                  textAlign: "center",
+                  marginRight: "20px",
+                }}>
+                <TeamOutlined
+                  style={{
+                    color: "white",
+                    fontSize: "20px",
+                  }}
+                />
+              </div>
+              <div>
+                <h4 style={{ display: "block" }}>Total Patients</h4>
+                <p style={{ display: "block", margin: "0" }}>23400</p>
+              </div>
+            </div>
+          </Card>
+        </Col>
+      </Row>
+      <Row gutter={24}   style={{marginBottom: "24px",}}>
+        <Col xs={16} sm={16}>
+          <Card bordered={true}>
+            <DemoColumn />
+          </Card>
+        </Col>
+        <Col xs={8} sm={8}>
+          <Card title="Total Test" bordered={false}>
+            Card content
+          </Card>
+        </Col>
+      </Row>
+      <Row gutter={24}   style={{marginBottom: "24px",}}>
+        <Col xs={24} sm={24}>
+          <Card className="appointment-table" title="Appointment" bordered={false}>
+            <Table columns={AppointmentColumns} dataSource={data} />
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

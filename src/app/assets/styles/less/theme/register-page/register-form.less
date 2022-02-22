@@ -4,6 +4,9 @@
     background-position: center;
     background-size: cover;
     padding: 40px;
+    @media (max-width: 991px) {
+        padding: 20px;
+    }
     min-height: calc(100vh - 90px);
     .inner-form-wrap {
         max-width: 1400px;
@@ -19,12 +22,29 @@
             .ant-steps-item{
                 padding: 10px;
                 width: 33.33%;
+                @media (max-width: 767px) { 
+                    width: 100%;
+                    .ant-steps-item-tail{
+                        display: none !important;
+                    }
+                }
                 .ant-steps-item-container{
                     border-radius: 4px;
                     text-align: center;
                     padding: 20px;
                     box-shadow: 0px 0px 10px rgba(124, 204, 224, 0.31);
                     background: #fff;
+                    @media (max-width: 991px) {
+                        padding: 10px;
+                    }
+                    @media (max-width: 767px) { 
+                        text-align: left;
+                    }
+                    .ant-steps-item-content{
+                        @media (max-width: 767px) { 
+                            display: inline;
+                        }  
+                    }
                     span{
                         svg{
                             width: 30px;
@@ -41,6 +61,9 @@
                         margin: 0px;
                         text-transform: uppercase;
                         line-height: 38px;
+                        @media (max-width: 991px) {
+                            font-size: 15px;
+                        }
                         &:after{
                             display: none;
                         }
@@ -51,7 +74,7 @@
                         background-color: @primary-color;
                         color: @white;
                         .ant-steps-item-title{
-                            color: @white;   
+                            color: @white;                             
                         }
                         span{
                             svg{
@@ -64,12 +87,62 @@
             
     }
     .form-column{
-        padding: 20px;
+        @media (min-width: 768px) {  
+            padding: 20px;
+        }
     }
 
 
 
     .steps-content{
+        @media (max-width: 991px) {           
+            .form-column{
+                padding: 10px;
+                .ant-steps{
+                   justify-content: center;
+                   flex-wrap: wrap;
+                    .ant-steps-item{
+                        flex: 33%;
+                        padding: 0px;
+                        text-align: center;                        
+                        .ant-steps-item-container{
+                            background-color: #f7f7f7;
+                            margin: 5px;
+                            padding: 7px 5px 5px;
+                            .ant-steps-item-tail{
+                                display: none;
+                            }
+                            .ant-steps-item-title{
+                                line-height: 36px;
+                                &:after{
+                                    display: none;
+                                }
+                            }                           
+                        }
+                        &.ant-steps-item-active{
+                            .ant-steps-item-container{
+                                background-color: @primary-color;
+                                color: @white;
+                                .ant-steps-icon, .ant-steps-item-title{
+                                    color: @white; 
+                                   
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .ant-steps-item-container{
+            @media (max-width: 767px) { 
+                text-align: left;
+            }
+            .ant-steps-item-content{
+                @media (max-width: 767px) { 
+                    display: inline;
+                }  
+            }
+        }
         .form-section-title{
             padding: 10px 15px;
             background: rgba(0,0,0,0.02);
