@@ -7,12 +7,12 @@ import QrBarcode from "../../assets/images/qrcode.png";
 const output = (props) => {
     
     return <div className="reportwrap">             
-        <table style={{ maxWidth: '100%', width: '100%', margin: '30px 0px 10px' }}>
+        <table style={{ maxWidth: '100%', width: '100%', margin: '5px 0px 5px' }}>
                 <tr>
                     <td>
                         <Row gutter={24} >
                             <Col xs={12} style={{textAlign: 'left',}}>
-                                <img src={logo} alt="Logo" style={{width: '100%', maxWidth: '300px'}} />       
+                                <img src={logo} alt="Logo" style={{width: '100%', maxWidth: '150px', maxHeight: '55px'}} />       
                             </Col>
                             <Col xs={12} style={{textAlign: 'right',}}>
                                 <h3>Florida Health</h3>
@@ -43,74 +43,74 @@ const output = (props) => {
                 <td>
                 <Row gutter={24} >
                     <Col xs={24} style={{textAlign: 'left',}}>
-                    <table style={{ maxWidth: '100%', width: '100%', borderSpacing: '10px', borderCollapse: 'separate'}}>
+                    <table style={{ maxWidth: '100%', width: '100%', borderSpacing: '5px', borderCollapse: 'separate'}}>
                         <tr>
                         <td style={{border: '1px solid #000',}}>
                             <table className="infoTable" style={{ maxWidth: '100%', width: '100%' }}>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Patient NAME</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: Mr.TEJAS SHARMA</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Patient NAME</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: Mr.TEJAS SHARMA</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Date of birth</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: 05/09/1992</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Date of birth</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: 05/09/1992</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Sex</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: Male</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Sex</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: Male</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Address</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: including street, city, state, and ZIP code</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Address</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: including street, city, state, and ZIP code</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Phone number</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: +91 8054002663</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Phone number</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: +91 8054002663</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Ethnicity</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: (Hispanic or non-Hispanic</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Ethnicity</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: (Hispanic or non-Hispanic</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Pregnancy status</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: if applicable</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Pregnancy status</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: if applicable</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Social security number</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: 2663</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Social security number</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: 2663</td>
                                 </tr>
                             </table>
                         </td>
                     <td style={{border: '1px solid #000',}}>
                             <table className="infoTable" style={{ maxWidth: '100%', width: '100%' }}>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Specimen Collection date</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: 17/Apr/2021</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Specimen Collection date</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: 17/Apr/2021</td>
                                 </tr>
                                 
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Date of report</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: 17/Apr/2021 08:36PM</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Date of report</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: 17/Apr/2021 08:36PM</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Type of specimen</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: blood</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Type of specimen</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: blood</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Specimen collection site</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: (e.g., cervix, eye) if applicable</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Specimen collection site</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: (e.g., cervix, eye) if applicable</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Phone number</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: +91 8054002663</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Phone number</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: +91 8054002663</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>Licence Number</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: 0123123</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>Licence Number</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: 0123123</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>FDI Number</td>
-                                    <td style={{ padding: '4px 10px', borderBottom: '1px solid #f7f7f7' }}>: 0123123</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>FDI Number</td>
+                                    <td style={{ padding: '2px 4px', borderBottom: '1px solid #f7f7f7' }}>: 0123123</td>
                                 </tr>
                             </table>
                         </td>
@@ -121,15 +121,15 @@ const output = (props) => {
                 </td>
             </tr>
         </table>
-        <div style={{ border: '1px solid #000', margin: '0px 10px 10px'}}>
+        <div style={{ border: '1px solid #000', margin: '0px 5px 10px'}}>
             <table style={{ maxWidth: '100%', width: '100%'}}>
                 <tr>
-                    <td style={{ padding: '4px 10px', textAlign: 'center'}}>DEPARTMENT OF MOLECULAR BIOLOGY</td>
-                    <td style={{ padding: '4px 10px', textAlign: 'right'}}> IN/OUT SAMPLE :Outhouse Sample</td>
+                    <td style={{ padding: '2px 4px', textAlign: 'center'}}>DEPARTMENT OF MOLECULAR BIOLOGY</td>
+                    <td style={{ padding: '2px 4px', textAlign: 'right'}}> IN/OUT SAMPLE :Outhouse Sample</td>
                 </tr>
             </table>
         </div>
-        <div style={{margin: '5px 10px 0px'}}>
+        <div style={{margin: '5px 5px 0px'}}>
             <table className="resultTable" style={{ maxWidth: '100%', width: '100%', textAlign: 'left'}}>
                 <thead>
                     <tr>
@@ -158,7 +158,7 @@ const output = (props) => {
                 </tbody>
             </table>
         </div>
-        <div className="commentBlock" style={{ border: '1px solid #000', margin: '0px 10px 10px', borderTop: 'none', padding: '10px'}}>
+        <div className="commentBlock" style={{ border: '1px solid #000', margin: '0px 5px 5px', borderTop: 'none', padding: '5px'}}>
             <p><strong>Comment:</strong></p>
             <p><strong>Florida Health Registration No.: ATHCC</strong></p>
             <p><strong>Sample type: Nasopharyngeal & Oropharyngeal Swab</strong></p> 
@@ -212,7 +212,7 @@ const output = (props) => {
                 </ul>
             </div>
         </div>
-        <h2 style={{ maxWidth: '100%', width: '100%', textAlign: 'center'}}>*** End Of Report ***</h2>
+        <h4 style={{ maxWidth: '100%', width: '100%', textAlign: 'center'}}>*** End Of Report ***</h4>
         <footer className="reportFooter">
             <Row>
                 <Col>
@@ -233,7 +233,7 @@ const output = (props) => {
                 <tbody>
                     <tr>
                         <td>
-                        <img src={QrBarcode} alt="barcode" style={{width: '100%', maxWidth: '150px'}} /> 
+                        <img src={QrBarcode} alt="barcode" style={{width: '100%', maxWidth: '80px'}} /> 
                         </td>
                         <td>BABA LIFE CURE DIAG CNTR,CHD<br/>
                         Shop No 777,Thakur Dwara Rd, Manimajra<br/>
