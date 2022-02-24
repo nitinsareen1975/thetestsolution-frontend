@@ -25,6 +25,9 @@ const _request = (method, url, data, token) => {
 				resolve(data);
 			})
 			.catch(error => {
+				if (typeof error.response !== "undefined" && typeof error.response.data !== "undefined" && error.response.data) {
+					resolve(JSON.parse(error.response.data));
+				}
 				reject(error);
 			});
 	});
@@ -39,24 +42,24 @@ const DataAccessService1 = {
 		return _request('POST', url, data, token);
 	},
 	delete(url, token) {
-		return _request('DELETE', url, undefined , token);
+		return _request('DELETE', url, undefined, token);
 	},
-	put(url,data, token) {
+	put(url, data, token) {
 		return _request('PUT', url, data, token);
 	}
 };
 
 const DataAccessService = {
 	get(url, data, token) {
-	
+
 		const requestOptions = {
 			method: 'GET',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(data)
 		};
-		return getFetchMethod(url) === 'fake' 
-		? fetch(`${config.AuthAPI}` + url, requestOptions) 
-		: DataAccessService1.get(url, data, token);
+		return getFetchMethod(url) === 'fake'
+			? fetch(`${config.AuthAPI}` + url, requestOptions)
+			: DataAccessService1.get(url, data, token);
 	},
 	post(url, data, token) {
 		const requestOptions = {
@@ -64,35 +67,35 @@ const DataAccessService = {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(data)
 		};
-		return getFetchMethod(url) === 'fake' 
-		? fetch(`${config.AuthAPI}` + url, requestOptions) 
-		: DataAccessService1.post(url, data, token);
+		return getFetchMethod(url) === 'fake'
+			? fetch(`${config.AuthAPI}` + url, requestOptions)
+			: DataAccessService1.post(url, data, token);
 	},
-	delete(url,data,token) {
+	delete(url, data, token) {
 		const requestOptions = {
 			method: 'DELETE',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(data)
 		};
-		return getFetchMethod(url) === 'fake' 
-		? fetch(`${config.AuthAPI}` + url, requestOptions) 
-		: DataAccessService1.delete(url, undefined, token);
+		return getFetchMethod(url) === 'fake'
+			? fetch(`${config.AuthAPI}` + url, requestOptions)
+			: DataAccessService1.delete(url, undefined, token);
 	},
 	put(url, data, token) {
-		
+
 		const requestOptions = {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(data)
 		};
-		return getFetchMethod(url) === 'fake' 
-		? fetch(`${config.AuthAPI}` + url, requestOptions) 
-		: DataAccessService1.put(url, data, token);
+		return getFetchMethod(url) === 'fake'
+			? fetch(`${config.AuthAPI}` + url, requestOptions)
+			: DataAccessService1.put(url, data, token);
 	}
 };
-function getFetchMethod(url,data,token){
+function getFetchMethod(url, data, token) {
 	if (config.API.indexOf("api.thetestsolutions.com") !== -1 ||
-    config.API.indexOf("thetestapi.alphawebtech.com") !== -1) {
+		config.API.indexOf("thetestapi.alphawebtech.com") !== -1) {
 		return "real";
 	} else {
 		return "fake";

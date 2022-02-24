@@ -35,6 +35,9 @@ const _request = async (method, url, data, token, hitCount) => {
             window.location = "/404";
           }
         } */
+        if(typeof error.response !== "undefined" && typeof error.response.data !== "undefined" && error.response.data){
+          resolve(JSON.parse(error.response.data));
+        }
         reject(error);
       })
   })
