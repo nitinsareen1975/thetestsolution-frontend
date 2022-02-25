@@ -162,14 +162,6 @@ class ChangePassword extends Component {
           }
         })
         .catch(_err => {
-          if(_err.response && _err.response.data){
-            var reserror = JSON.parse(_err.response.data);
-            if (reserror.message) {
-              notifyUser(reserror.message, "error");
-            } else {
-              notifyUser("Unknown error. Please try again!", "error");
-            }
-          }
           _this.setState({ loading: false });
         });
     }

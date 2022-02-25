@@ -53,3 +53,9 @@ export function getLabPricing(id) {
     return await API.getLabPricing(id);
   };
 }
+
+export function updateLabSettings(data) {
+  return async function (dispatch, getState) {
+    return await API.updateLabSettings(data);
+  };
+}
