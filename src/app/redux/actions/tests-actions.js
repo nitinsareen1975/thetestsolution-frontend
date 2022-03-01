@@ -60,3 +60,15 @@ export function deleteTestType(idx) {
     return await API.deleteTestType(idx);
   };
 }
+
+export function getTestTypeMethods(idx) {
+  return async function (dispatch, getState) {
+    return await API.getTestTypeMethods(idx);
+  };
+}
+
+export function updateTestTypeMethods(idx,data) {
+  return async function (dispatch, getState) {
+    return await API.updateTestTypeMethods(idx,data);
+  };
+}

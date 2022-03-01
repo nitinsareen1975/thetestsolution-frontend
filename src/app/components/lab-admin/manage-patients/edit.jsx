@@ -104,6 +104,7 @@ class EditPatient extends React.Component {
       state: data.state,
       street: data.street,
       test_type: data.test_type,
+      pricing_id: this.state.pricingId,
       zip: data.zip,
       transaction_id: data.transaction_id ? data.transaction_id : UserService.getRandomString(24, data.email),
       confirmation_code: UserService.getRandomString(24, data.email)

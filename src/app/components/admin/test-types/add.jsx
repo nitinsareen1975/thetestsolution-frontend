@@ -14,16 +14,19 @@ import {
   Col,
   Spin,
   Switch,
-  InputNumber
+  InputNumber,
+  Space
 } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
-import { ArrowLeftOutlined, PlusOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 
 class AddTestType extends React.Component {
+  formRef = React.createRef();
   state = {
     loading: true,
     dataLoaded: false,
-    test_type: {}
+    test_type: {},
+    test_type_methods: []
   };
 
   async componentDidMount() {
@@ -35,8 +38,19 @@ class AddTestType extends React.Component {
 
   handleSubmit = async (data) => {
     this.setState({ loading: true });
-    this.props.addTestType(data).then((response) => {
+    this.props.addTestType(data).then(async (response) => {
       if (response.status && response.status === true) {
+        if (data.test_type_methods && data.test_type_methods.length > 0) {
+          await this.props.updateTestTypeMethods(response.data.id, { methods: data.test_type_methods }).then(res => {
+            if (!res.status || res.status === false) {
+              if (res.message) {
+                notifyUser(res.message, "error");
+              } else {
+                notifyUser("Observation definition was not updated!", "error");
+              }
+            }
+          });
+        }
         notifyUser(response.message, "success");
         this.props.history.push("../test-types");
         this.setState({ loading: false });
@@ -54,6 +68,10 @@ class AddTestType extends React.Component {
       });
   };
 
+  onValuesChange = (changedFields, allFields) => {
+    this.setState({ test_type_methods: allFields.test_type_methods })
+  }
+
   render() {
     const { formLayout } = this.state;
     const formItemLayout =
@@ -63,6 +81,10 @@ class AddTestType extends React.Component {
           wrapperCol: { span: 14 },
         }
         : null;
+    var test_type_methods = this.state.test_type_methods;
+    if (test_type_methods.length > 0 && typeof test_type_methods[0] === "undefined") {
+      test_type_methods = [];
+    }
     return (
       <div>
         <Row gutter={24}>
@@ -274,6 +296,63 @@ class AddTestType extends React.Component {
 
                     />
                   </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={24}>
+                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                  <Typography.Title level={4}>Observation Definitions</Typography.Title>
+                </Col>
+              </Row>
+              <hr />
+              <Row>
+                <Col>
+                  <Form.List name="test_type_methods" initialValue={test_type_methods}>
+                    {(fields, { add, remove }) => (
+                      <>
+                        {fields.map(({ key, name, ...restField }) => (
+                          <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+
+                            <Form.Item
+                              {...restField}
+                              name={[name, 'name']}
+                              style={{ width: 300 }}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: <IntlMessages id="admin.input.required" />,
+                                }
+                              ]}
+                            >
+                              <Input
+                                style={{ width: "100%" }}
+                                placeholder="Display Name"
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              {...restField}
+                              name={[name, 'code']}
+                              style={{ width: 300 }}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: <IntlMessages id="admin.input.required" />,
+                                }
+                              ]}
+                            >
+                              <Input placeholder="Code" />
+                            </Form.Item>
+
+                            <MinusCircleOutlined onClick={() => remove(name)} />
+                          </Space>
+                        ))}
+                        <Form.Item>
+                          <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                            Add Definition
+                          </Button>
+                        </Form.Item>
+                      </>
+                    )}
+                  </Form.List>
                 </Col>
               </Row>
               <Row>

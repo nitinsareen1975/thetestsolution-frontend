@@ -7,7 +7,7 @@ import ServerError from "../components/common/500.jsx";
 import Register from "../components/register/register.jsx";
 import LabAdmin from "../components/lab-admin/lab-admin.jsx";
 import PatientReport from "../components/patient-report/view.jsx";
-
+import PatientForm from "../components/patient-form/view.jsx";
 export default {
   routes: [
     {
@@ -50,6 +50,10 @@ export default {
       path: "/patient-report/:code",
       component: PatientReport,
       exact: true
+    },
+    {
+      path: "/print-patient-form/:id",
+      component: PatientForm
     }
   ],
   private: [

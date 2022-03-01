@@ -12,6 +12,7 @@ import PendingResults  from "../components/lab-admin/manage-patients/pending-res
 import MyAccount from "../components/my-account/profile.jsx";
 import ChangePassword from "../components/my-account/change-password.jsx";
 import LabSettings from "../components/lab-admin/settings/settings.jsx";
+import TestResults from "../components/admin/reports/test-results.jsx";
 const routes = [
   {
     path: "",
@@ -60,6 +61,10 @@ const routes = [
   {
     path: "settings",
     component: LabSettings
+  },
+  {
+    path: "test-results",
+    component: TestResults
   }
 ];
 

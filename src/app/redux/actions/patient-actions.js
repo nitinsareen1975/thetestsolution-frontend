@@ -20,7 +20,7 @@ export function getCheckedinPatients({filters,pagination,sorter}) {
 
 export function getCompletedPatients({filters,pagination,sorter}) {
   return async function (dispatch, getState) {
-    return await API.getPatients({filters: {progress_status: 3,...filters},pagination: pagination,sorter: sorter});
+    return await API.getCompletedPatients({filters:filters,pagination: pagination,sorter: sorter});
   };
 }
 
@@ -51,5 +51,17 @@ export function getPatient(idx) {
 export function deletePatient(idx) {
   return async function (dispatch, getState) {
     return await API.deletePatient(idx);
+  };
+}
+
+export function getPatientPricingInfo(patientId, pricingId) {
+  return async function (dispatch, getState) {
+    return await API.getPatientPricingInfo(patientId, pricingId);
+  };
+}
+
+export function savePatientResults(patientId, data) {
+  return async function (dispatch, getState) {
+    return await API.savePatientResults(patientId, data);
   };
 }

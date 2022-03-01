@@ -585,6 +585,63 @@ class EditLab extends React.Component {
                     <Locator on_locate={this.setLatLong} cords={this.state.location} radius={this.state.lab && this.state.lab.radius ? this.state.lab.radius : this.state.minRadius} radius_input={this.radiusRef} defaultAddress={this.state.lab && this.state.lab.street ? this.state.lab.street : null} />
                   </Col>
                 </Row>
+                <Row gutter={24} style={{ marginTop: 15 }}>
+                  <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                    <Typography.Title level={4}>SFTP/FTP to upload results</Typography.Title>
+                  </Col>
+                </Row>
+                <hr />
+                <Row gutter={24}>
+                  <Col xs={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Host"
+                      name="ftp_host"
+                      placeholder="e.g. http://domain.com or 192.168.0.1"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Port"
+                      name="ftp_port"
+                      placeholder="Default to 80"
+                    >
+                      <Input defaultValue={80} />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Username"
+                      name="ftp_username"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Password"
+                      name="ftp_password"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={24} sm={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Directory/Folder path on server"
+                      name="ftp_folder_path"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                </Row>
                 <Row style={{ marginTop: 10 }}>
                   <Col>
                     <Form.Item>

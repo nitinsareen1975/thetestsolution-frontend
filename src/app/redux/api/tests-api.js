@@ -31,8 +31,14 @@ const addTestType = data => {
 const getTestType = idx => {
   return Axios.get("/api/test-types/"+idx, undefined, undefined);
 };
+const getTestTypeMethods = idx => {
+  return Axios.get("/api/test-type-methods/"+idx, undefined, undefined);
+};
 const deleteTestType = data => {
   return Axios.delete("/api/test-types/"+ data.id, data, undefined);
+};
+const updateTestTypeMethods = (id,data) => {
+  return Axios.put("/api/test-type-methods/"+ id, data, undefined);
 };
 
 export default {
@@ -46,5 +52,7 @@ export default {
   updateTestType,
   addTestType,
   getTestType,
-  deleteTestType
+  deleteTestType,
+  getTestTypeMethods,
+  updateTestTypeMethods
 };
