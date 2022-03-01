@@ -27,6 +27,15 @@ const getTransactionDetails = (data) => {
 const refundTransaction = (data) => {
   return Axios.post("/api/payments/refund", data, undefined);
 };
+const getPatientPricingInfo = (patientId, pricingId) => {
+  return Axios.get("/api/patients/pricing/"+patientId+"/"+pricingId, undefined, undefined);
+};
+const savePatientResults = (patientId, data) => {
+  return Axios.post("/api/patients/save-results/"+patientId, data, undefined);
+};
+const getCompletedPatients = (data) => {
+  return Axios.get("/api/patients/completed", data, undefined);
+};
 export default {
   getPatients,
   addPatient,
@@ -36,5 +45,8 @@ export default {
   deletePatient,
   removeIdentifierDoc,
   getTransactionDetails,
-  refundTransaction
+  refundTransaction,
+  getPatientPricingInfo,
+  savePatientResults,
+  getCompletedPatients
 };

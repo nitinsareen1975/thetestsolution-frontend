@@ -89,6 +89,11 @@ const adminOptions = [{
         key: "/admin/reports/revenue",
         label: "View Revenue",
         roles: ["Administrator"]
+      },
+      {
+        key: "/admin/reports/test-results",
+        label: "Test Results",
+        roles: ["Administrator"]
       }
     ]
   }
@@ -158,7 +163,7 @@ const labAdminOptions = [{
         roles: ["Doctor"]
       },
       {
-        key: "/lab/test-resutls",
+        key: "/lab/test-results",
         label: "Test Results",
         roles: ["Doctor"]
       }

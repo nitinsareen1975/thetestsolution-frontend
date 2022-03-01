@@ -20,6 +20,7 @@ import AddPatient from "../components/admin/manage-patients/add.jsx";
 import EditPatient from "../components/admin/manage-patients/edit.jsx";
 import MyAccount from "../components/my-account/profile.jsx";
 import ChangePassword from "../components/my-account/change-password.jsx";
+import TestResults from "../components/admin/reports/test-results.jsx";
 
 const routes = [
   {
@@ -93,6 +94,10 @@ const routes = [
   {
     path: "account/change-password",
     component: ChangePassword
+  },
+  {
+    path: "reports/test-results",
+    component: TestResults
   }
 ];
 

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { PlusCircleOutlined } from '@ant-design/icons';
 import * as patientActions from "../../../redux/actions/patient-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
 import * as adminActions from "../../../redux/actions/admin-actions";
@@ -14,15 +13,16 @@ import {
   Col,
   Typography,
   Tooltip,
-  Modal
+  Tag
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
-import { EditOutlined, CloseOutlined, SearchOutlined, FilePdfOutlined, ArrowLeftOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { FileDoneOutlined, CloseOutlined, SearchOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import moment from "moment";
 
-class CheckedinList extends Component {
+class TestResults extends Component {
   constructor(props) {
     super(props);
-    this.module = 'checkedin_list';
+    this.module = 'test_results';
     this.state = {
       dataLoaded: false,
       loading: false,
@@ -41,9 +41,7 @@ class CheckedinList extends Component {
         pageSize: 10,
         current: 1
       },
-      filters: {},
-      checkInModalVisible: false,
-      checkInPatientId: 0
+      filters: {}
     };
     this.handleTableChange = this.handleTableChange.bind(this);
   }
@@ -54,22 +52,13 @@ class CheckedinList extends Component {
   getHeaderKeys = () => {
     return [
       {
-        title: "First Name",
-        dataIndex: "firstname",
-        filteredValue: this.getSelectedFilterValue('firstname'),
-        ...this.getColumnSearchProps("firstname")
-      },
-      {
-        title: "Last Name",
-        dataIndex: "lastname",
-        filteredValue: this.getSelectedFilterValue('lastname'),
-        ...this.getColumnSearchProps("lastname")
-      },
-      {
-        title: "Email Address",
+        title: "Email Address/Name",
         dataIndex: "email",
         filteredValue: this.getSelectedFilterValue('email'),
-        ...this.getColumnSearchProps("email")
+        ...this.getColumnSearchProps("email"),
+        render: (_t, row) => {
+            return <span>{row.email}<br/><i style={{ fontSize: 12 }}>({row.firstname} {row.lastname})</i></span>
+        }
       },
       {
         title: "Phone",
@@ -78,45 +67,32 @@ class CheckedinList extends Component {
         ...this.getColumnSearchProps("phone")
       },
       {
-        title: "Scheduled Date/Time",
-        dataIndex: "scheduled_date",
-        render: (_text, row) => (
-          <span>{row.scheduled_date}<br></br>{row.scheduled_time}</span>
-        )
+        title: "Lab Assigned",
+        dataIndex: "lab_assigned"
       },
       {
-        title: "Test Selected",
-        dataIndex: "test_type_name"
+        title: "Result",
+        render: (_i, row) => {
+            return <span>{row.result == 'positive' ? <Tag color="volcano">Positive</Tag> : <Tag color="green">Negative</Tag>}</span>
+        }
+      },
+      {
+        title: "Result Value",
+        render: (_i, row) => {
+            return <span>{row.result_value}</span>
+        }
       },
       {
         title: "Actions",
         rowKey: "action",
-        // width: "200px",
+        width: 130,
         render: (_text, record) => (
           <span>
-            <Tooltip title="Edit Patient">
+            <Tooltip title="View Report">
               <Button
-                onClick={() => this.props.history.push("./patients/edit/" + record.id)}
+                onClick={() => window.open("/patient-report/" + record.confirmation_code)}
               >
-                <EditOutlined />
-              </Button>
-            </Tooltip>
-            <Tooltip title="Print Patient Form">
-              <Button
-                type="primary"
-                onClick={() => this.printPatientForm(record.id)}
-                style={{ color: '#222' }}
-              >
-                <FilePdfOutlined />
-              </Button>
-            </Tooltip>
-            <Tooltip title="Samples Collected">
-              <Button
-                type="primary"
-                onClick={() => this.samplesCollected(record.id)}
-                style={{ color: '#222' }}
-              >
-                <ClockCircleOutlined />
+                <FileDoneOutlined />
               </Button>
             </Tooltip>
           </span>
@@ -254,20 +230,6 @@ class CheckedinList extends Component {
     }
   }
 
-  deleteItem = id => {
-    this.setState({ loading: true });
-    this.props
-      .deleteUser({ id: id })
-      .then(item => {
-        this.setState({ loading: false });
-        this.props.history.push("./");
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({ loading: false });
-      });
-  };
-
   handleTableChange = (pagination, filters, sorter, manual) => {
     if (filters === undefined) filters = {};
     Object.keys(filters).map(key => { if ((!filters[key]) || (Array.isArray(filters[key]) && filters[key].length === 0)) { delete filters[key] } })
@@ -280,16 +242,15 @@ class CheckedinList extends Component {
       })
     }
     this.setState({ loading: true });
-
     var patients_statuses = this.props.patient_status_list;
     var lab = JSON.parse(localStorage.getItem("lab"));
     var patientTypeFilter = {lab_assigned: lab.id};
     if (patients_statuses.length > 0) {
-      var statusObj = patients_statuses.find(i => i.code == 'checked-in');
+      var statusObj = patients_statuses.find(i => i.code == 'completed');
       patientTypeFilter["progress_status"] = statusObj.id;
     }
     this.props
-      .getPatients({
+      .getCompletedPatients({
         filters: {...filters, ...patientTypeFilter},
         pagination: { page: pagination.current, pageSize: pagination.pageSize },
         sorter: sorter
@@ -306,39 +267,6 @@ class CheckedinList extends Component {
         this.setState({ loading: false });
       });
   };
-
-  printPatientForm = (patientId) => {
-    window.open("/print-patient-form/"+patientId,"_blank");
-  }
-
-  samplesCollected = async(patientId) => {
-    var patients_statuses = this.props.patient_status_list;
-    if (patients_statuses.length > 0) {
-      var statusObj = patients_statuses.find(i => i.code == 'pending-results');
-      await this.props.updatePatient(patientId, { progress_status: statusObj.id }).then(response => {
-        if (response.status && response.status == true) {
-          notifyUser("Patient moved to Pending Results.", "success");
-          if (this.props.paginginfo && this.props.paginginfo[this.module]) {
-            this.handleTableChange(this.props.paginginfo[this.module].pagination, this.props.paginginfo[this.module].filter, {}, true);
-            if (this.props.paginginfo[this.module].filters) {
-              let filters = this.props.paginginfo[this.module].filters
-              Object.keys(filters).map(k => { filters[k].auto = false });
-              this.setState({ filters: filters });
-            }
-          } else {
-            this.handleTableChange({ current: 1, pageSize: 10 }, {}, {}, true);
-          }
-        } else {
-          if (response.message) {
-            notifyUser(response.message, "error");
-          } else {
-            notifyUser("Unknown error. Please try again!", "error");
-          }
-          this.setState({ loading: false });
-        }
-      });
-    }
-  }
 
   render() {
     let _state = this.state;
@@ -374,11 +302,12 @@ class CheckedinList extends Component {
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
-              Checked In List
+              Test Results
             </Typography.Title>
           </Col>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Button
+              style={{ marginLeft: 10}}
               type="primary"
               onClick={() => this.props.history.goBack()}
               className="right-fl def-blue"
@@ -422,6 +351,6 @@ function mapDispatchToProps(dispatch) {
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-    CheckedinList
+    TestResults
   )
 );

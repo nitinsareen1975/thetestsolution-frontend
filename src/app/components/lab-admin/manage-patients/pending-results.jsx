@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import { PlusCircleOutlined } from '@ant-design/icons';
 import * as patientActions from "../../../redux/actions/patient-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
+import * as testsActions from "../../../redux/actions/tests-actions";
 import * as adminActions from "../../../redux/actions/admin-actions";
 import {
   Table,
@@ -14,15 +15,21 @@ import {
   Col,
   Typography,
   Tooltip,
-  Modal
+  Modal,
+  Form,
+  Select,
+  Radio,
+  Descriptions,
+  Alert
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
 import { EditOutlined, CloseOutlined, SearchOutlined, CheckCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
-
+const { Option } = Select;
 class PendingResults extends Component {
   constructor(props) {
     super(props);
     this.module = 'pending_results';
+    this.resultsForm = React.createRef();
     this.state = {
       dataLoaded: false,
       loading: false,
@@ -42,8 +49,9 @@ class PendingResults extends Component {
         current: 1
       },
       filters: {},
-      checkInModalVisible: false,
-      checkInPatientId: 0
+      resultsModalVisible: false,
+      resultsModalPatient: {},
+      resultsModalValues: {}
     };
     this.handleTableChange = this.handleTableChange.bind(this);
   }
@@ -96,7 +104,7 @@ class PendingResults extends Component {
           <span>
             <Tooltip title="Edit Patient">
               <Button
-                onClick={() => this.props.history.push("./patients/edit/" + record.id)}
+                onClick={() => this.props.history.push("./edit/" + record.id)}
               >
                 <EditOutlined />
               </Button>
@@ -104,7 +112,7 @@ class PendingResults extends Component {
             <Tooltip title="Enter Results">
               <Button
                 type="primary"
-                onClick={() => this.enterResults(record.id)}
+                onClick={() => this.confirmEnterResults(record)}
                 style={{ color: '#222' }}
               >
                 <CheckCircleOutlined />
@@ -274,14 +282,14 @@ class PendingResults extends Component {
 
     var patients_statuses = this.props.patient_status_list;
     var lab = JSON.parse(localStorage.getItem("lab"));
-    var patientTypeFilter = {lab_assigned: lab.id};
+    var patientTypeFilter = { lab_assigned: lab.id };
     if (patients_statuses.length > 0) {
       var statusObj = patients_statuses.find(i => i.code == 'pending-results');
       patientTypeFilter["progress_status"] = statusObj.id;
     }
     this.props
       .getPatients({
-        filters: {...filters, ...patientTypeFilter},
+        filters: { ...filters, ...patientTypeFilter },
         pagination: { page: pagination.current, pageSize: pagination.pageSize },
         sorter: sorter
       })
@@ -298,8 +306,84 @@ class PendingResults extends Component {
       });
   };
 
-  enterResults = (patientId) => {
+  confirmEnterResults = async (patient) => {
+    this.setState({ loading: true });
+    await this.props.getPatientPricingInfo(patient.id, patient.pricing_id).then(async (response) => {
+      if (response.status && response.status == true) {
+        let _resultsModalValues = this.state.resultsModalValues;
+        await this.props.getTestTypeMethods(response.data.test_type_id).then(async (resp1) => {
+          if (resp1.status && resp1.status === true && resp1.data.length > 0) {
+            _resultsModalValues.sample_collection_methods = resp1.data;
+          }
+        });
+        _resultsModalValues.firstname = response.data.firstname;
+        _resultsModalValues.lastname = response.data.lastname;
+        _resultsModalValues.test_type = response.data.test_type;
+        this.setState({
+          resultsModalValues: _resultsModalValues,
+          resultsModalPatient: patient
+        }, () => {
+          this.setState({ resultsModalVisible: true, loading: false });
+        });
+      } else {
+        notifyUser("No pricing was found. Please check patient details and try again!", "error");
+        this.resetResultsModal();
+        this.setState({ loading: false });
+      }
+    });
+  }
 
+  enterResults = async(uploadToGovt) => {
+    var formdata = this.resultsForm.current.getFieldsValue();
+    if(typeof formdata.sample_collection_method !== 'undefined' && typeof formdata.result !== 'undefined'){
+      var patients_statuses = this.props.patient_status_list;
+      if (patients_statuses.length > 0) {
+        this.setState({ loading: true });
+        var statusObj = patients_statuses.find(i => i.code == 'completed');
+        let args = { 
+          sample_collection_method: formdata.sample_collection_method,
+          result: formdata.result,
+          result_text: formdata.result_text,
+          lab_id: this.state.resultsModalPatient.lab_assigned_id,
+          progress_status: statusObj.id,
+          send_to_govt: uploadToGovt,
+          confirmation_code: this.state.resultsModalPatient.confirmation_code
+        };
+        await this.props.savePatientResults(this.state.resultsModalPatient.id, args).then(response => {
+          if (response.status && response.status == true) {
+            notifyUser(response.message, "success");
+            if (this.props.paginginfo && this.props.paginginfo[this.module]) {
+              this.handleTableChange(this.props.paginginfo[this.module].pagination, this.props.paginginfo[this.module].filter, {}, true);
+              if (this.props.paginginfo[this.module].filters) {
+                let filters = this.props.paginginfo[this.module].filters
+                Object.keys(filters).map(k => { filters[k].auto = false });
+                this.setState({ filters: filters });
+              }
+            } else {
+              this.handleTableChange({ current: 1, pageSize: 10 }, {}, {}, true);
+            }
+            this.resetResultsModal();
+            this.setState({ loading: false });
+          } else {
+            if (response.message) {
+              notifyUser(response.message, "error");
+            } else {
+              notifyUser("Unknown error. Please try again!", "error");
+            }
+            this.resetResultsModal();
+            this.setState({ loading: false });
+          }
+        });
+      } else {
+        notifyUser("Something went wrong. Please refresh the page and try again.","error");
+      }
+    } else {
+      notifyUser("Please fill all the required fields.","error");
+    }
+  }
+
+  resetResultsModal = () => {
+    this.setState({ resultsModalVisible: false, resultsModalPatient: {}, resultsModalValues: {} });
   }
 
   render() {
@@ -333,6 +417,79 @@ class PendingResults extends Component {
 
     return (
       <div className="gray-bg">
+        <Modal
+          title="Enter Patient Results"
+          visible={this.state.resultsModalVisible}
+          onCancel={() => this.setState({ resultsModalVisible: false, resultsModalPatient: {} })}
+          footer={[
+            <Button type="primary" onClick={() => this.enterResults(0)}>
+              Save Results
+            </Button>,
+            <Button danger onClick={() => this.enterResults(1)}>
+              Save Results and Upload to Govt.
+            </Button>
+          ]}
+        >
+          {this.state.resultsModalValues.firstname
+            && this.state.resultsModalValues.lastname
+            && this.state.resultsModalValues.test_type
+            && this.state.resultsModalValues.sample_collection_methods ?
+            <Form ref={this.resultsForm} layout="vertical" initialValues={this.state.resultsModalValues}>
+              <Row>
+                <Col>
+                  <Descriptions style={{ width: '100%' }}>
+                    <Descriptions.Item label={<strong>Patient Name</strong>}>
+                      {this.state.resultsModalValues.firstname} {this.state.resultsModalValues.lastname}
+                    </Descriptions.Item>
+                  </Descriptions>
+                  <Descriptions style={{ width: '100%' }}>
+                    <Descriptions.Item label={<strong>Test Type</strong>}>
+                      {this.state.resultsModalValues.test_type}
+                    </Descriptions.Item>
+                  </Descriptions>
+                </Col>
+              </Row>
+              <br/>
+              <Row>
+                <Col style={{ width: '100%' }}>
+                  <Form.Item label={<strong style={{fontSize:14}}>Specimen Collection Method</strong>} name="sample_collection_method" rules={[{required: true}]}>
+                    <Select
+                      showSearch
+                      filterOption={(input, option) =>
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      {this.state.resultsModalValues.sample_collection_methods.map(function (item) {
+                        return (
+                          <Option key={item.id} value={item.id}>
+                            {item.name} ({item.code})
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row>
+                <Col style={{ width: '100%' }}>
+                  <Form.Item label={<strong style={{fontSize:14}}>Result</strong>} name="result" rules={[{required: true}]}>
+                    <Radio.Group buttonStyle="solid">
+                      <Radio.Button value="positive">Positive</Radio.Button>
+                      <Radio.Button value="negative">Negative</Radio.Button>
+                    </Radio.Group>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row>
+                <Col style={{ width: '100%' }}>
+                  <Form.Item label={<strong style={{fontSize:14}}>Result Comments</strong>} name="result_text">
+                    <Input.TextArea rows={2} />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+            : <Alert message="No sample collection methods available for this lab." type="warning" />}
+        </Modal>
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
@@ -380,7 +537,7 @@ function mapStateToProps(state) {
   };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...adminActions, ...patientActions, ...paginationActions }, dispatch);
+  return bindActionCreators({ ...adminActions, ...testsActions, ...patientActions, ...paginationActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
