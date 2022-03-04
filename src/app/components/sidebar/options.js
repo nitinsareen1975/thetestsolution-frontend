@@ -163,7 +163,7 @@ const labAdminOptions = [{
         roles: ["Doctor"]
       },
       {
-        key: "/lab/test-results",
+        key: "/lab/reports/test-results",
         label: "Test Results",
         roles: ["Doctor"]
       }

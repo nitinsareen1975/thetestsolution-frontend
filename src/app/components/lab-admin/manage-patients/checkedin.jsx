@@ -14,15 +14,19 @@ import {
   Col,
   Typography,
   Tooltip,
-  Modal
+  Modal,
+  Form,
+  Spin
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
 import { EditOutlined, CloseOutlined, SearchOutlined, FilePdfOutlined, ArrowLeftOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import moment from "moment";
 
 class CheckedinList extends Component {
   constructor(props) {
     super(props);
     this.module = 'checkedin_list';
+    this.sampleForm = React.createRef();
     this.state = {
       dataLoaded: false,
       loading: false,
@@ -42,6 +46,7 @@ class CheckedinList extends Component {
         current: 1
       },
       filters: {},
+      modalLoading: false,
       checkInModalVisible: false,
       checkInPatientId: 0
     };
@@ -96,7 +101,7 @@ class CheckedinList extends Component {
           <span>
             <Tooltip title="Edit Patient">
               <Button
-                onClick={() => this.props.history.push("./patients/edit/" + record.id)}
+                onClick={() => this.props.history.push("./edit/" + record.id)}
               >
                 <EditOutlined />
               </Button>
@@ -113,7 +118,7 @@ class CheckedinList extends Component {
             <Tooltip title="Samples Collected">
               <Button
                 type="primary"
-                onClick={() => this.samplesCollected(record.id)}
+                onClick={() => this.confirmSamplesCollected(record.id)}
                 style={{ color: '#222' }}
               >
                 <ClockCircleOutlined />
@@ -283,14 +288,14 @@ class CheckedinList extends Component {
 
     var patients_statuses = this.props.patient_status_list;
     var lab = JSON.parse(localStorage.getItem("lab"));
-    var patientTypeFilter = {lab_assigned: lab.id};
+    var patientTypeFilter = { lab_assigned: lab.id };
     if (patients_statuses.length > 0) {
       var statusObj = patients_statuses.find(i => i.code == 'checked-in');
       patientTypeFilter["progress_status"] = statusObj.id;
     }
     this.props
       .getPatients({
-        filters: {...filters, ...patientTypeFilter},
+        filters: { ...filters, ...patientTypeFilter },
         pagination: { page: pagination.current, pageSize: pagination.pageSize },
         sorter: sorter
       })
@@ -308,15 +313,31 @@ class CheckedinList extends Component {
   };
 
   printPatientForm = (patientId) => {
-    window.open("/print-patient-form/"+patientId,"_blank");
+    window.open("/print-patient-form/" + patientId, "_blank");
   }
 
-  samplesCollected = async(patientId) => {
+  confirmSamplesCollected = (patientId) => {
+    this.setState({
+      checkInPatientId: patientId
+    }, () => {
+      this.setState({ checkInModalVisible: true });
+    })
+  }
+
+  samplesCollected = async () => {
     var patients_statuses = this.props.patient_status_list;
     if (patients_statuses.length > 0) {
       var statusObj = patients_statuses.find(i => i.code == 'pending-results');
-      await this.props.updatePatient(patientId, { progress_status: statusObj.id }).then(response => {
+      var _specimen_type = "";
+      var formvalues = this.sampleForm.current.getFieldsValue();
+      if (typeof formvalues.specimen_type !== "undefined") {
+        _specimen_type = formvalues.specimen_type;
+      }
+      this.setState({ modalLoading: true });
+      await this.props.updatePatient(this.state.checkInPatientId, { progress_status: statusObj.id, specimen_type: _specimen_type, specimen_collection_date: moment().format("YYYY-MM-DD") }).then(response => {
         if (response.status && response.status == true) {
+          this.setState({ modalLoading: false });
+          this.resetCheckinModal();
           notifyUser("Patient moved to Pending Results.", "success");
           if (this.props.paginginfo && this.props.paginginfo[this.module]) {
             this.handleTableChange(this.props.paginginfo[this.module].pagination, this.props.paginginfo[this.module].filter, {}, true);
@@ -334,10 +355,21 @@ class CheckedinList extends Component {
           } else {
             notifyUser("Unknown error. Please try again!", "error");
           }
-          this.setState({ loading: false });
+          this.setState({ modalLoading: false });
         }
       });
+    } else {
+      notifyUser("Patient status list not found. Please refresh the page and try again.", "error");
+      this.resetCheckinModal();
     }
+  }
+
+  resetCheckinModal = () => {
+    this.setState({
+      checkInModalVisible: false,
+      checkInPatientId: 0,
+      modalLoading: false
+    });
   }
 
   render() {
@@ -371,6 +403,29 @@ class CheckedinList extends Component {
 
     return (
       <div className="gray-bg">
+        <Modal
+          title="Enter sample collection data"
+          visible={this.state.checkInModalVisible}
+          onOk={this.samplesCollected}
+          onCancel={() => this.setState({ checkInModalVisible: false, checkInPatientId: 0 })}
+          footer={[
+            <Button type="primary" onClick={this.samplesCollected}>
+              Save and move to Pending Results
+            </Button>
+          ]}
+        >
+          <Spin spinning={this.state.modalLoading}>
+            <Form ref={this.sampleForm} layout="vertical">
+              <Row>
+                <Col style={{ width: '100%' }}>
+                  <Form.Item label={<strong style={{ fontSize: 14 }}>Type of Specimen</strong>} name="specimen_type" rules={[{ required: true }]}>
+                    <Input />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+          </Spin>
+        </Modal>
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>

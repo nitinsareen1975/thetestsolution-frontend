@@ -308,7 +308,7 @@ class AddLab extends React.Component {
                     label="Company Logo (Used to attach in invoice)"
                     name="logo"
                   >
-                    <Upload {...this.uploaderProps('logo', '.jpg,.jpeg,.png')}>
+                    <Upload {...this.uploaderProps('logo', '.jpg,.jpeg')}>
                       <Button>
                         <UploadOutlined /> <IntlMessages id="admin.select.uploadfile" />
                       </Button>
@@ -473,8 +473,34 @@ class AddLab extends React.Component {
 
                             <Form.Item
                               {...restField}
+                              name={[name, 'test_type']}
+                              style={{ width: 180 }}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: <IntlMessages id="admin.input.required" />,
+                                },
+                              ]}
+                            >
+                              <Select placeholder="Type Of Test">
+                                {this.state.testTypes.map(test => {
+                                  var optDisabled = false;
+                                  /* if (lab_pricing.length > 0) {
+                                    lab_pricing.map(i => {
+                                      if (typeof i !== "undefined" && typeof i.test_type !== "undefined" && i.test_type == test.id.toString()) {
+                                        optDisabled = true;
+                                      }
+                                    });
+                                  } */
+                                  return <Option key={test.id} value={test.id} disabled={optDisabled}>{test.name}</Option>
+                                })}
+                              </Select>
+                            </Form.Item>
+
+                            <Form.Item
+                              {...restField}
                               name={[name, 'price']}
-                              style={{ width: 300 }}
+                              style={{ width: 100 }}
                               rules={[
                                 {
                                   required: true,
@@ -490,36 +516,26 @@ class AddLab extends React.Component {
 
                             <Form.Item
                               {...restField}
-                              name={[name, 'test_type']}
-                              style={{ width: 300 }}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: <IntlMessages id="admin.input.required" />,
-                                },
-                              ]}
+                              name={[name, 'test_label']}
+                              style={{ width: 200 }}
                             >
-                              <Select placeholder="Type Of Test">
-                                {this.state.testTypes.map(test => {
-                                  var optDisabled = false;
-                                  if (lab_pricing.length > 0) {
-                                    lab_pricing.map(i => {
-                                      if (typeof i !== "undefined" && typeof i.test_type !== "undefined" && i.test_type == test.id.toString()) {
-                                        optDisabled = true;
-                                      }
-                                    });
-                                  }
-                                  return <Option key={test.id} value={test.id} disabled={optDisabled}>{test.name}</Option>
-                                })}
-                              </Select>
+                              <Input placeholder="Test Label" />
+                            </Form.Item>
+
+                            <Form.Item
+                              {...restField}
+                              name={[name, 'test_duration']}
+                              style={{ width: 200 }}
+                            >
+                              <Input placeholder="Test Duration (e.g. 1 Hours, 30 Minutes)" />
                             </Form.Item>
 
                             <Form.Item
                               {...restField}
                               name={[name, 'test_codes']}
-                              style={{ width: 300 }}
+                              style={{ width: 200 }}
                             >
-                              <Input placeholder="Test Codes" />
+                              <Input placeholder="Test Code" />
                             </Form.Item>
 
                             <MinusCircleOutlined onClick={() => remove(name)} />

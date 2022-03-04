@@ -13,6 +13,7 @@ import MyAccount from "../components/my-account/profile.jsx";
 import ChangePassword from "../components/my-account/change-password.jsx";
 import LabSettings from "../components/lab-admin/settings/settings.jsx";
 import TestResults from "../components/admin/reports/test-results.jsx";
+import AllReports from "../components/admin/reports/all.jsx";
 const routes = [
   {
     path: "",
@@ -63,8 +64,12 @@ const routes = [
     component: LabSettings
   },
   {
-    path: "test-results",
+    path: "reports/test-results",
     component: TestResults
+  },
+  {
+    path: "reports/all",
+    component: AllReports
   }
 ];
 

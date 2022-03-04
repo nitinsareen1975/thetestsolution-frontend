@@ -6,5 +6,6 @@ module.exports = {
   WEB_URL: AppConfig && AppConfig.WEB_URL ? AppConfig.WEB_URL : "http://thetestsolution.com",
   GoogleMapsAPIkey: AppConfig && AppConfig.GoogleMapsAPIkey ? AppConfig.GoogleMapsAPIkey : "",
   StripeAPIKey: AppConfig && AppConfig.StripeAPIKey ? AppConfig.StripeAPIKey : "",
-  StripeSecretKey: AppConfig && AppConfig.StripeSecretKey ? AppConfig.StripeSecretKey : ""
+  StripeSecretKey: AppConfig && AppConfig.StripeSecretKey ? AppConfig.StripeSecretKey : "",
+  StripeAccountId: AppConfig && AppConfig.StripeAccountId ? AppConfig.StripeAccountId : ""
 };

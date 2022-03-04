@@ -15,9 +15,7 @@ import {
   Tooltip,
   Tag
 } from "antd";
-import { notifyUser } from "../../../services/notification-service";
 import { FileDoneOutlined, CloseOutlined, SearchOutlined, ArrowLeftOutlined } from '@ant-design/icons';
-import moment from "moment";
 
 class TestResults extends Component {
   constructor(props) {
@@ -90,7 +88,7 @@ class TestResults extends Component {
           <span>
             <Tooltip title="View Report">
               <Button
-                onClick={() => window.open("/patient-report/" + record.confirmation_code)}
+                onClick={() => window.open("/patient-report/" + window.btoa(record.id) + '/' + record.confirmation_code)}
               >
                 <FileDoneOutlined />
               </Button>

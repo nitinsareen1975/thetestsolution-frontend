@@ -8,6 +8,7 @@ import Register from "../components/register/register.jsx";
 import LabAdmin from "../components/lab-admin/lab-admin.jsx";
 import PatientReport from "../components/patient-report/view.jsx";
 import PatientForm from "../components/patient-form/view.jsx";
+import PatientReportLogin from "../components/patient-report/index.jsx";
 export default {
   routes: [
     {
@@ -47,13 +48,18 @@ export default {
       exact: true
     },
     {
-      path: "/patient-report/:code",
+      path: "/patient-report/:patientId/:code",
       component: PatientReport,
       exact: true
     },
     {
       path: "/print-patient-form/:id",
       component: PatientForm
+    },
+    {
+      path: "/patient-report/:patientId",
+      component: PatientReportLogin,
+      exact: true
     }
   ],
   private: [

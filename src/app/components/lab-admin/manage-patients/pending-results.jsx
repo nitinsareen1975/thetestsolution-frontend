@@ -20,7 +20,8 @@ import {
   Select,
   Radio,
   Descriptions,
-  Alert
+  Alert,
+  Spin
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
 import { EditOutlined, CloseOutlined, SearchOutlined, CheckCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
@@ -49,6 +50,7 @@ class PendingResults extends Component {
         current: 1
       },
       filters: {},
+      modalLoading: false,
       resultsModalVisible: false,
       resultsModalPatient: {},
       resultsModalValues: {}
@@ -333,14 +335,14 @@ class PendingResults extends Component {
     });
   }
 
-  enterResults = async(uploadToGovt) => {
+  enterResults = async (uploadToGovt) => {
     var formdata = this.resultsForm.current.getFieldsValue();
-    if(typeof formdata.sample_collection_method !== 'undefined' && typeof formdata.result !== 'undefined'){
+    if (typeof formdata.sample_collection_method !== 'undefined' && typeof formdata.result !== 'undefined') {
       var patients_statuses = this.props.patient_status_list;
       if (patients_statuses.length > 0) {
-        this.setState({ loading: true });
+        this.setState({ modalLoading: true });
         var statusObj = patients_statuses.find(i => i.code == 'completed');
-        let args = { 
+        let args = {
           sample_collection_method: formdata.sample_collection_method,
           result: formdata.result,
           result_text: formdata.result_text,
@@ -363,7 +365,7 @@ class PendingResults extends Component {
               this.handleTableChange({ current: 1, pageSize: 10 }, {}, {}, true);
             }
             this.resetResultsModal();
-            this.setState({ loading: false });
+            this.setState({ modalLoading: false });
           } else {
             if (response.message) {
               notifyUser(response.message, "error");
@@ -371,19 +373,24 @@ class PendingResults extends Component {
               notifyUser("Unknown error. Please try again!", "error");
             }
             this.resetResultsModal();
-            this.setState({ loading: false });
+            this.setState({ modalLoading: false });
           }
         });
       } else {
-        notifyUser("Something went wrong. Please refresh the page and try again.","error");
+        notifyUser("Something went wrong. Please refresh the page and try again.", "error");
       }
     } else {
-      notifyUser("Please fill all the required fields.","error");
+      notifyUser("Please fill all the required fields.", "error");
     }
   }
 
   resetResultsModal = () => {
-    this.setState({ resultsModalVisible: false, resultsModalPatient: {}, resultsModalValues: {} });
+    this.setState({ 
+      modalLoading: false,
+      resultsModalVisible: false, 
+      resultsModalPatient: {}, 
+      resultsModalValues: {} 
+    });
   }
 
   render() {
@@ -430,65 +437,67 @@ class PendingResults extends Component {
             </Button>
           ]}
         >
-          {this.state.resultsModalValues.firstname
-            && this.state.resultsModalValues.lastname
-            && this.state.resultsModalValues.test_type
-            && this.state.resultsModalValues.sample_collection_methods ?
-            <Form ref={this.resultsForm} layout="vertical" initialValues={this.state.resultsModalValues}>
-              <Row>
-                <Col>
-                  <Descriptions style={{ width: '100%' }}>
-                    <Descriptions.Item label={<strong>Patient Name</strong>}>
-                      {this.state.resultsModalValues.firstname} {this.state.resultsModalValues.lastname}
-                    </Descriptions.Item>
-                  </Descriptions>
-                  <Descriptions style={{ width: '100%' }}>
-                    <Descriptions.Item label={<strong>Test Type</strong>}>
-                      {this.state.resultsModalValues.test_type}
-                    </Descriptions.Item>
-                  </Descriptions>
-                </Col>
-              </Row>
-              <br/>
-              <Row>
-                <Col style={{ width: '100%' }}>
-                  <Form.Item label={<strong style={{fontSize:14}}>Specimen Collection Method</strong>} name="sample_collection_method" rules={[{required: true}]}>
-                    <Select
-                      showSearch
-                      filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      {this.state.resultsModalValues.sample_collection_methods.map(function (item) {
-                        return (
-                          <Option key={item.id} value={item.id}>
-                            {item.name} ({item.code})
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col style={{ width: '100%' }}>
-                  <Form.Item label={<strong style={{fontSize:14}}>Result</strong>} name="result" rules={[{required: true}]}>
-                    <Radio.Group buttonStyle="solid">
-                      <Radio.Button value="positive">Positive</Radio.Button>
-                      <Radio.Button value="negative">Negative</Radio.Button>
-                    </Radio.Group>
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col style={{ width: '100%' }}>
-                  <Form.Item label={<strong style={{fontSize:14}}>Result Comments</strong>} name="result_text">
-                    <Input.TextArea rows={2} />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
-            : <Alert message="No sample collection methods available for this lab." type="warning" />}
+          <Spin spinning={this.state.modalLoading}>
+            {this.state.resultsModalValues.firstname
+              && this.state.resultsModalValues.lastname
+              && this.state.resultsModalValues.test_type
+              && this.state.resultsModalValues.sample_collection_methods ?
+              <Form ref={this.resultsForm} layout="vertical" initialValues={this.state.resultsModalValues}>
+                <Row>
+                  <Col>
+                    <Descriptions style={{ width: '100%' }}>
+                      <Descriptions.Item label={<strong>Patient Name</strong>}>
+                        {this.state.resultsModalValues.firstname} {this.state.resultsModalValues.lastname}
+                      </Descriptions.Item>
+                    </Descriptions>
+                    <Descriptions style={{ width: '100%' }}>
+                      <Descriptions.Item label={<strong>Test Type</strong>}>
+                        {this.state.resultsModalValues.test_type}
+                      </Descriptions.Item>
+                    </Descriptions>
+                  </Col>
+                </Row>
+                <br />
+                <Row>
+                  <Col style={{ width: '100%' }}>
+                    <Form.Item label={<strong style={{ fontSize: 14 }}>Specimen Collection Method</strong>} name="sample_collection_method" rules={[{ required: true }]}>
+                      <Select
+                        showSearch
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        {this.state.resultsModalValues.sample_collection_methods.map(function (item) {
+                          return (
+                            <Option key={item.id} value={item.id}>
+                              {item.name} ({item.code})
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col style={{ width: '100%' }}>
+                    <Form.Item label={<strong style={{ fontSize: 14 }}>Result</strong>} name="result" rules={[{ required: true }]}>
+                      <Radio.Group buttonStyle="solid">
+                        <Radio.Button value="positive">Positive</Radio.Button>
+                        <Radio.Button value="negative">Negative</Radio.Button>
+                      </Radio.Group>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col style={{ width: '100%' }}>
+                    <Form.Item label={<strong style={{ fontSize: 14 }}>Result Comments</strong>} name="result_text">
+                      <Input.TextArea rows={2} />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+              : <Alert message="No sample collection methods available for this lab." type="warning" />}
+          </Spin>
         </Modal>
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>

@@ -51,6 +51,7 @@ export function getToken() {
 }
 
 export function getRandomString(length, salt = '') {
+	salt = salt.replace(/[^A-Z0-9]/ig, "");
     var randomChars = salt+'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var result = '';
     for ( var i = 0; i < length; i++ ) {

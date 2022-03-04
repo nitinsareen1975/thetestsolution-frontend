@@ -36,6 +36,15 @@ const savePatientResults = (patientId, data) => {
 const getCompletedPatients = (data) => {
   return Axios.get("/api/patients/completed", data, undefined);
 };
+const validateDOB = (data) => {
+  return Axios.post("/global/validate-patient-dob", data, undefined);
+};
+const getPatientReport = (data) => {
+  return Axios.post("/global/get-patient-report", data, undefined);
+};
+const getPatientReportPDF = (data) => {
+  return Axios.post("/global/get-patient-report-pdf", data, undefined);
+};
 export default {
   getPatients,
   addPatient,
@@ -48,5 +57,8 @@ export default {
   refundTransaction,
   getPatientPricingInfo,
   savePatientResults,
-  getCompletedPatients
+  getCompletedPatients,
+  validateDOB,
+  getPatientReport,
+  getPatientReportPDF
 };

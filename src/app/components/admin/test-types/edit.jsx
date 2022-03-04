@@ -15,11 +15,12 @@ import {
   Spin,
   Switch,
   InputNumber,
-  Space
+  Space,
+  Select
 } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
 import { ArrowLeftOutlined, SaveOutlined, PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
-
+const { Option } = Select;
 class EditTestType extends React.Component {
   formRef = React.createRef();
   state = {
@@ -42,7 +43,7 @@ class EditTestType extends React.Component {
 
   handleSubmit = async (data) => {
     this.setState({ loading: true });
-    this.props.updateTestType(this.props.match.params.id, data).then(async(response) => {
+    this.props.updateTestType(this.props.match.params.id, data).then(async (response) => {
       if (response.status && response.status === true) {
         if (data.test_type_methods && data.test_type_methods.length > 0) {
           await this.props.updateTestTypeMethods(this.props.match.params.id, { methods: data.test_type_methods }).then(res => {
@@ -71,7 +72,7 @@ class EditTestType extends React.Component {
         this.setState({ loading: false });
       });
   };
-  
+
   onValuesChange = (changedFields, allFields) => {
     this.setState({ test_type_methods: allFields.test_type_methods })
   }
@@ -289,6 +290,110 @@ class EditTestType extends React.Component {
                   </Col>
                 </Row>
                 <Row gutter={24}>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Test Code"
+                      name="code"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Gender"
+                      name="gender"
+                    >
+                      <Select>
+                        <Option key="Male" value="Male">Male</Option>
+                        <Option key="Female" value="Female">Female</Option>
+                        <Option key="Both" value="Both">Both</Option>
+                        <Option key="Undefined" value="Undefined">Undefined</Option>
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Units"
+                      name="units"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Range Type"
+                      name="range_type"
+                    >
+                      <Select>
+                        <Option key="Year" value="Year">Year</Option>
+                        <Option key="Month" value="Month">Month</Option>
+                        <Option key="Week" value="Week">Week</Option>
+                        <Option key="Day" value="Day">Day</Option>
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Range (Min.)"
+                      name="range_min"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Range (Max.)"
+                      name="range_max"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Reference (Min.)"
+                      name="ref_min"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Reference (Max.)"
+                      name="ref_max"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Panic (Min.)"
+                      name="panic_min"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      label="Panic (Max.)"
+                      name="panic_max"
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}

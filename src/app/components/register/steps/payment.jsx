@@ -170,7 +170,7 @@ const output = ({ ...props }) => {
 		}
 	}
 
-	const stripePromise = loadStripe(Config.StripeAPIKey);
+	const stripePromise = loadStripe(Config.StripeAPIKey, { stripeAccount: Config.StripeAccountId });
 
 	return <div id="paymentForm">
 		<Spin spinning={false}>
@@ -182,18 +182,18 @@ const output = ({ ...props }) => {
 							<Form.Item name="pricing_id" label="Select Type of Test" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
 								<Radio.Group className="radio-test-price-wrapper" onChange={() => setPricingState()}>
 									{pricing.map(price => {
-										var hms = price.estimated_hours.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + ':' + price.estimated_minutes.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + ':' + price.estimated_seconds.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
+										/* var hms = price.estimated_hours.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + ':' + price.estimated_minutes.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + ':' + price.estimated_seconds.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
 										var hmsArr = hms.split(':');
 										var seconds = (+hmsArr[0]) * 60 * 60 + (+hmsArr[1]) * 60 + (+hmsArr[2]);
-										var duration = UserService.secondsToHms(seconds);
+										var duration = UserService.secondsToHms(seconds); */
 										return <Radio.Button key={price.id} value={price.id}>
 											<div className="radio-test-price">
-												<div className="pricing-title">{price.test_name}</div>
+												<div className="pricing-title">{price.test_label}</div>
 												<div className="pricing-amount">
 													<span className="pricing-amount-currency">$</span>
 													{price.price}
 												</div>
-												<div className="pricing-results">Results in {duration}</div>
+												<div className="pricing-results">Results in {price.test_duration}</div>
 											</div>
 										</Radio.Button>
 									})}
