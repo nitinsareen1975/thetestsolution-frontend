@@ -81,18 +81,18 @@ const adminOptions = [{
     roles: ["Administrator"],
     children: [
       {
+        key: "/admin/reports/test-results",
+        label: "Test Results",
+        roles: ["Administrator"]
+      },
+      {
         key: "/admin/reports/all",
-        label: "View Reports",
+        label: "All Reports",
         roles: ["Administrator"]
       },
       {
         key: "/admin/reports/revenue",
-        label: "View Revenue",
-        roles: ["Administrator"]
-      },
-      {
-        key: "/admin/reports/test-results",
-        label: "Test Results",
+        label: "Revenue",
         roles: ["Administrator"]
       }
     ]
@@ -158,13 +158,13 @@ const labAdminOptions = [{
     roles: ["Doctor"],
     children: [
       {
-        key: "/lab/reports",
-        label: "All Reports",
+        key: "/lab/reports/test-results",
+        label: "Test Results",
         roles: ["Doctor"]
       },
       {
-        key: "/lab/reports/test-results",
-        label: "Test Results",
+        key: "/lab/reports/all",
+        label: "All Reports",
         roles: ["Doctor"]
       }
     ]

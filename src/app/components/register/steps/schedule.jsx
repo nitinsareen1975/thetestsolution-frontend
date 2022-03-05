@@ -4,6 +4,7 @@ import IntlMessages from "../../../services/intlMesseges";
 import LabAPI from "../../../redux/api/lab-api";
 import Config from "../../../config";
 import Axios from "axios";
+import moment from "moment";
 const output = ({ ...props }) => {
 	const formRef = useRef();
 	const [labs, setLabs] = useState([]);
@@ -65,7 +66,7 @@ const output = ({ ...props }) => {
 			<Row gutter={15}>
 				<Col xs={24} md={8}>
 					<Form.Item name="scheduled_date" label="Date of Appointment" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-						<DatePicker placeholder="Date Of Appointment" />
+						<DatePicker placeholder="Date Of Appointment"  disabledDate={(current) => moment()  >= current} />
 					</Form.Item>
 				</Col>
 				<Col xs={24} md={8}>

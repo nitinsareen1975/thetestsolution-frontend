@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { PlusCircleOutlined } from '@ant-design/icons';
 import * as patientActions from "../../../redux/actions/patient-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
 import * as adminActions from "../../../redux/actions/admin-actions";
 import * as labsActions from "../../../redux/actions/lab-actions";
+import ReportsAPI from "../../../redux/api/reports-api";
 import {
 	Table,
 	Input,
@@ -15,14 +15,15 @@ import {
 	Col,
 	Typography,
 	Tooltip,
-	Tag,
+	DatePicker,
 	Select
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
 import IntlMessages from "../../../services/intlMesseges";
-import { EditOutlined, CloseOutlined, SearchOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { CloseOutlined, SearchOutlined, ArrowLeftOutlined, DownloadOutlined, ExportOutlined } from '@ant-design/icons';
 import moment from "moment";
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 class Reports extends Component {
 	constructor(props) {
 		super(props);
@@ -86,10 +87,16 @@ class Reports extends Component {
 				...this.getColumnSearchProps("phone")
 			},
 			{
-				title: "Scheduled Date/Time",
+				title: "Scheduled Date",
 				dataIndex: "scheduled_date",
 				render: (_text, row) => (
-					<span>{row.scheduled_date}<br></br>{moment(row.scheduled_time).format("hh:mm a")}</span>
+					<span>{row.scheduled_date}</span>
+				)
+			},
+			{
+				title: "Completion Date",
+				render: (_text, row) => (
+					<span>{moment(row.completed_date).format("YYYY-MM-DD")}</span>
 				)
 			},
 			{
@@ -101,31 +108,16 @@ class Reports extends Component {
 				)
 			},
 			{
-				title: "Status",
-				render: (_text, record) => {
-					var statusStr = "--";
-					var tagColor = this.state.tagColors[1];
-					if (typeof this.props.patient_status_list !== "undefined" && this.props.patient_status_list.length > 0 && record.progress_status != null) {
-						var statusObj = this.props.patient_status_list.find(l => l.id == record.progress_status);
-						if (typeof statusObj.name !== "undefined") {
-							statusStr = statusObj.name;
-							tagColor = this.state.tagColors[record.progress_status];
-						}
-					}
-					return <Tag color={tagColor}>{statusStr}</Tag>
-				}
-			},
-			{
 				title: "Actions",
 				rowKey: "action",
 				// width: "200px",
 				render: (_text, record) => (
 					<span>
-						<Tooltip title="Edit Patient">
+						<Tooltip title="Download/Print Report">
 							<Button
-								onClick={() => this.props.history.push("./patients/edit/" + record.id)}
+								onClick={() => window.open("/patient-report/" + window.btoa(record.id) + '/' + record.confirmation_code)}
 							>
-								<EditOutlined />
+								<DownloadOutlined style={{ fontSize: 21 }} />
 							</Button>
 						</Tooltip>
 					</span>
@@ -281,21 +273,7 @@ class Reports extends Component {
 		}
 	}
 
-	deleteItem = id => {
-		this.setState({ loading: true });
-		this.props
-			.deleteUser({ id: id })
-			.then(item => {
-				this.setState({ loading: false });
-				this.props.history.push("./");
-			})
-			.catch(err => {
-				console.log(err);
-				this.setState({ loading: false });
-			});
-	};
-
-	handleTableChange = (pagination, filters, sorter, manual) => {
+	handleTableChange = async (pagination, filters, sorter, manual) => {
 		if (filters === undefined) filters = {};
 		Object.keys(filters).map(key => { if ((!filters[key]) || (Array.isArray(filters[key]) && filters[key].length === 0)) { delete filters[key] } })
 		const pager = { ...this.state.pagination };
@@ -307,12 +285,11 @@ class Reports extends Component {
 			})
 		}
 		this.setState({ loading: true });
-		this.props
-			.getPatients({
-				filters: filters,
-				pagination: { page: pagination.current, pageSize: pagination.pageSize },
-				sorter: sorter
-			})
+		await ReportsAPI.getAll({
+			filters: filters,
+			pagination: { page: pagination.current, pageSize: pagination.pageSize },
+			sorter: sorter
+		})
 			.then(resp => {
 				pager.total = resp.pagination.totalRecords;
 				this.setState({
@@ -325,31 +302,6 @@ class Reports extends Component {
 				this.setState({ loading: false });
 			});
 	};
-
-	checkInPatient = async (id) => {
-		await this.props.updatePatient(id, { progress_status: 2 }).then(response => {
-			if (response.status && response.status == true) {
-				notifyUser(response.message, "success");
-				if (this.props.paginginfo && this.props.paginginfo[this.module]) {
-					this.handleTableChange(this.props.paginginfo[this.module].pagination, { ...this.props.paginginfo[this.module].filter, ...this.state.customFilters }, {}, true);
-					if (this.props.paginginfo[this.module].filters) {
-						let filters = this.props.paginginfo[this.module].filters
-						Object.keys(filters).map(k => { filters[k].auto = false });
-						this.setState({ filters: filters });
-					}
-				} else {
-					this.handleTableChange({ current: 1, pageSize: 10 }, this.state.customFilters, {}, true);
-				}
-			} else {
-				if (response.message) {
-					notifyUser(response.message, "error");
-				} else {
-					notifyUser("Unknown error. Please try again!", "error");
-				}
-				this.setState({ loading: false });
-			}
-		});
-	}
 
 	onCustomFilter = (filterKey, filterValue) => {
 		this.setState({ filters: {} });
@@ -367,6 +319,64 @@ class Reports extends Component {
 			this.handleTableChange({ current: 1, pageSize: 10 }, filtersMain, {}, true);
 		}
 		this.setState({ customFilters: filtersMain });
+	}
+
+	onCustomRangeFilter = (key, values) => {
+		var rangeFilter = null;
+		if (typeof values !== "undefined" && values !== null) {
+			rangeFilter = {
+				start_date: moment(values[0]).format("YYYY-MM-DD"),
+				end_date: moment(values[1]).format("YYYY-MM-DD")
+			}
+		}
+		this.onCustomFilter(key, rangeFilter);
+	}
+
+	exportData = async (format) => {
+		this.setState({ loading: true });
+		var stateFilters = this.state.filters;
+		var stateFiltersObj = {};
+		if (Object.keys(stateFilters).length > 0) {
+			for (var k in stateFilters) {
+				if (typeof stateFilters[k] !== "undefined" && typeof stateFilters[k].val !== "undefined") {
+					if (stateFilters[k].val != "") {
+						stateFiltersObj[k] = stateFilters[k].val;
+					}
+				} else {
+					if (typeof stateFilters[k] !== "undefined" && stateFilters[k] != "") {
+						stateFiltersObj[k] = stateFilters[k];
+					}
+				}
+			}
+		}
+		var allFilters = { ...this.state.customFilters, ...stateFiltersObj };
+		await ReportsAPI.exportData(format, {
+			filters: allFilters
+		})
+			.then(response => {
+				if (response.status && response.status === true) {
+					var filename = "ExportData.csv";
+					var CSVFile = new Blob([response.data], { type: "text/csv" });
+					var temp_link = document.createElement('a');
+					temp_link.download = filename;
+					var url = window.URL.createObjectURL(CSVFile);
+					temp_link.href = url;
+					temp_link.style.display = "none";
+					document.body.appendChild(temp_link);
+					temp_link.click();
+					document.body.removeChild(temp_link);
+				} else {
+					if (response.message) {
+						notifyUser(response.message, "error");
+					} else {
+						notifyUser("Unknown error! Please refresh the page and try again.", "error");
+					}
+				}
+				this.setState({ loading: false });
+			})
+			.catch(ex => {
+				this.setState({ loading: false });
+			});
 	}
 
 	render() {
@@ -425,50 +435,44 @@ class Reports extends Component {
 				<Select style={{ width: '100%' }} placeholder="Filter by lab"></Select>
 		}
 
-		const statusFilter = () => {
-			return (typeof this.props.patient_status_list !== "undefined" && this.props.patient_status_list.length > 0) ?
-				<Select
-					showSearch
-					mode="multiple"
-					filterOption={(input, option) =>
-						option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-					}
-					style={{ width: '100%' }}
-					placeholder="Filter by progress"
-					onChange={(v) => this.onCustomFilter("progress_status", v)}
-					maxTagCount="responsive"
-					defaultValue={this.state.customFilters.progress_status}
-					value={this.state.customFilters.progress_status}
-				>
-					{this.props.patient_status_list.map(function (item) {
-						return (
-							<Option key={item.id.toString()} value={item.id.toString()}>
-								{item.name}
-							</Option>
-						);
-					})}
-				</Select>
-				:
-				<Select style={{ width: '100%' }} placeholder="Filter by progress"></Select>
+		const scheduleDateRangeFilter = () => {
+			return <RangePicker
+				format={"YYYY-MM-DD"}
+				placeholder={["Scheduled date (start)", "Scheduled date (end)"]}
+				ranges={{
+					Today: [moment(), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'months').startOf('month'), moment().subtract(1, 'months').endOf('month')],
+					'This Year': [moment().startOf('year'), moment().endOf('year')],
+					'Last Year': [moment().subtract(1, 'years').startOf('year'), moment().subtract(1, 'years').endOf('year')],
+				}}
+				onChange={(v) => this.onCustomRangeFilter("scheduled_date_range", v)}
+			/>
+		}
+
+		const completionDateRangeFilter = () => {
+			return <RangePicker
+				format={"YYYY-MM-DD"}
+				placeholder={["Completion date (start)", "Completion date (end)"]}
+				ranges={{
+					Today: [moment(), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'months').startOf('month'), moment().subtract(1, 'months').endOf('month')],
+					'This Year': [moment().startOf('year'), moment().endOf('year')],
+					'Last Year': [moment().subtract(1, 'years').startOf('year'), moment().subtract(1, 'years').endOf('year')],
+				}}
+				onChange={(v) => this.onCustomRangeFilter("completed_date_range", v)}
+			/>
 		}
 		return (
 			<div className="gray-bg">
 				<Row gutter={24}>
-					<Col xs={12} sm={3} md={3} lg={3} xl={3}>
+					<Col xs={12}>
 						<Typography.Title level={4}>
 							All Reports
 						</Typography.Title>
 					</Col>
-					<Col xs={12} sm={6} md={6} lg={6} xl={6}>
-						{labFilter()}
-					</Col>
-					<Col xs={12} sm={6} md={6} lg={6} xl={6}>
-						{statusFilter()}
-					</Col>
-					<Col xs={12} sm={6} md={6} lg={6} xl={6}>
-						{statusFilter()}
-					</Col>
-					<Col xs={3}>
+					<Col xs={12}>
 						<Button
 							type="primary"
 							className="right-fl def-blue"
@@ -479,10 +483,34 @@ class Reports extends Component {
 							<ArrowLeftOutlined />
 							<IntlMessages id="admin.userlisting.back" />
 						</Button>
+						<Tooltip title={<span>Export {(Object.keys(this.state.customFilters).length > 0 || Object.keys(this.state.filters).length > 0 ? "filtered" : "all")} data to CSV</span>}>
+							<Button
+								disabled={!(this.state.data.length > 0)}
+								type="default"
+								className="right-fl"
+								htmlType="button"
+								onClick={() => this.exportData("csv")}
+								style={{ marginLeft: 5 }}
+							>
+								<ExportOutlined />
+								Export to CSV
+							</Button>
+						</Tooltip>
 					</Col>
 				</Row>
 				<hr />
-				<Row gutter={24} style={{ marginBottom: "20px" }}>
+				<Row gutter={24} style={{ marginBottom: "8px" }}>
+					<Col xs={12} sm={8}>
+						{labFilter()}
+					</Col>
+					<Col xs={12} sm={8}>
+						{scheduleDateRangeFilter()}
+					</Col>
+					<Col xs={12} sm={8}>
+						{completionDateRangeFilter()}
+					</Col>
+				</Row>
+				<Row gutter={24}>
 					<Col xs={24}>{filtertag}</Col>
 				</Row>
 				<Row gutter={24}>

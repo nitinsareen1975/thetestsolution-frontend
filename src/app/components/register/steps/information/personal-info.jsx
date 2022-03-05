@@ -1,6 +1,7 @@
 import React from "react";
 import { Col, DatePicker, Form, Button, Row, Select } from "antd";
 import IntlMessages from "../../../../services/intlMesseges";
+import moment from "moment";
 const output = ({ ...props }) => {
     return <Form layout="vertical" onFinish={(values) => props.next(values)} initialValues={props.data}>
         <h2 className="form-section-title">Personal Info</h2>
@@ -16,7 +17,7 @@ const output = ({ ...props }) => {
             </Col>
             <Col xs={24} md={8}>
                 <Form.Item name="dob" label="Birthday" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-                    <DatePicker placeholder="Date Of Birth" />
+                    <DatePicker placeholder="Date Of Birth" disabledDate={(current) => moment().add(-16, 'years')  <= current} />
                 </Form.Item>
             </Col>
             <Col xs={24} md={8}>
