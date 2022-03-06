@@ -1,5 +1,3 @@
-# the-solution
-
 
 To start server
 
