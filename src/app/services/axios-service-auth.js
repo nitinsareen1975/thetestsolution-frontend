@@ -94,11 +94,18 @@ const DataAccessService = {
 	}
 };
 function getFetchMethod(url, data, token) {
-	if (config.API.indexOf("api.thetestsolutions.com") !== -1 ||
-		config.API.indexOf("thetestapi.alphawebtech.com") !== -1) {
-		return "real";
-	} else {
-		return "fake";
-	}
+	var fetchType = "fake";
+    var AllowedAPIHosts = config.AllowedAPIHosts;
+    if (AllowedAPIHosts.indexOf(",") === -1) {
+      AllowedAPIHosts = [AllowedAPIHosts];
+    } else {
+      AllowedAPIHosts = AllowedAPIHosts.split(",");
+    }
+    AllowedAPIHosts.map(host => {
+      if (config.API.indexOf(host) !== -1) {
+        fetchType = "real";
+      }
+    });
+	return fetchType;
 }
 export default DataAccessService;

@@ -5,5 +5,6 @@ window.AppConfig = {
     WEB_URL: "https://telestarhealth.com/",
     GoogleMapsAPIkey: "",
     StripeAPIKey: "",
-    StripeSecretKey: ""
+    StripeSecretKey: "",
+    AllowedAPIHosts: "api1.abc.com,api2abc.com"
 }

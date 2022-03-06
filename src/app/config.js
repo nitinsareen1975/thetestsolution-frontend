@@ -7,5 +7,6 @@ module.exports = {
   GoogleMapsAPIkey: AppConfig && AppConfig.GoogleMapsAPIkey ? AppConfig.GoogleMapsAPIkey : "",
   StripeAPIKey: AppConfig && AppConfig.StripeAPIKey ? AppConfig.StripeAPIKey : "",
   StripeSecretKey: AppConfig && AppConfig.StripeSecretKey ? AppConfig.StripeSecretKey : "",
-  StripeAccountId: AppConfig && AppConfig.StripeAccountId ? AppConfig.StripeAccountId : ""
+  StripeAccountId: AppConfig && AppConfig.StripeAccountId ? AppConfig.StripeAccountId : "",
+  AllowedAPIHosts: AppConfig && AppConfig.AllowedAPIHosts ? AppConfig.AllowedAPIHosts : ""
 };
