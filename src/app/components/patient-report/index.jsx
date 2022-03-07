@@ -5,7 +5,6 @@ import { useState } from "react";
 import { notifyUser } from "../../services/notification-service";
 import PatientAPI from "../../redux/api/patient-api";
 import moment from "moment";
-{ document.title = "Florida Health Covid Report" }
 const output = ({...props}) => {
 	const [submitted, setSubmitted] = useState(false);
 	const handleSubmit = async(values) => {

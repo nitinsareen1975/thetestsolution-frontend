@@ -6,7 +6,6 @@ import logo from "../../assets/images/logo.png";
 import QRCode from "react-qr-code";
 import ReactToPdf from "react-to-pdf";
 import { DownloadOutlined } from '@ant-design/icons'; */
-{ document.title = "Florida Health Covid Report" }
 const output = (props) => {
 	const reportRef = useRef();
 	const [submitted, setSubmitted] = useState(false);
