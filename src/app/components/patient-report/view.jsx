@@ -32,7 +32,7 @@ const output = (props) => {
 	return <Spin spinning={submitted}>
 		{report.url ?
 			<object data={report.url} type="application/pdf" style={{ height: '100vh', width: '100%'}}>
-				<p>Alternative text - include a link <a href="http://africau.edu/images/default/sample.pdf">to the PDF!</a></p>
+				<p>Having issues viewing report? <a href={report.url}>Click here to view report directly!</a></p>
 			</object>
 			: ""}
 		{/* <ReactToPdf scale={0.8} targetRef={reportRef} filename={`patient-report.pdf`}>
