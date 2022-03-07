@@ -1,12 +1,12 @@
 .testform{
-    background-image: url(../../../../images/register-bg.jpg);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    padding: 40px;
-    @media (max-width: 991px) {
-        padding: 20px;
-    }
+    // background-image: url(../../../../images/register-bg.jpg);
+    // background-repeat: no-repeat;
+    // background-position: center;
+    // background-size: cover;
+    // padding: 40px;
+    // @media (max-width: 991px) {
+    //     padding: 20px;
+    // }
     min-height: calc(100vh - 90px);
     .inner-form-wrap {
         max-width: 1400px;
@@ -19,14 +19,23 @@
         }
     }
     .form-type{
+        &.ant-steps-label-horizontal{
+            flex-wrap: wrap;
+        }
             .ant-steps-item{
                 padding: 10px;
                 width: 33.33%;
+                &:first-child {
+                    padding-left: 10px;
+                }
                 @media (max-width: 767px) { 
                     width: 100%;
                     .ant-steps-item-tail{
                         display: none !important;
                     }
+                }
+                @media (min-width: 768px) { 
+                    width: 33.33%;
                 }
                 .ant-steps-item-container{
                     border-radius: 4px;

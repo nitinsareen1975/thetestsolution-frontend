@@ -147,7 +147,7 @@ class Register extends Component {
     const StepsComponent = steps[current].content;
     return (
       <Spin size="large" spinning={submitted}>
-        <header className="register-header">
+        {/* <header className="register-header">
           <Row>
             <Col xs={24}>
               <div className="logo">
@@ -155,7 +155,7 @@ class Register extends Component {
               </div>
             </Col>
           </Row>
-        </header>
+        </header> */}
         <section className="testform" >
           <div className="inner-form-wrap">
             <Row>
