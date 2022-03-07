@@ -80,15 +80,15 @@ const output = ({ ...props }) => {
                 </Form.Item>
             </Col>
         </Row>
-        <Row gutter={24}>
+        {/* <Row gutter={24}>
             {labs.length > 0 && pricing.length > 0 ?
                 <Col xs={24}><Form.Item name="pricing_id" label="Select Type of Test" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
                     <Radio.Group className="radio-test-price-wrapper" onChange={(v) => setPricingState(v)}>
                         {pricing.map(price => {
-                            /* var hms = price.estimated_hours.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + ':' + price.estimated_minutes.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + ':' + price.estimated_seconds.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
-                            var hmsArr = hms.split(':');
-                            var seconds = (+hmsArr[0]) * 60 * 60 + (+hmsArr[1]) * 60 + (+hmsArr[2]);
-                            var duration = UserService.secondsToHms(seconds); */
+                            // var hms = price.estimated_hours.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + ':' + price.estimated_minutes.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + ':' + price.estimated_seconds.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
+                            // var hmsArr = hms.split(':');
+                            // var seconds = (+hmsArr[0]) * 60 * 60 + (+hmsArr[1]) * 60 + (+hmsArr[2]);
+                            // var duration = UserService.secondsToHms(seconds);
                             return <Radio.Button key={price.id} value={price.id} >
                                 <div className="radio-test-price">
                                     <div className="pricing-title">{price.test_label}</div>
@@ -103,7 +103,7 @@ const output = ({ ...props }) => {
                     </Radio.Group>
                 </Form.Item></Col>
                 : <Col sm={16} xs={24} style={{ marginBottom: 10 }} ><Alert message="No pricing found." type="error" /></Col>}
-        </Row>
+        </Row> */}
         <Row gutter={15}>
             <Col xs={24} md={8}>
                 <Form.Item name="scheduled_date" label="Date of Appointment" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>

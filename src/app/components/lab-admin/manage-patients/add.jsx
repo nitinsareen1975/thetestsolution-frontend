@@ -48,14 +48,14 @@ class AddPatient extends React.Component {
 	}
 
 	handleSubmit = async (data) => {
-		if (this.state.pricingId <= 0) {
+		/* if (this.state.pricingId <= 0) {
 			message.error("Please choose a pricing.");
 			return false;
 		}
 		if (this.state.transactionId === null) {
-			message.error("Payment transaction ID found. Please make sure patient has made a payment.");
+			message.error("Payment transaction ID not found. Please make sure patient has made a payment.");
 			return false;
-		}
+		} */
 		var lab = JSON.parse(localStorage.getItem("lab"));
 		var args = {
 			city: data.city,
@@ -88,8 +88,8 @@ class AddPatient extends React.Component {
 			street: data.street,
 			test_type: data.test_type,
 			zip: data.zip,
-			pricing_id: this.state.pricingId,
-			transaction_id: this.state.transactionId,
+			pricing_id: 3,//this.state.pricingId,
+			transaction_id: UserService.getRandomString(24, "stripe"), //this.state.transactionId,
 			confirmation_code: UserService.getRandomString(24, data.email)
 		};
 		if (typeof data.identifier_doc !== "undefined" && typeof data.identifier_doc.file !== "undefined" && data.identifier_doc.file !== null && typeof data.identifier_doc.file !== "string" && data.identifier_doc.file.name) {
@@ -181,7 +181,7 @@ class AddPatient extends React.Component {
 						<SymptomsInfo data={[]} />
 						<Identification removeIdentifierDocInline={() => { }} identifier_doc={this.state.identifierDoc} countries={this.state.countries} setIdentifierDocUpload={() => { }} />
 						<TestType data={this.state.patient} changeFormFieldValue={this.onChangeFormFieldValue} setPricingId={this.setPricingId} setPricingArray={this.setPricingArray} setLoading={this.setLoading}/>
-						<PaymentInfo paymentDone={false} data={this.state.formdata} setTransactionId={this.setTransactionId} pricingId={this.state.pricingId} pricingArray={this.state.pricingArray} onSubmit={this.handleSubmit} setLoading={this.setLoading}/>
+						{/* <PaymentInfo paymentDone={false} data={this.state.formdata} setTransactionId={this.setTransactionId} pricingId={this.state.pricingId} pricingArray={this.state.pricingArray} onSubmit={this.handleSubmit} setLoading={this.setLoading}/> */}
 						{/* <Row>
 							<Col>
 								<Form.Item>
@@ -198,6 +198,20 @@ class AddPatient extends React.Component {
 								</Form.Item>
 							</Col>
 						</Row> */}
+						<Row gutter={15}>
+							<div className="steps-action">
+								<Button
+									type="primary"
+									style={{ display: "inline-block", marginLeft: "8px" }}
+									className="def-blue"
+									htmlType="submit"
+									size="large"
+								>
+									<IntlMessages id="admin.userlisting.add" />
+									<PlusCircleOutlined />
+								</Button>
+							</div>
+						</Row>
 					</Form>
 				</Spin>
 			</div>

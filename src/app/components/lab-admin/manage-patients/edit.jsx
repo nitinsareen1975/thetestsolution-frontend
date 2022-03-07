@@ -65,14 +65,14 @@ class EditPatient extends React.Component {
   }
 
   handleSubmit = async (data) => {
-    if (this.state.pricingId <= 0) {
+    /* if (this.state.pricingId <= 0) {
       message.error("Please choose a pricing.");
       return false;
     }
     if (this.state.transactionId === null) {
-      message.error("Payment transaction ID found. Please make sure patient has made a payment.");
+      message.error("Payment transaction ID not found. Please make sure patient has made a payment.");
       return false;
-    }
+    } */
     var lab = JSON.parse(localStorage.getItem("lab"));
     var args = {
       city: data.city,
@@ -104,7 +104,7 @@ class EditPatient extends React.Component {
       state: data.state,
       street: data.street,
       test_type: data.test_type,
-      pricing_id: this.state.pricingId,
+     /*  pricing_id: this.state.pricingId, */
       zip: data.zip,
       transaction_id: data.transaction_id ? data.transaction_id : UserService.getRandomString(24, data.email),
       confirmation_code: UserService.getRandomString(24, data.email)
@@ -223,7 +223,7 @@ class EditPatient extends React.Component {
               <SymptomsInfo data={this.state.patient}/>
               <Identification removeIdentifierDocInline={this.removeIdentifierDocInline} identifier_doc={this.state.identifierDoc} countries={this.state.countries} setIdentifierDocUpload={this.setIdentifierDocUpload}/>
               <TestType data={this.state.patient} changeFormFieldValue={this.onChangeFormFieldValue} setPricingId={this.setPricingId} setPricingArray={this.setPricingArray} setLoading={this.setLoading}/>
-              <PaymentInfo data={this.state.patient} paymentDone={this.state.patient && this.state.patient.transaction_id !== null && this.state.patient.transaction_id !== "" ? true : false} setTransactionId={this.setTransactionId} pricingArray={this.state.pricingArray} setLoading={this.setLoading} pricingId={this.state.pricingId}/>
+              {/* <PaymentInfo data={this.state.patient} paymentDone={this.state.patient && this.state.patient.transaction_id !== null && this.state.patient.transaction_id !== "" ? true : false} setTransactionId={this.setTransactionId} pricingArray={this.state.pricingArray} setLoading={this.setLoading} pricingId={this.state.pricingId}/> */}
               <Row>
                 <Col>
                   <Form.Item>
