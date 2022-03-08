@@ -174,7 +174,7 @@ class AddPatient extends React.Component {
 				</Row>
 				<hr /><br />
 				<Spin spinning={this.state.loading}>
-					<Form ref={this.formRef} layout="vertical"/*  onFinish={this.handleSubmit} */ onValuesChange={this.onValuesChange}>
+					<Form ref={this.formRef} layout="vertical" onFinish={this.handleSubmit} onValuesChange={this.onValuesChange}>
 						<ContactInfo />
 						<PersonalInfo />
 						<HomeAddressInfo countries={this.state.countries} />

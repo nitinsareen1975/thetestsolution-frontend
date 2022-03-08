@@ -500,7 +500,7 @@ class LabSettings extends React.Component {
                     </Form.Item>
                   </Col>
                 </Row>
-                <Row gutter={24}>
+                {/* <Row gutter={24}>
                   <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                     <Typography.Title level={4}>Add Price & Test Type</Typography.Title>
                   </Col>
@@ -577,7 +577,7 @@ class LabSettings extends React.Component {
                       )}
                     </Form.List>
                   </Col>
-                </Row>
+                </Row> */}
                 <Row gutter={24}>
                   <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                     <Typography.Title level={4}>Location</Typography.Title>

@@ -355,8 +355,8 @@ class Reports extends Component {
 		})
 			.then(response => {
 				if (response.status && response.status === true) {
-					var filename = "ExportData.csv";
-					var CSVFile = new Blob([response.data], { type: "text/csv" });
+					var filename = response.data.file_name;
+					var CSVFile = new Blob([response.data.file_content], { type: "text/csv" });
 					var temp_link = document.createElement('a');
 					temp_link.download = filename;
 					var url = window.URL.createObjectURL(CSVFile);

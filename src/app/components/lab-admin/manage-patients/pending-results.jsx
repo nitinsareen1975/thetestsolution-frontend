@@ -431,10 +431,10 @@ class PendingResults extends Component {
           footer={[
             <Button type="primary" onClick={() => this.enterResults(0)}>
               Save Results
-            </Button>,
+            </Button>/* ,
             <Button danger onClick={() => this.enterResults(1)}>
               Save Results and Upload to Govt.
-            </Button>
+            </Button> */
           ]}
         >
           <Spin spinning={this.state.modalLoading}>
