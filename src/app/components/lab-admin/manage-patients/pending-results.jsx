@@ -312,7 +312,7 @@ class PendingResults extends Component {
     this.setState({ loading: true });
     await this.props.getPatientPricingInfo(patient.id, patient.pricing_id).then(async (response) => {
       if (response.status && response.status == true) {
-        let _resultsModalValues = this.state.resultsModalValues;
+        let _resultsModalValues = {};
         await this.props.getTestTypeMethods(response.data.test_type_id).then(async (resp1) => {
           if (resp1.status && resp1.status === true && resp1.data.length > 0) {
             _resultsModalValues.sample_collection_methods = resp1.data;
@@ -354,6 +354,7 @@ class PendingResults extends Component {
         await this.props.savePatientResults(this.state.resultsModalPatient.id, args).then(response => {
           if (response.status && response.status == true) {
             notifyUser(response.message, "success");
+            this.resetResultsModal();
             if (this.props.paginginfo && this.props.paginginfo[this.module]) {
               this.handleTableChange(this.props.paginginfo[this.module].pagination, this.props.paginginfo[this.module].filter, {}, true);
               if (this.props.paginginfo[this.module].filters) {

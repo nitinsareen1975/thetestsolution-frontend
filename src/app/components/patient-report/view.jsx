@@ -29,7 +29,7 @@ const output = (props) => {
 		});
 	}, []);
 
-	return <Spin spinning={submitted}>
+	return <Spin style={{ padding: 15}} spinning={submitted}>
 		{report.url ?
 			<object data={report.url} type="application/pdf" style={{ height: '100vh', width: '100%'}}>
 				<p>Having issues viewing report? <a href={report.url}>Click here to view report directly!</a></p>

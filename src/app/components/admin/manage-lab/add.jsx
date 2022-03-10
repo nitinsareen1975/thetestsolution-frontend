@@ -290,8 +290,23 @@ class AddLab extends React.Component {
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
-                    label="Licence Number"
+                    label="CLIA ID"
                     name="licence_number"
+                    rules={[
+                      {
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      }
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="Facility ID"
+                    name="facility_id"
                     rules={[
                       {
                         required: true,
@@ -324,6 +339,8 @@ class AddLab extends React.Component {
                     <DatePicker />
                   </Form.Item>
                 </Col>
+              </Row>
+              <Row gutter={24}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -333,8 +350,6 @@ class AddLab extends React.Component {
                     <Input />
                   </Form.Item>
                 </Col>
-              </Row>
-              <Row gutter={24}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -372,6 +387,8 @@ class AddLab extends React.Component {
                     />
                   </Form.Item>
                 </Col>
+              </Row>
+              <Row gutter={24}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -381,9 +398,6 @@ class AddLab extends React.Component {
                     <Input />
                   </Form.Item>
                 </Col>
-              </Row>
-              <Row gutter={24}>
-
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -411,6 +425,8 @@ class AddLab extends React.Component {
                     <Input />
                   </Form.Item>
                 </Col>
+              </Row>
+              <Row gutter={24}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -433,8 +449,6 @@ class AddLab extends React.Component {
                     </Select>
                   </Form.Item>
                 </Col>
-              </Row>
-              <Row gutter={24}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}

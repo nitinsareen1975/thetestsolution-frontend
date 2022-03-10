@@ -60,10 +60,17 @@ class ManageLabs extends Component {
         //sorter: true
       },
       {
-        title: "Licence Number",
+        title: "CLIA ID",
         dataIndex: "licence_number",
         filteredValue: this.getSelectedFilterValue('licence_number'),
         ...this.getColumnSearchProps("licence_number")
+        // width: "200px"
+      },
+      {
+        title: "Facility ID",
+        dataIndex: "facility_id",
+        filteredValue: this.getSelectedFilterValue('facility_id'),
+        ...this.getColumnSearchProps("facility_id")
         // width: "200px"
       },
       {
