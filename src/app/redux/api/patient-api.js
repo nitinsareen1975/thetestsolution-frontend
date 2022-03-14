@@ -51,6 +51,9 @@ const getTestTypeMethodsForPatient = (patientId) => {
 const getPaymentMethods = (data) => {
   return Axios.get("/api/payment-methods", data, undefined);
 };
+const isWalkinPatient = (pid) => {
+  return Axios.get("/global/is-walkin-patient/"+pid, undefined, undefined);
+};
 export default {
   getPatients,
   addPatient,
@@ -68,5 +71,6 @@ export default {
   getPatientReport,
   getPatientReportPDF,
   getTestTypeMethodsForPatient,
-  getPaymentMethods
+  getPaymentMethods,
+  isWalkinPatient
 };

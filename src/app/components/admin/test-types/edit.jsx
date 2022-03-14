@@ -152,22 +152,16 @@ class AddTestType extends React.Component {
                     </Select>
                   </Form.Item>
                 </Col>
-                {/* <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
                     name="test_procedure"
                     label="Procedure"
-                    rules={[
-                      {
-                        required: true,
-                        message: <IntlMessages id="admin.input.required" />,
-                      }
-                    ]}
                   >
                     <Input />
                   </Form.Item>
                 </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                {/* <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
                     name="test_procedure_snomed"
@@ -227,7 +221,7 @@ class AddTestType extends React.Component {
                     <Input />
                   </Form.Item>
                 </Col> */}
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                {/* <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
                     label="Test Code"
@@ -235,7 +229,7 @@ class AddTestType extends React.Component {
                   >
                     <Input />
                   </Form.Item>
-                </Col>
+                </Col> */}
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}

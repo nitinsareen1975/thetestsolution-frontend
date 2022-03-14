@@ -31,10 +31,23 @@ const output = ({ ...props }) => {
 					}
 				}
 			});
+			var walkin = false;
+			await PatientAPI.isWalkinPatient(parentprops.data.id).then(resp => {
+				if (resp.status && resp.status === true) {
+					if (resp.data.is_walkin_patient === true) {
+						walkin = true;
+					}
+				}
+			});
 			var args = {
 				filters: {},
 				pagination: {},
 				sorter: { column: "name", order: "asc" }
+			}
+			if(walkin === true){
+				args.filters = {is_walkin_price: 1};
+			} else {
+				args.filters = {is_walkin_price: 0};
 			}
 			await PricingAPI.getGlobalPricing(args).then(resp => {
 				if (resp.status && resp.status === true) {
@@ -91,19 +104,31 @@ const output = ({ ...props }) => {
 					<Row gutter={15}>
 						<Col xs={24}>
 							{pricing.length > 0 ?
-								<Form.Item name="pricing_id" label="Select Pricing" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+								<Form.Item name="pricing_id" label="Select Test" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
 									<Radio.Group disabled className="radio-test-price-wrapper" value={pricingId} onChange={(e) => setPricingState(e)}>
 										{pricing.map(price => {
-											return <Radio.Button key={price.id} value={price.id}>
-												<div className="radio-test-price">
-													<div className="pricing-title">{price.name}</div>
-													<div className="pricing-amount">
-														<span className="pricing-amount-currency">$</span>
-														{price.retail_price}
+											if (parseFloat(price.retail_price) > 0) {
+												return <Radio.Button key={price.id} value={price.id}>
+													<div className="radio-test-price">
+														<div className="pricing-title">{price.name}</div>
+														<div className="pricing-amount">
+															<span className="pricing-amount-currency">$</span>
+															{price.retail_price}
+														</div>
+														<div className="pricing-results">Results in {price.test_duration}</div>
 													</div>
-													<div className="pricing-results">Results in {price.test_duration}</div>
-												</div>
-											</Radio.Button>
+												</Radio.Button>
+											} else {
+												return <Radio.Button key={price.id} value={price.id}>
+													<div className="radio-test-price">
+														<div className="pricing-title">&nbsp;</div>
+														<div className="pricing-amount" style={{ fontSize: 30 }}>
+															{price.name}
+														</div>
+														<div className="pricing-results">Results in {price.test_duration}</div>
+													</div>
+												</Radio.Button>
+											}
 										})}
 									</Radio.Group>
 								</Form.Item>
@@ -151,19 +176,31 @@ const output = ({ ...props }) => {
 							<Row gutter={15}>
 								<Col xs={24}>
 									{pricing.length > 0 ?
-										<Form.Item name="pricing_id" label="Select Pricing" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+										<Form.Item name="pricing_id" label="Select Test" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
 											<Radio.Group className="radio-test-price-wrapper" onChange={(e) => setPricingState(e)}>
 												{pricing.map(price => {
-													return <Radio.Button key={price.id.toString()} value={price.id.toString()}>
-														<div className="radio-test-price">
-															<div className="pricing-title">{price.name}</div>
-															<div className="pricing-amount">
-																<span className="pricing-amount-currency">$</span>
-																{price.retail_price}
+													if (parseFloat(price.retail_price) > 0) {
+														return <Radio.Button key={price.id} value={price.id}>
+															<div className="radio-test-price">
+																<div className="pricing-title">{price.name}</div>
+																<div className="pricing-amount">
+																	<span className="pricing-amount-currency">$</span>
+																	{price.retail_price}
+																</div>
+																<div className="pricing-results">Results in {price.test_duration}</div>
 															</div>
-															<div className="pricing-results">Results in {price.test_duration}</div>
-														</div>
-													</Radio.Button>
+														</Radio.Button>
+													} else {
+														return <Radio.Button key={price.id} value={price.id}>
+															<div className="radio-test-price">
+																<div className="pricing-title">&nbsp;</div>
+																<div className="pricing-amount" style={{ fontSize: 30 }}>
+																	{price.name}
+																</div>
+																<div className="pricing-results">Results in {price.test_duration}</div>
+															</div>
+														</Radio.Button>
+													}
 												})}
 											</Radio.Group>
 										</Form.Item>
