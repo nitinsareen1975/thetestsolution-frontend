@@ -104,19 +104,11 @@ class EditPatient extends React.Component {
       state: data.state,
       street: data.street,
       test_type: data.test_type,
-     /*  pricing_id: this.state.pricingId, */
+      pricing_id: this.state.pricingId,
       zip: data.zip,
       transaction_id: data.transaction_id ? data.transaction_id : UserService.getRandomString(24, data.email),
-      confirmation_code: UserService.getRandomString(24, data.email)
+      confirmation_code: data.confirmation_code
     };
-    var historyState = this.props.history.location.state;
-    if(typeof historyState !== "undefined" && typeof historyState.showCheckIn !== "undefined" && historyState.showCheckIn === true){
-      var patients_statuses = this.props.patient_status_list;
-      if (patients_statuses.length > 0) {
-        var statusObj = patients_statuses.find(i => i.code == 'checked-in');
-        args['progress_status'] = statusObj.id;
-      }
-    }
     if (typeof this.state.identifierDocUpload !== "undefined" && this.state.identifierDocUpload !== null && typeof this.state.identifierDocUpload !== "string" && this.state.identifierDocUpload.name) {
       const formData = new FormData();
       formData.append('identifier_doc', this.state.identifierDocUpload);
@@ -182,11 +174,6 @@ class EditPatient extends React.Component {
 	}
 
   render() {
-    var historyState = this.props.history.location.state;
-    var showCheckinBtn = false;
-    if(typeof historyState !== "undefined" && typeof historyState.showCheckIn !== "undefined" && historyState.showCheckIn === true){
-      showCheckinBtn = true;
-    }
     return (
       <div>
         <Row gutter={24}>
@@ -223,7 +210,7 @@ class EditPatient extends React.Component {
               <SymptomsInfo data={this.state.patient}/>
               <Identification removeIdentifierDocInline={this.removeIdentifierDocInline} identifier_doc={this.state.identifierDoc} countries={this.state.countries} setIdentifierDocUpload={this.setIdentifierDocUpload}/>
               <TestType data={this.state.patient} changeFormFieldValue={this.onChangeFormFieldValue} setPricingId={this.setPricingId} setPricingArray={this.setPricingArray} setLoading={this.setLoading}/>
-              {/* <PaymentInfo data={this.state.patient} paymentDone={this.state.patient && this.state.patient.transaction_id !== null && this.state.patient.transaction_id !== "" ? true : false} setTransactionId={this.setTransactionId} pricingArray={this.state.pricingArray} setLoading={this.setLoading} pricingId={this.state.pricingId}/> */}
+              <PaymentInfo data={this.state.patient} paymentDone={this.state.patient && this.state.patient.transaction_id !== null && this.state.patient.transaction_id !== "" ? true : false} setTransactionId={this.setTransactionId} pricingArray={this.state.pricingArray} setLoading={this.setLoading} pricingId={this.state.pricingId}/>
               <Row>
                 <Col>
                   <Form.Item>
@@ -234,7 +221,7 @@ class EditPatient extends React.Component {
                       htmlType="submit"
                       size="large"
                     >
-                      {showCheckinBtn ? "Update and Checkin" : <IntlMessages id="admin.userlisting.update" />}
+                      <IntlMessages id="admin.userlisting.update" />
                       <SaveOutlined />
                     </Button>
                   </Form.Item>

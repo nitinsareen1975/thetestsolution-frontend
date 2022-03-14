@@ -23,6 +23,18 @@ import ChangePassword from "../components/my-account/change-password.jsx";
 import TestResults from "../components/admin/reports/test-results.jsx";
 import AllReports from "../components/admin/reports/all.jsx";
 import RevenueReport from "../components/admin/reports/revenue.jsx";
+import Pricing from "../components/admin/pricing/list.jsx";
+import AddPricing from "../components/admin/pricing/add.jsx";
+import EditPricing from "../components/admin/pricing/edit.jsx";
+import ManageTestTypeNames from "../components/admin/test-type-names/list.jsx";
+import AddTestTypeName from "../components/admin/test-type-names/add.jsx";
+import EditTestTypeName  from "../components/admin/test-type-names/edit.jsx";
+import ManageTestTypeMethods from "../components/admin/test-type-methods/list.jsx";
+import AddTestTypeMethod from "../components/admin/test-type-methods/add.jsx";
+import EditTestTypeMethod  from "../components/admin/test-type-methods/edit.jsx";
+import ManageTestResultTypes from "../components/admin/test-result-types/list.jsx";
+import AddTestResultType from "../components/admin/test-result-types/add.jsx";
+import EditTestResultType from "../components/admin/test-result-types/edit.jsx";
 
 const routes = [
   {
@@ -108,6 +120,54 @@ const routes = [
   {
     path: "reports/revenue",
     component: RevenueReport
+  },
+  {
+    path: "pricing",
+    component: Pricing
+  },
+  {
+    path: "pricing/edit/:id",
+    component: EditPricing
+  },
+  {
+    path: "pricing/add",
+    component: AddPricing
+  },
+  {
+    path: "test-type-names",
+    component: ManageTestTypeNames
+  },
+  {
+    path: "test-type-names/add",
+    component: AddTestTypeName
+  },
+  {
+    path: "test-type-names/edit/:id",
+    component: EditTestTypeName
+  },
+  {
+    path: "test-type-methods",
+    component: ManageTestTypeMethods
+  },
+  {
+    path: "test-type-methods/add",
+    component: AddTestTypeMethod
+  },
+  {
+    path: "test-type-methods/edit/:id",
+    component: EditTestTypeMethod
+  },
+  {
+    path: "test-result-types",
+    component: ManageTestResultTypes
+  },
+  {
+    path: "test-result-types/add",
+    component: AddTestResultType
+  },
+  {
+    path: "test-result-types/edit/:id",
+    component: EditTestResultType
   }
 ];
 

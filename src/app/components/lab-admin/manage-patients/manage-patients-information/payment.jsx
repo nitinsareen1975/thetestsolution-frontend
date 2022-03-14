@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Col, Form, Input, Row, Button, Spin, Radio, Alert, message, Typography } from "antd";
+import { Col, Form, Input, Row, Button, Spin, Radio, Alert, message, Typography, Select } from "antd";
 import IntlMessages from "../../../../services/intlMesseges";
 import { PlusCircleOutlined, UndoOutlined } from '@ant-design/icons';
 import { loadStripe } from '@stripe/stripe-js';
@@ -12,23 +12,53 @@ import {
 	useElements,
 } from '@stripe/react-stripe-js';
 import PatientAPI from "../../../../redux/api/patient-api";
+import PricingAPI from "../../../../redux/api/pricing-api";
+const { Option } = Select;
 const output = ({ ...props }) => {
 	const [refunded, setRefunded] = useState(false);
+	const [paymentMethods, setPaymentMethods] = useState(false);
+	const [pricing, setPricing] = useState(false);
+	const [pricingId, setPricingId] = useState(0);
 	var parentprops = props;
-	var pricing = parentprops.pricingArray;
-	var pricingId = parentprops.pricingId;
 
 	useEffect(async () => {
 		if (parentprops.data.transaction_id) {
+			setPricingId(parentprops.pricingId);
 			await PatientAPI.getTransactionDetails({ transaction_id: parentprops.data.transaction_id }).then(resp => {
 				if (resp.status && resp.status === true) {
 					if (resp.data.payment_status == "refunded") {
 						setRefunded(true);
 					}
 				}
-			})
+			});
+			var args = {
+				filters: {},
+				pagination: {},
+				sorter: { column: "name", order: "asc" }
+			}
+			await PricingAPI.getGlobalPricing(args).then(resp => {
+				if (resp.status && resp.status === true) {
+					setPricing(resp.data);
+				}
+			});
+		} else {
+			await PatientAPI.getPaymentMethods({}).then(resp => {
+				if (resp.status && resp.status === true) {
+					setPaymentMethods(resp.data);
+				}
+			});
+			var args = {
+				filters: { is_walkin_price: 1 },
+				pagination: {},
+				sorter: { column: "name", order: "asc" }
+			}
+			await PricingAPI.getGlobalPricing(args).then(resp => {
+				if (resp.status && resp.status === true) {
+					setPricing(resp.data);
+				}
+			});
 		}
-	}, [parentprops.pricingId]);
+	}, [pricingId]);
 
 	const refund = async (transactionId) => {
 		if (confirm("Are you sure?")) {
@@ -39,152 +69,130 @@ const output = ({ ...props }) => {
 					setRefunded(true);
 				}
 				parentprops.setLoading(false);
-			}).catch(() =>{
+			}).catch(() => {
 				parentprops.setLoading(false);
 			});
 		}
 	}
 
-	const CheckoutForm = ({ ...props }) => {
-		const stripe = useStripe();
-		const elements = useElements();
-
-		const handleSubmit = async (event) => {
-			event.preventDefault();
-			if (pricingId <= 0) {
-				message.error("Please choose a pricing.");
-				return false;
-			}
-			if (elements == null) {
-				return false;
-			}
-			if (confirm("Are you sure all the data entered is correct? Do you want to proceed?")) {
-				handleOk();
-			}
-		};
-
-		const handleOk = async () => {
-			parentprops.setLoading(true);
-
-			var formData = {
-				pricing_id: pricingId,
-				customer_name: parentprops.data.firstname + " " + parentprops.data.lastname,
-				customer_phone: parentprops.data.phone,
-				customer_email: parentprops.data.email
-			}
-			var response = await Axios.post(Config.API + "/global/create-payment-intent", formData, undefined);
-			const payload = await stripe.confirmCardPayment(response.data, {
-				payment_method: {
-					card: elements.getElement(CardElement),
-				},
-			});
-			if (payload.error) {
-				message.error(`Payment failed ${payload.error.message}`);
-				parentprops.setLoading(false);
-			} else {
-				var formData = {
-					pricing_id: pricingId,
-					transaction_id: payload.paymentIntent.id,
-					...parentprops.data
-				};
-				parentprops.setTransactionId(payload.paymentIntent.id);
-				parentprops.onSubmit(formData);
-				parentprops.setLoading(false);
-			}
-		};
-
-		return (
-			<>
-				<Row gutter={15}>
-					<Col xs={24} sm={12}>
-						<Form.Item style={{ background: '#fff', padding: 10, border: '1px solid #ccc', borderRadius: 4 }}>
-							<CardElement hidePostalCode={true} />
-						</Form.Item>
-					</Col>
-				</Row>
-				<Row gutter={15}>
-					<div className="steps-action">
-						<Button
-							type="primary"
-							style={{ display: "inline-block", marginLeft: "8px" }}
-							className="def-blue"
-							htmlType="submit"
-							size="large"
-							onClick={(e) => handleSubmit(e)}
-						>
-							<IntlMessages id="admin.userlisting.add" />
-							<PlusCircleOutlined />
-						</Button>
-					</div>
-				</Row>
-			</>
-		);
+	const setPricingState = (e) => {
+		setPricingId(e.target.value);
 	};
-
-	const setSubmitting = (val) => {
-		var loaderDiv = '<div id="paymentLoader"><div class="ant-spin ant-spin-spinning"><span class="ant-spin-dot ant-spin-dot-spin"><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i></span></div></div>';
-		var div = document.createElement('div');
-		div.innerHTML = loaderDiv.trim();
-		loaderDiv = div.firstChild;
-		if (val === false) {
-			document.getElementById("paymentLoader").remove();
-			document.getElementById("paymentForm").getElementsByClassName("ant-spin-container")[0].classList.remove("ant-spin-blur");
-		} else {
-			document.getElementById("paymentForm").getElementsByClassName("ant-spin-container")[0].classList.add("ant-spin-blur");
-			var eElement = document.getElementById("paymentForm").getElementsByClassName("ant-spin-nested-loading")[0];
-			eElement.insertBefore(loaderDiv, eElement.firstChild);
-		}
-	}
-
-	const stripePromise = loadStripe(Config.StripeAPIKey);
 	return <div>
 		<Row gutter={24}>
 			<Col xs={24} sm={24}>
-				<Typography.Title level={5}>Payment</Typography.Title>
+				<Typography.Title level={5}>Pricing</Typography.Title>
 			</Col>
 		</Row>
 		<hr />
 		{parentprops.paymentDone === true ?
 			(
-				<Row gutter={15}>
-					<Col xs={24} md={6}>
-						<Form.Item name="payment_provider" label="Payment Provider Name" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-							<Input placeholder="For example: Stripe, Paypal etc." disabled />
-						</Form.Item>
-					</Col>
-					<Col xs={24} md={6}>
-						<Form.Item name="transaction_id" label="Transaction ID" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-							<Input placeholder="Transaction ID generated after payment" disabled />
-						</Form.Item>
-					</Col>
-					{refunded === true ?
-						<Col xs={24} md={12}>
-							<Form.Item label="Status"><Typography.Title level={5}>Refunded</Typography.Title></Form.Item>
+				<>
+					<Row gutter={15}>
+						<Col xs={24}>
+							{pricing.length > 0 ?
+								<Form.Item name="pricing_id" label="Select Pricing" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+									<Radio.Group disabled className="radio-test-price-wrapper" value={pricingId} onChange={(e) => setPricingState(e)}>
+										{pricing.map(price => {
+											return <Radio.Button key={price.id} value={price.id}>
+												<div className="radio-test-price">
+													<div className="pricing-title">{price.name}</div>
+													<div className="pricing-amount">
+														<span className="pricing-amount-currency">$</span>
+														{price.retail_price}
+													</div>
+													<div className="pricing-results">Results in {price.test_duration}</div>
+												</div>
+											</Radio.Button>
+										})}
+									</Radio.Group>
+								</Form.Item>
+								: <Alert message="Pricing not setup, please contact support." type="error" />}
 						</Col>
-						: ""
-						/* <Col xs={24} md={12}>
-							<Form.Item label="Actions">
-								<Button
-									type="primary"
-									className="def-blue"
-									htmlType="button"
-									onClick={() => refund(props.data.transaction_id)}
-								>
-									<UndoOutlined />
-									Refund Transaction
-								</Button>
+					</Row>
+					<Row gutter={15}>
+						<Col xs={24} md={6}>
+							<Form.Item name="payment_provider" label="Payment Provider Name" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+								<Input placeholder="For example: Stripe, Paypal etc." disabled />
 							</Form.Item>
-						</Col> */
-					}
-				</Row>
+						</Col>
+						<Col xs={24} md={6}>
+							<Form.Item name="transaction_id" label="Transaction ID / Reference" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+								<Input placeholder="Transaction ID generated after payment" disabled />
+							</Form.Item>
+						</Col>
+						{refunded === true ?
+							<Col xs={24} md={12}>
+								<Form.Item label="Status"><Typography.Title level={5}>Refunded</Typography.Title></Form.Item>
+							</Col>
+							:
+							<Col xs={24} md={12}>
+								<Form.Item label="Actions">
+									<Button
+										type="primary"
+										className="def-blue"
+										htmlType="button"
+										onClick={() => refund(props.data.transaction_id)}
+									>
+										<UndoOutlined />
+										Refund Transaction
+									</Button>
+								</Form.Item>
+							</Col>
+						}
+					</Row>
+				</>
 			)
 			:
 			(<div id="paymentForm">
 				<Spin spinning={false}>
-					{pricing.length > 0 && pricingId > 0 ?
-						<Elements stripe={stripePromise}>
-							<CheckoutForm setFormSubmitting={(value) => setSubmitting(value)} />
-						</Elements>
+					{pricing.length > 0 ?
+						<>
+							<Row gutter={15}>
+								<Col xs={24}>
+									{pricing.length > 0 ?
+										<Form.Item name="pricing_id" label="Select Pricing" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+											<Radio.Group className="radio-test-price-wrapper" onChange={(e) => setPricingState(e)}>
+												{pricing.map(price => {
+													return <Radio.Button key={price.id.toString()} value={price.id.toString()}>
+														<div className="radio-test-price">
+															<div className="pricing-title">{price.name}</div>
+															<div className="pricing-amount">
+																<span className="pricing-amount-currency">$</span>
+																{price.retail_price}
+															</div>
+															<div className="pricing-results">Results in {price.test_duration}</div>
+														</div>
+													</Radio.Button>
+												})}
+											</Radio.Group>
+										</Form.Item>
+										: <Alert message="Pricing not setup, please contact support." type="error" />}
+								</Col>
+							</Row>
+							<Row gutter={15}>
+								<Col xs={24} md={6}>
+									<Form.Item name="payment_provider" label="Payment Provider Name" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+										<Select
+											style={{ width: "100%" }}
+										>
+											{paymentMethods.map(function (item) {
+												return (
+													<Option key={item.name.toString()} value={item.name.toString()}>
+														{item.name}
+													</Option>
+												);
+											})}
+										</Select>
+									</Form.Item>
+								</Col>
+								<Col xs={24} md={6}>
+									<Form.Item name="transaction_id" label="Transaction ID / Reference" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+										<Input placeholder="Transaction ID generated after payment" />
+									</Form.Item>
+								</Col>
+							</Row>
+						</>
 						: ""
 					}
 				</Spin>

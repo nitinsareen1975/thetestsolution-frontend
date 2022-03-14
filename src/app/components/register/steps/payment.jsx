@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Col, Form, Input, Row, Button, Spin, Radio, Alert, message, ConfigProvider } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
-import LabAPI from "../../../redux/api/lab-api";
+import PricingAPI from "../../../redux/api/pricing-api";
 import * as UserService from "../../../services/user-service";
 import { loadStripe } from '@stripe/stripe-js';
 import Config from "../../../config";
@@ -20,15 +20,23 @@ const output = ({ ...props }) => {
 
 	useEffect(async () => {
 		var args = {
-			filters: {},
+			filters: {is_walkin_price:0},
 			pagination: {},
 			sorter: { column: "name", order: "asc" }
 		}
-		await LabAPI.getGlobalLabPricing(parentprops.data.lab_assigned, args).then(resp => {
+		await PricingAPI.getGlobalPricing(args).then(resp => {
 			if (resp.status && resp.status === true) {
 				setPricing(resp.data);
 			}
 		});
+
+		var url_string = window.location.href;
+		var url = new URL(url_string);
+		var urlpricing = url.searchParams.get("pricing");
+		if(urlpricing != null && urlpricing != ""){
+			formRef.current.setFieldsValue({'pricing_id': urlpricing });
+			setPricingId(urlpricing);
+		}
 	}, []);
 
 	const CheckoutForm = ({ ...props }) => {
@@ -75,56 +83,6 @@ const output = ({ ...props }) => {
 				parentprops.handleSubmit(formData);
 				props.setFormSubmitting(false);
 			}
-
-			/* await stripe.createToken(elements.getElement(CardElement)).then(function (payload) {
-				if (payload.token) {
-					var formData = {
-						pricing_id: pricingId,
-						transaction_id: payload.token.id,
-						customer_name: parentprops.data.firstname + " " + parentprops.data.lastname,
-						customer_phone: parentprops.data.phone,
-						customer_email: parentprops.data.email
-					};
-					parentprops.handleSubmit(formData);
-				} else {
-					if (typeof payload.error !== "undefined") {
-						if (typeof payload.error.message !== "undefined") {
-							message.error(payload.error.message);
-						} else {
-							message.error(payload.error);
-						}
-					} else {
-						message.error("Please check the card details and try again.");
-					}
-					props.setFormSubmitting(false);
-				}
-			}).catch(error => {
-				props.setFormSubmitting(false);
-			}); */
-
-			/* await stripe.confirmPayment({
-				type: 'card',
-				card: elements.getElement(CardElement),
-				billing_details: {
-					name: parentprops.data.firstname + " " + parentprops.data.lastname,
-					phone: parentprops.data.phone,
-					email: parentprops.data.email
-				}
-			}).then(response => {
-				if (typeof response.error !== "undefined") {
-					message.error(response.error.message);
-				}
-				if (typeof response.paymentMethod !== "undefined" && response.paymentMethod.id) {
-					var formData = {
-						pricing_id: pricingId,
-						transaction_id: response.paymentMethod.id
-					};
-					parentprops.handleSubmit(formData)
-				}
-				props.setFormSubmitting(false);
-			}).catch(error => {
-				props.setFormSubmitting(false);
-			}); */
 		};
 
 		return (
@@ -138,7 +96,7 @@ const output = ({ ...props }) => {
 				</Row>
 				<Row gutter={15}>
 					<div className="steps-action">
-						<Button onClick={props.parentPrev}>
+						<Button onClick={parentprops.parentPrev}>
 							Previous
 						</Button>
 						<Button style={{ margin: '0 8px' }} type="primary" onClick={(e) => handleSubmit(e)}>
@@ -179,19 +137,15 @@ const output = ({ ...props }) => {
 				<Row gutter={15}>
 					<Col xs={24}>
 						{pricing.length > 0 ?
-							<Form.Item name="pricing_id" label="Select Type of Test" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-								<Radio.Group className="radio-test-price-wrapper" onChange={() => setPricingState()}>
+							<Form.Item name="pricing_id" label="Select Pricing" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+								<Radio.Group className="radio-test-price-wrapper" value={pricingId} onChange={() => setPricingState()}>
 									{pricing.map(price => {
-										/* var hms = price.estimated_hours.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + ':' + price.estimated_minutes.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + ':' + price.estimated_seconds.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
-										var hmsArr = hms.split(':');
-										var seconds = (+hmsArr[0]) * 60 * 60 + (+hmsArr[1]) * 60 + (+hmsArr[2]);
-										var duration = UserService.secondsToHms(seconds); */
-										return <Radio.Button key={price.id} value={price.id}>
+										return <Radio.Button key={price.id.toString()} value={price.id.toString()}>
 											<div className="radio-test-price">
-												<div className="pricing-title">{price.test_label}</div>
+												<div className="pricing-title">{price.name}</div>
 												<div className="pricing-amount">
 													<span className="pricing-amount-currency">$</span>
-													{price.price}
+													{price.retail_price}
 												</div>
 												<div className="pricing-results">Results in {price.test_duration}</div>
 											</div>
@@ -199,7 +153,7 @@ const output = ({ ...props }) => {
 									})}
 								</Radio.Group>
 							</Form.Item>
-							: <Alert message="Pricing not setup for this lab, please try to choose different location." type="error" />}
+							: <Alert message="Pricing not setup, please contact support." type="error" />}
 					</Col>
 				</Row>
 				{pricing.length > 0 ?

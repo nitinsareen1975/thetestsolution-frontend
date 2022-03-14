@@ -34,11 +34,11 @@ const AdminHeader = ({ ...props }) => {
     </Button>
     {/* <LanguageSwitcher /> */}
     <div className="right-nav">
-      <div className="notifation">
+      {/* <div className="notifation">
         <Badge count={5}>
           <BellOutlined />
         </Badge>
-      </div>
+      </div> */}
       <Dropdown.Button overlay={menu} trigger={['click']} placement="bottomCenter" icon={<UserOutlined />}>Hi{user.firstname ? " " + user.firstname : ""}</Dropdown.Button>
     </div>
   </Row>

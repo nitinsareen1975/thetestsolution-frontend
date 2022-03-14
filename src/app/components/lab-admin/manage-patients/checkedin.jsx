@@ -16,11 +16,13 @@ import {
   Tooltip,
   Modal,
   Form,
-  Spin
+  Spin,
+  Select
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
 import { EditOutlined, CloseOutlined, SearchOutlined, FilePdfOutlined, ArrowLeftOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import moment from "moment";
+const { Option } = Select;
 
 class CheckedinList extends Component {
   constructor(props) {
@@ -48,7 +50,10 @@ class CheckedinList extends Component {
       filters: {},
       modalLoading: false,
       checkInModalVisible: false,
-      checkInPatientId: 0
+      checkInPatientId: 0,
+      checkInModalValues: {
+        observationMethods: []
+      }
     };
     this.handleTableChange = this.handleTableChange.bind(this);
   }
@@ -86,12 +91,19 @@ class CheckedinList extends Component {
         title: "Scheduled Date/Time",
         dataIndex: "scheduled_date",
         render: (_text, row) => (
-          <span>{row.scheduled_date}<br></br>{row.scheduled_time}</span>
+          <span>{moment(row.scheduled_date).format("MM/DD/YYYY")}<br></br>{moment(row.scheduled_time).format("H:m:s a")}</span>
         )
       },
       {
         title: "Test Selected",
         dataIndex: "test_type_name"
+      },
+      {
+        title: "Test Price",
+        dataIndex: "retail_price",
+        render: (_text, row) => (
+          <span>{row.currency+""+row.retail_price}</span>
+        )
       },
       {
         title: "Actions",
@@ -115,7 +127,7 @@ class CheckedinList extends Component {
                 <FilePdfOutlined />
               </Button>
             </Tooltip>
-            <Tooltip title="Samples Collected">
+            <Tooltip title="Save Samples Collected">
               <Button
                 type="primary"
                 onClick={() => this.confirmSamplesCollected(record.id)}
@@ -259,20 +271,6 @@ class CheckedinList extends Component {
     }
   }
 
-  deleteItem = id => {
-    this.setState({ loading: true });
-    this.props
-      .deleteUser({ id: id })
-      .then(item => {
-        this.setState({ loading: false });
-        this.props.history.push("./");
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({ loading: false });
-      });
-  };
-
   handleTableChange = (pagination, filters, sorter, manual) => {
     if (filters === undefined) filters = {};
     Object.keys(filters).map(key => { if ((!filters[key]) || (Array.isArray(filters[key]) && filters[key].length === 0)) { delete filters[key] } })
@@ -316,12 +314,24 @@ class CheckedinList extends Component {
     window.open("/print-patient-form/" + patientId, "_blank");
   }
 
-  confirmSamplesCollected = (patientId) => {
-    this.setState({
-      checkInPatientId: patientId
-    }, () => {
-      this.setState({ checkInModalVisible: true });
-    })
+  confirmSamplesCollected = async (patientId) => {
+    this.setState({ loading: true });
+    await this.props.getTestTypeMethodsForPatient(patientId).then(async (response) => {
+      if (response.status && response.status == true) {
+        let _checkInModalValues = {};
+        _checkInModalValues.observationMethods = response.data;
+        this.setState({
+          checkInModalValues: _checkInModalValues,
+          checkInModalVisible: true,
+          checkInPatientId: patientId,
+          loading: false
+        });
+      } else {
+        notifyUser("No observation methods were found. Please check the test type details and try again!", "error");
+        this.resetCheckinModal();
+        this.setState({ loading: false });
+      }
+    });
   }
 
   samplesCollected = async () => {
@@ -329,12 +339,20 @@ class CheckedinList extends Component {
     if (patients_statuses.length > 0) {
       var statusObj = patients_statuses.find(i => i.code == 'pending-results');
       var _specimen_type = "";
+      var _specimen_collection_method = "";
       var formvalues = this.sampleForm.current.getFieldsValue();
       if (typeof formvalues.specimen_type !== "undefined") {
         _specimen_type = formvalues.specimen_type;
+        _specimen_collection_method = formvalues.specimen_collection_method;
       }
       this.setState({ modalLoading: true });
-      await this.props.updatePatient(this.state.checkInPatientId, { progress_status: statusObj.id, specimen_type: _specimen_type, specimen_collection_date: moment().format("YYYY-MM-DD") }).then(response => {
+      var args = {
+        progress_status: statusObj.id,
+        specimen_type: _specimen_type,
+        specimen_collection_method: _specimen_collection_method,
+        specimen_collection_date: moment().format("YYYY-MM-DD")
+      };
+      await this.props.updatePatient(this.state.checkInPatientId, args).then(response => {
         if (response.status && response.status == true) {
           this.setState({ modalLoading: false });
           this.resetCheckinModal();
@@ -365,8 +383,12 @@ class CheckedinList extends Component {
   }
 
   resetCheckinModal = () => {
+    var _checkInModalValues = {
+      observationMethods: []
+    };
     this.setState({
       checkInModalVisible: false,
+      checkInModalValues: _checkInModalValues,
       checkInPatientId: 0,
       modalLoading: false
     });
@@ -418,7 +440,24 @@ class CheckedinList extends Component {
             <Form ref={this.sampleForm} layout="vertical">
               <Row>
                 <Col style={{ width: '100%' }}>
-                  <Form.Item label={<strong style={{ fontSize: 14 }}>Type of Specimen</strong>} name="specimen_type" rules={[{ required: true }]}>
+                  <Form.Item label={<strong style={{ fontSize: 14 }}>Specimen Collection Method</strong>} name="specimen_collection_method" rules={[{ required: true }]}>
+                    <Select
+                      style={{ width: "100%" }}
+                    >
+                      {this.state.checkInModalValues.observationMethods.length > 0 && this.state.checkInModalValues.observationMethods.map(function (item) {
+                        return (
+                          <Option key={item.id.toString()} value={item.id.toString()}>
+                            {item.name} ({item.code})
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row>
+                <Col style={{ width: '100%' }}>
+                  <Form.Item label={<strong style={{ fontSize: 14 }}>Type of Specimen</strong>} name="specimen_type">
                     <Input />
                   </Form.Item>
                 </Col>

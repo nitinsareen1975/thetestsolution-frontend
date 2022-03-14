@@ -37,3 +37,12 @@ export function getPatientStatusList() {
     } catch (e) {}
   };
 }
+
+export function getCurrencyCodes() {
+  return async function(dispatch, _getState) {
+    try {
+      let res = await API.getCurrencyCodes();
+      return res.data;
+    } catch (e) {}
+  };
+}

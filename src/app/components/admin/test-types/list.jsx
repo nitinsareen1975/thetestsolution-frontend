@@ -50,31 +50,35 @@ class ManageTestTypes extends Component {
   getHeaderKeys = () => {
     return [
       {
-        title: "Name of Test",
+        title: "Test Name",
         dataIndex: "name",
         filteredValue: this.getSelectedFilterValue('name'),
         ...this.getColumnSearchProps("name")
       },
       {
-        title: "Procedure",
-        dataIndex: "test_procedure",
-        filteredValue: this.getSelectedFilterValue('test_procedure'),
-        ...this.getColumnSearchProps("test_procedure")
+        title: "Test Type",
+        dataIndex: "test_type",
+        filteredValue: this.getSelectedFilterValue('test_type'),
+        ...this.getColumnSearchProps("test_type")
       },
       {
-        title: "Testing Platform",
-        dataIndex: "testing_platform",
-        filteredValue: this.getSelectedFilterValue('testing_platform'),
-        ...this.getColumnSearchProps("testing_platform")
+        title: "LOINC",
+        dataIndex: "loinc",
+        filteredValue: this.getSelectedFilterValue('loinc'),
+        ...this.getColumnSearchProps("loinc")
       },
       {
-        title: "Price",
-        dataIndex: "price"
+        title: "Model/Component",
+        dataIndex: "fi_model"
       },
       {
-        title: "Estimated Time",
+        title: "Gender",
+        dataIndex: "gender"
+      },
+      {
+        title: "Is Rapid Test",
         render: (_text, record) => (
-          <span>{record.estimated_hours+":"+record.estimated_minutes+":"+record.estimated_seconds}</span>
+          <span>{record.is_rapid_test && record.is_rapid_test == "1" ? "Yes" : "No"}</span>
         )
       },
       {
@@ -232,20 +236,6 @@ class ManageTestTypes extends Component {
     }
   }
 
-  deleteItem = id => {
-    this.setState({ loading: true });
-    this.props
-      .deleteUser({ id: id })
-      .then(item => {
-        this.setState({ loading: false });
-        this.props.history.push("./");
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({ loading: false });
-      });
-  };
-
   handleTableChange = (pagination, filters, sorter, manual) => {
     if (filters === undefined) filters = {};
     Object.keys(filters).map(key => { if ((!filters[key]) || (Array.isArray(filters[key]) && filters[key].length === 0)) { delete filters[key] } })
@@ -310,7 +300,7 @@ class ManageTestTypes extends Component {
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
-              Manage Test Types
+              Manage Tests
             </Typography.Title>
           </Col>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>

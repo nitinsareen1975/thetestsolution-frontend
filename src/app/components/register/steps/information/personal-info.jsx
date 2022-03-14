@@ -1,8 +1,16 @@
 import React from "react";
-import { Col, DatePicker, Form, Button, Row, Select } from "antd";
+import { Col, DatePicker, Form, Button, Row, Select, InputNumber } from "antd";
 import IntlMessages from "../../../../services/intlMesseges";
 import moment from "moment";
 const output = ({ ...props }) => {
+    const formatDOB = (dob) => {
+        var cleaned = ('' + dob).replace(/\D/g, '');
+        var match = cleaned.match(/^(\d{4})(\d{2})(\d{2})$/);
+        if (match) {
+          return match[1] + '-' + match[2] + '-' + match[3];
+        }
+        return null;
+      }
     return <Form layout="vertical" onFinish={(values) => props.next(values)} initialValues={props.data}>
         <h2 className="form-section-title">Personal Info</h2>
         <Row gutter={15}>
@@ -17,7 +25,15 @@ const output = ({ ...props }) => {
             </Col>
             <Col xs={24} md={8}>
                 <Form.Item name="dob" label="Birthday" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-                    <DatePicker placeholder="Date Of Birth" disabledDate={(current) => moment().add(-16, 'years')  <= current} />
+                    {/* <DatePicker placeholder="Date Of Birth" disabledDate={(current) => moment().add(-16, 'years')  <= current} /> */}
+                    <InputNumber 
+                        controls={false} 
+                        formatter={value => formatDOB(value)}
+                        parser={value => value.replace(/\$\s?|(,*)/g, '')} 
+                        placeholder="YYYY-MM-DD"
+                        style={{ width: '100%' }} 
+                        maxLength={10}
+                    />
                 </Form.Item>
             </Col>
             <Col xs={24} md={8}>

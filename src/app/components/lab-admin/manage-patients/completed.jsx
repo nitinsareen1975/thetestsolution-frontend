@@ -2,27 +2,25 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { PlusCircleOutlined } from '@ant-design/icons';
-import * as labActions from "../../../redux/actions/lab-actions";
+import * as patientActions from "../../../redux/actions/patient-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
+import * as adminActions from "../../../redux/actions/admin-actions";
 import {
-  Switch,
   Table,
   Input,
   Button,
   Row,
   Col,
   Typography,
-  Tag,
-  Tooltip
+  Tooltip,
+  Tag
 } from "antd";
-import { notifyUser } from "../../../services/notification-service";
-import { EditOutlined, CloseOutlined, SearchOutlined, SolutionOutlined, CreditCardOutlined, TeamOutlined, FileProtectOutlined } from '@ant-design/icons';
-import moment from "moment";
-class ManageLabs extends Component {
+import { FileDoneOutlined, CloseOutlined, SearchOutlined, ArrowLeftOutlined, EditOutlined } from '@ant-design/icons';
+
+class CompletedResults extends Component {
   constructor(props) {
     super(props);
-    this.module = 'labs';
+    this.module = 'completed_results';
     this.state = {
       dataLoaded: false,
       loading: false,
@@ -52,89 +50,65 @@ class ManageLabs extends Component {
   getHeaderKeys = () => {
     return [
       {
-        title: "Lab Name",
-        dataIndex: "name",
-        filteredValue: this.getSelectedFilterValue('name'),
-        ...this.getColumnSearchProps("name")
-        //width: "200px"
-        //sorter: true
-      },
-      {
-        title: "CLIA ID",
-        dataIndex: "licence_number",
-        filteredValue: this.getSelectedFilterValue('licence_number'),
-        ...this.getColumnSearchProps("licence_number")
-        // width: "200px"
-      },
-      {
-        title: "Facility ID",
-        dataIndex: "facility_id",
-        filteredValue: this.getSelectedFilterValue('facility_id'),
-        ...this.getColumnSearchProps("facility_id")
-        // width: "200px"
-      },
-      {
-        title: "Lab Email",
+        title: "Email Address/Name",
         dataIndex: "email",
         filteredValue: this.getSelectedFilterValue('email'),
-        ...this.getColumnSearchProps("email")
-        //width: "250px"
+        ...this.getColumnSearchProps("email"),
+        render: (_t, row) => {
+            return <span>{row.email}<br/><i style={{ fontSize: 12 }}>({row.firstname} {row.lastname})</i></span>
+        }
       },
       {
-        title: "Lab Phone",
+        title: "Phone",
         dataIndex: "phone",
-        // width: "250px",
         filteredValue: this.getSelectedFilterValue('phone'),
         ...this.getColumnSearchProps("phone")
       },
       {
-        title: "Onboarding Date",
-        dataIndex: "date_incorporated",
-        render: (_text, record) => (
-          <span>{moment(record.date_incorporated).format("MM/DD/YYYY")}</span>
-        )
-        // width: "200px"
+        title: "Lab Assigned",
+        dataIndex: "lab_assigned"
       },
-      /* {
-        title: "Status",
-        render: (_text, record) => (
-          <span>
-            <Tag color={record.status == 1 ? "green" : "red"}>{record.status == 1 ? "Active" : "Inactive"}</Tag>
-          </span>
+      {
+        title: "Test Selected",
+        dataIndex: "test_type_name"
+      },
+      {
+        title: "Test Price",
+        dataIndex: "retail_price",
+        render: (_text, row) => (
+          <span>{row.currency+""+row.retail_price}</span>
         )
-      }, */
+      },
+      {
+        title: "Result",
+        render: (_i, row) => {
+            return <span>{row.result == 'positive' ? <Tag color="volcano">Positive</Tag> : <Tag color="green">Negative</Tag>}</span>
+        }
+      },
+      {
+        title: "Result Value",
+        render: (_i, row) => {
+            return <span>{row.result_value}</span>
+        }
+      },
       {
         title: "Actions",
         rowKey: "action",
-        // width: "200px",
+        width: 130,
         render: (_text, record) => (
           <span>
-            <Tooltip title="Edit Lab">
+            <Tooltip title="View/Edit Patient Info">
               <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id)}
+                onClick={() => this.props.history.push("./edit/" + record.id)}
               >
                 <EditOutlined />
               </Button>
             </Tooltip>
-            <Tooltip title="Manage Employees">
+            <Tooltip title="View Report">
               <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/employees")}
+                onClick={() => window.open("/patient-report/" + window.btoa(record.id) + '/' + record.confirmation_code)}
               >
-                <TeamOutlined />
-              </Button>
-            </Tooltip>
-            <Tooltip title="View Patients">
-              <Button
-                onClick={() => this.props.history.push("./all-patients", {lab_assigned: record.id})}
-              >
-                <FileProtectOutlined />
-              </Button>
-            </Tooltip>
-            <Tooltip title="Scheduled Tests">
-              <Button
-                onClick={() => this.props.history.push("./all-patients", {lab_assigned: record.id, progress_status: "1"})}
-              >
-                <SolutionOutlined />
+                <FileDoneOutlined />
               </Button>
             </Tooltip>
           </span>
@@ -272,20 +246,6 @@ class ManageLabs extends Component {
     }
   }
 
-  deleteItem = id => {
-    this.setState({ loading: true });
-    this.props
-      .deleteUser({ id: id })
-      .then(item => {
-        this.setState({ loading: false });
-        this.props.history.push("./");
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({ loading: false });
-      });
-  };
-
   handleTableChange = (pagination, filters, sorter, manual) => {
     if (filters === undefined) filters = {};
     Object.keys(filters).map(key => { if ((!filters[key]) || (Array.isArray(filters[key]) && filters[key].length === 0)) { delete filters[key] } })
@@ -298,8 +258,16 @@ class ManageLabs extends Component {
       })
     }
     this.setState({ loading: true });
-    this.props.getLabs({
-        filters: filters,
+    var patients_statuses = this.props.patient_status_list;
+    var lab = JSON.parse(localStorage.getItem("lab"));
+    var patientTypeFilter = {lab_assigned: lab.id};
+    if (patients_statuses.length > 0) {
+      var statusObj = patients_statuses.find(i => i.code == 'completed');
+      patientTypeFilter["progress_status"] = statusObj.id;
+    }
+    this.props
+      .getCompletedPatients({
+        filters: {...filters, ...patientTypeFilter},
         pagination: { page: pagination.current, pageSize: pagination.pageSize },
         sorter: sorter
       })
@@ -350,17 +318,18 @@ class ManageLabs extends Component {
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
-              Manage Labs
+              Completed Results
             </Typography.Title>
           </Col>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Button
+              style={{ marginLeft: 10}}
               type="primary"
-              onClick={() => this.props.history.push("./labs/add")}
+              onClick={() => this.props.history.goBack()}
               className="right-fl def-blue"
             >
-              Add New
-              <PlusCircleOutlined />
+              <ArrowLeftOutlined />
+              Back
             </Button>
           </Col>
         </Row>
@@ -389,14 +358,15 @@ class ManageLabs extends Component {
 function mapStateToProps(state) {
   return {
     ...state.pagination,
-    ...state.language
+    ...state.language,
+    ...state.adminConfig
   };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...labActions, ...paginationActions }, dispatch);
+  return bindActionCreators({ ...adminActions, ...patientActions, ...paginationActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-    ManageLabs
+    CompletedResults
   )
 );

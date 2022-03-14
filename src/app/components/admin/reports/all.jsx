@@ -90,13 +90,13 @@ class Reports extends Component {
 				title: "Scheduled Date",
 				dataIndex: "scheduled_date",
 				render: (_text, row) => (
-					<span>{row.scheduled_date}</span>
+					<span>{moment(row.scheduled_date).format("MM/DD/YYYY")}</span>
 				)
 			},
 			{
 				title: "Completion Date",
 				render: (_text, row) => (
-					<span>{moment(row.completed_date).format("YYYY-MM-DD")}</span>
+					<span>{moment(row.completed_date).format("MM/DD/YYYY")}</span>
 				)
 			},
 			{
@@ -437,7 +437,7 @@ class Reports extends Component {
 
 		const scheduleDateRangeFilter = () => {
 			return <RangePicker
-				format={"YYYY-MM-DD"}
+				format={"MM/DD/YYYY"}
 				placeholder={["Scheduled date (start)", "Scheduled date (end)"]}
 				ranges={{
 					Today: [moment(), moment()],
@@ -452,7 +452,7 @@ class Reports extends Component {
 
 		const completionDateRangeFilter = () => {
 			return <RangePicker
-				format={"YYYY-MM-DD"}
+				format={"MM/DD/YYYY"}
 				placeholder={["Completion date (start)", "Completion date (end)"]}
 				ranges={{
 					Today: [moment(), moment()],

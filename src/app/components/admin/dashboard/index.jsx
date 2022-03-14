@@ -35,7 +35,7 @@ const AdminDashboard = ({ ...props }) => {
     var now = startDate.clone();
     while (now.isSameOrBefore(endDate)) {
       data.push({
-        date: now.format('YYYY-MM-DD'),
+        date: now.format('MM/DD/YYYY'),
         sales: 0
       });
       now.add(1, 'days');

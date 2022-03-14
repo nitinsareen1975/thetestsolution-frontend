@@ -16,10 +16,14 @@ const getPatientStatusList = async () => {
 const getPaymentMethods = async () => {
   return await Axios.get("/global/payment-methods", undefined, undefined);
 };
+const getCurrencyCodes = async () => {
+  return await Axios.get("/global/currency-codes", undefined, undefined);
+};
 
 export default {
   getCountriesList,
   getCountriesListByRegion,
   getPatientStatusList,
-  getPaymentMethods
+  getPaymentMethods,
+  getCurrencyCodes
 };

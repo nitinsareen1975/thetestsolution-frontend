@@ -13,7 +13,6 @@ const AdminDashboard = ({ ...props }) => {
     setSubmitted(true);
     await GlobalAPI.getDashboardStats().then(resp => {
       if (resp.status && resp.status === true) {
-        console.log("resp:", resp);
         setStats(resp.data);
       } else {
         if (resp.message) {
@@ -184,7 +183,7 @@ const AdminDashboard = ({ ...props }) => {
       render: (text, record) => (
         <Space size="middle">
           <Tooltip title="View Details">
-            <Button onClick={() => window.open("./admin/patients/edit/" + record.id)} >
+            <Button onClick={() => window.open("./lab/patients/edit/" + record.id)} >
               <LinkOutlined />
             </Button>
           </Tooltip>

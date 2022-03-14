@@ -33,7 +33,8 @@ class EditPatient extends React.Component {
     dataLoaded: false,
     pricingId: 0,
     transactionId: null,
-    pricingArray: []
+    pricingArray: [],
+    labAssigned: 0
   };
 
   async componentDidMount() {
@@ -56,24 +57,23 @@ class EditPatient extends React.Component {
     this.setState({
       loading: false,
       patient: (_patient.status == true) ? _patient.data : {},
-      identifierDoc: (_patient.data.identifier_doc && _patient.data.identifier_doc != null) ? Config.DASHBOARD_URL + _patient.data.identifier_doc : this.state.identifier_doc,
-      countries: _countries,
+      identifierDoc: (_patient.data.identifier_doc && _patient.data.identifier_doc != null) ? Config.DASHBOARD_URL + _patient.data.countries: _countries,
       pricingId: _patient.data.pricing_id,
       transactionId: _patient.data.transaction_id,
+      labAssigned: _patient.data.lab_assigned,
       dataLoaded: true
     });
   }
 
   handleSubmit = async (data) => {
-    /* if (this.state.pricingId <= 0) {
-      message.error("Please choose a pricing.");
+    if (this.state.labAssigned <= 0) {
+      message.error("Please choose a lab.");
       return false;
     }
-    if (this.state.transactionId === null) {
+    /* if (this.state.transactionId === null) {
       message.error("Payment transaction ID not found. Please make sure patient has made a payment.");
       return false;
     } */
-    var lab = JSON.parse(localStorage.getItem("lab"));
     var args = {
       city: data.city,
       country: data.country,
@@ -94,7 +94,7 @@ class EditPatient extends React.Component {
       identifier_country: data.identifier_country,
       identifier_doc: "",
       identifier_type: data.identifier_type,
-      lab_assigned: lab.id,
+      lab_assigned: this.state.labAssigned,
       lastname: data.lastname,
       middlename: data.middlename,
       phone: data.phone,
@@ -104,10 +104,10 @@ class EditPatient extends React.Component {
       state: data.state,
       street: data.street,
       test_type: data.test_type,
-      /* pricing_id: this.state.pricingId, */
+      pricing_id: this.state.pricingId,
       zip: data.zip,
       transaction_id: data.transaction_id ? data.transaction_id : UserService.getRandomString(24, data.email),
-      confirmation_code: UserService.getRandomString(24, data.email)
+      confirmation_code: data.confirmation_code
     };
     if (typeof this.state.identifierDocUpload !== "undefined" && this.state.identifierDocUpload !== null && typeof this.state.identifierDocUpload !== "string" && this.state.identifierDocUpload.name) {
       const formData = new FormData();
@@ -209,8 +209,8 @@ class EditPatient extends React.Component {
               <HomeAddressInfo countries={this.state.countries} />
               <SymptomsInfo data={this.state.patient}/>
               <Identification removeIdentifierDocInline={this.removeIdentifierDocInline} identifier_doc={this.state.identifierDoc} countries={this.state.countries} setIdentifierDocUpload={this.setIdentifierDocUpload}/>
-              <TestType data={this.state.patient} changeFormFieldValue={this.onChangeFormFieldValue} setPricingId={this.setPricingId} setPricingArray={this.setPricingArray} setLoading={this.setLoading}/>
-              {/* <PaymentInfo data={this.state.patient} paymentDone={this.state.patient && this.state.patient.transaction_id !== null && this.state.patient.transaction_id !== "" ? true : false} setTransactionId={this.setTransactionId} pricingArray={this.state.pricingArray} setLoading={this.setLoading} pricingId={this.state.pricingId}/> */}
+              <TestType data={this.state.patient} changeFormFieldValue={this.onChangeFormFieldValue} setPricingId={this.setPricingId} setPricingArray={this.setPricingArray} setLoading={this.setLoading} setLabAssigned={(lab_id) => this.setState({labAssigned: lab_id })}/>
+              <PaymentInfo data={this.state.patient} paymentDone={this.state.patient && this.state.patient.transaction_id !== null && this.state.patient.transaction_id !== "" ? true : false} setTransactionId={this.setTransactionId} pricingArray={this.state.pricingArray} setLoading={this.setLoading} pricingId={this.state.pricingId}/>
               <Row>
                 <Col>
                   <Form.Item>

@@ -3,10 +3,9 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { PlusCircleOutlined } from '@ant-design/icons';
-import * as labActions from "../../../redux/actions/lab-actions";
+import * as PricingActions from "../../../redux/actions/pricing-actions";
 import * as paginationActions from "../../../redux/actions/pagination-actions";
 import {
-  Switch,
   Table,
   Input,
   Button,
@@ -16,13 +15,12 @@ import {
   Tag,
   Tooltip
 } from "antd";
-import { notifyUser } from "../../../services/notification-service";
-import { EditOutlined, CloseOutlined, SearchOutlined, SolutionOutlined, CreditCardOutlined, TeamOutlined, FileProtectOutlined } from '@ant-design/icons';
-import moment from "moment";
-class ManageLabs extends Component {
+import { EditOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons';
+
+class Pricing extends Component {
   constructor(props) {
     super(props);
-    this.module = 'labs';
+    this.module = 'pricing';
     this.state = {
       dataLoaded: false,
       loading: false,
@@ -52,89 +50,56 @@ class ManageLabs extends Component {
   getHeaderKeys = () => {
     return [
       {
-        title: "Lab Name",
+        title: "Pricing Title",
         dataIndex: "name",
         filteredValue: this.getSelectedFilterValue('name'),
         ...this.getColumnSearchProps("name")
-        //width: "200px"
-        //sorter: true
       },
       {
-        title: "CLIA ID",
-        dataIndex: "licence_number",
-        filteredValue: this.getSelectedFilterValue('licence_number'),
-        ...this.getColumnSearchProps("licence_number")
-        // width: "200px"
+        title: "Test Type",
+        dataIndex: "test_type_name",
+        filteredValue: this.getSelectedFilterValue('test_type_name'),
+        ...this.getColumnSearchProps("test_type_name")
       },
       {
-        title: "Facility ID",
-        dataIndex: "facility_id",
-        filteredValue: this.getSelectedFilterValue('facility_id'),
-        ...this.getColumnSearchProps("facility_id")
-        // width: "200px"
+        title: "Test Duration",
+        dataIndex: "test_duration",
+        filteredValue: this.getSelectedFilterValue('test_duration'),
+        ...this.getColumnSearchProps("test_duration")
       },
       {
-        title: "Lab Email",
-        dataIndex: "email",
-        filteredValue: this.getSelectedFilterValue('email'),
-        ...this.getColumnSearchProps("email")
-        //width: "250px"
+        title: "Raw Price",
+        dataIndex: "raw_price"
       },
       {
-        title: "Lab Phone",
-        dataIndex: "phone",
-        // width: "250px",
-        filteredValue: this.getSelectedFilterValue('phone'),
-        ...this.getColumnSearchProps("phone")
+        title: "Retail Price",
+        dataIndex: "retail_price"
       },
       {
-        title: "Onboarding Date",
-        dataIndex: "date_incorporated",
+        title: "Is Walk-in Price",
+        dataIndex: "is_walkin_price",
         render: (_text, record) => (
-          <span>{moment(record.date_incorporated).format("MM/DD/YYYY")}</span>
+          <span>{record.is_walkin_price == 1 ? "Yes" : "No"}</span>
         )
-        // width: "200px"
       },
-      /* {
+      {
         title: "Status",
         render: (_text, record) => (
           <span>
             <Tag color={record.status == 1 ? "green" : "red"}>{record.status == 1 ? "Active" : "Inactive"}</Tag>
           </span>
         )
-      }, */
+      },
       {
         title: "Actions",
         rowKey: "action",
-        // width: "200px",
         render: (_text, record) => (
           <span>
             <Tooltip title="Edit Lab">
               <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id)}
+                onClick={() => this.props.history.push("./pricing/edit/" + record.id)}
               >
                 <EditOutlined />
-              </Button>
-            </Tooltip>
-            <Tooltip title="Manage Employees">
-              <Button
-                onClick={() => this.props.history.push("./labs/edit/" + record.id+"/employees")}
-              >
-                <TeamOutlined />
-              </Button>
-            </Tooltip>
-            <Tooltip title="View Patients">
-              <Button
-                onClick={() => this.props.history.push("./all-patients", {lab_assigned: record.id})}
-              >
-                <FileProtectOutlined />
-              </Button>
-            </Tooltip>
-            <Tooltip title="Scheduled Tests">
-              <Button
-                onClick={() => this.props.history.push("./all-patients", {lab_assigned: record.id, progress_status: "1"})}
-              >
-                <SolutionOutlined />
               </Button>
             </Tooltip>
           </span>
@@ -298,7 +263,7 @@ class ManageLabs extends Component {
       })
     }
     this.setState({ loading: true });
-    this.props.getLabs({
+    this.props.getPricingList({
         filters: filters,
         pagination: { page: pagination.current, pageSize: pagination.pageSize },
         sorter: sorter
@@ -350,13 +315,13 @@ class ManageLabs extends Component {
         <Row gutter={24}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Typography.Title level={4}>
-              Manage Labs
+              Manage Pricing
             </Typography.Title>
           </Col>
           <Col xs={12} sm={12} md={12} lg={12} xl={12}>
             <Button
               type="primary"
-              onClick={() => this.props.history.push("./labs/add")}
+              onClick={() => this.props.history.push("./pricing/add")}
               className="right-fl def-blue"
             >
               Add New
@@ -393,10 +358,10 @@ function mapStateToProps(state) {
   };
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...labActions, ...paginationActions }, dispatch);
+  return bindActionCreators({ ...PricingActions, ...paginationActions }, dispatch);
 }
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(
-    ManageLabs
+    Pricing
   )
 );

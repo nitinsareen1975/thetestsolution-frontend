@@ -25,6 +25,7 @@ import {
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
 import { EditOutlined, CloseOutlined, SearchOutlined, CheckCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import moment from "moment";
 const { Option } = Select;
 class PendingResults extends Component {
   constructor(props) {
@@ -91,12 +92,19 @@ class PendingResults extends Component {
         title: "Scheduled Date/Time",
         dataIndex: "scheduled_date",
         render: (_text, row) => (
-          <span>{row.scheduled_date}<br></br>{row.scheduled_time}</span>
+          <span>{moment(row.scheduled_date).format("MM/DD/YYYY")}<br></br>{moment(row.scheduled_time).format("H:m:s a")}</span>
         )
       },
       {
         title: "Test Selected",
         dataIndex: "test_type_name"
+      },
+      {
+        title: "Test Price",
+        dataIndex: "retail_price",
+        render: (_text, row) => (
+          <span>{row.currency+""+row.retail_price}</span>
+        )
       },
       {
         title: "Actions",
@@ -313,14 +321,16 @@ class PendingResults extends Component {
     await this.props.getPatientPricingInfo(patient.id, patient.pricing_id).then(async (response) => {
       if (response.status && response.status == true) {
         let _resultsModalValues = {};
-        await this.props.getTestTypeMethods(response.data.test_type_id).then(async (resp1) => {
+        await this.props.getTestResultTypes({}).then(async (resp1) => {
           if (resp1.status && resp1.status === true && resp1.data.length > 0) {
-            _resultsModalValues.sample_collection_methods = resp1.data;
+            _resultsModalValues.result_types = resp1.data;
           }
         });
         _resultsModalValues.firstname = response.data.firstname;
         _resultsModalValues.lastname = response.data.lastname;
         _resultsModalValues.test_type = response.data.test_type;
+        _resultsModalValues.specimen_collection_method = response.data.specimen_collection_method;
+        _resultsModalValues.specimen_collection_method_id = response.data.specimen_collection_method_id;
         this.setState({
           resultsModalValues: _resultsModalValues,
           resultsModalPatient: patient
@@ -337,13 +347,13 @@ class PendingResults extends Component {
 
   enterResults = async (uploadToGovt) => {
     var formdata = this.resultsForm.current.getFieldsValue();
-    if (typeof formdata.sample_collection_method !== 'undefined' && typeof formdata.result !== 'undefined') {
+    if (typeof formdata.result !== 'undefined') {
       var patients_statuses = this.props.patient_status_list;
       if (patients_statuses.length > 0) {
         this.setState({ modalLoading: true });
         var statusObj = patients_statuses.find(i => i.code == 'completed');
         let args = {
-          sample_collection_method: formdata.sample_collection_method,
+          sample_collection_method: this.state.resultsModalValues.specimen_collection_method_id,
           result: formdata.result,
           result_text: formdata.result_text,
           lab_id: this.state.resultsModalPatient.lab_assigned_id,
@@ -441,8 +451,8 @@ class PendingResults extends Component {
           <Spin spinning={this.state.modalLoading}>
             {this.state.resultsModalValues.firstname
               && this.state.resultsModalValues.lastname
-              && this.state.resultsModalValues.test_type
-              && this.state.resultsModalValues.sample_collection_methods ?
+              && this.state.resultsModalValues.test_type 
+              && this.state.resultsModalValues.result_types  ?
               <Form ref={this.resultsForm} layout="vertical" initialValues={this.state.resultsModalValues}>
                 <Row>
                   <Col>
@@ -456,36 +466,31 @@ class PendingResults extends Component {
                         {this.state.resultsModalValues.test_type}
                       </Descriptions.Item>
                     </Descriptions>
+                    <Descriptions style={{ width: '100%' }}>
+                      <Descriptions.Item label={<strong>Specimen Collection Method</strong>}>
+                        {this.state.resultsModalValues.specimen_collection_method}
+                      </Descriptions.Item>
+                    </Descriptions>
                   </Col>
                 </Row>
                 <br />
                 <Row>
                   <Col style={{ width: '100%' }}>
-                    <Form.Item label={<strong style={{ fontSize: 14 }}>Specimen Collection Method</strong>} name="sample_collection_method" rules={[{ required: true }]}>
+                    <Form.Item label={<strong style={{ fontSize: 14 }}>Result</strong>} name="result" rules={[{ required: true }]}>
                       <Select
                         showSearch
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        {this.state.resultsModalValues.sample_collection_methods.map(function (item) {
+                        {this.state.resultsModalValues.result_types.map(function (item) {
                           return (
                             <Option key={item.id} value={item.id}>
-                              {item.name} ({item.code})
+                              {item.name} ({item.snomed})
                             </Option>
                           );
                         })}
                       </Select>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col style={{ width: '100%' }}>
-                    <Form.Item label={<strong style={{ fontSize: 14 }}>Result</strong>} name="result" rules={[{ required: true }]}>
-                      <Radio.Group buttonStyle="solid">
-                        <Radio.Button value="positive">Positive</Radio.Button>
-                        <Radio.Button value="negative">Negative</Radio.Button>
-                      </Radio.Group>
                     </Form.Item>
                   </Col>
                 </Row>

@@ -30,7 +30,8 @@ class AddPatient extends React.Component {
 		transactionId: null,
 		patient: {},
 		pricingArray: [],
-		formdata: []
+		formdata: [],
+		labAssigned: 0
 	};
 
 	async componentDidMount() {
@@ -48,6 +49,10 @@ class AddPatient extends React.Component {
 	}
 
 	handleSubmit = async (data) => {
+		if (this.state.labAssigned <= 0) {
+      message.error("Please choose a lab.");
+      return false;
+    }
 		/* if (this.state.pricingId <= 0) {
 			message.error("Please choose a pricing.");
 			return false;
@@ -56,7 +61,7 @@ class AddPatient extends React.Component {
 			message.error("Payment transaction ID not found. Please make sure patient has made a payment.");
 			return false;
 		} */
-		var lab = JSON.parse(localStorage.getItem("lab"));
+		
 		var args = {
 			city: data.city,
 			country: data.country,
@@ -77,7 +82,7 @@ class AddPatient extends React.Component {
 			identifier_country: data.identifier_country,
 			identifier_doc: "",
 			identifier_type: data.identifier_type,
-			lab_assigned: lab.id,
+			lab_assigned: this.state.labAssigned,
 			lastname: data.lastname,
 			middlename: data.middlename,
 			phone: data.phone,
@@ -88,8 +93,9 @@ class AddPatient extends React.Component {
 			street: data.street,
 			test_type: data.test_type,
 			zip: data.zip,
-			pricing_id: 3,//this.state.pricingId,
-			transaction_id: UserService.getRandomString(24, "stripe"), //this.state.transactionId,
+			pricing_id: data.pricing_id,
+			transaction_id: data.transaction_id,
+			payment_provider: data.payment_provider,
 			confirmation_code: UserService.getRandomString(24, data.email)
 		};
 		if (typeof data.identifier_doc !== "undefined" && typeof data.identifier_doc.file !== "undefined" && data.identifier_doc.file !== null && typeof data.identifier_doc.file !== "string" && data.identifier_doc.file.name) {
@@ -106,7 +112,7 @@ class AddPatient extends React.Component {
 			if (response.status && response.status === true) {
 				notifyUser(response.message, "success");
 				this.setState({ loading: false });
-				this.props.history.goBack();
+				this.props.history.push("../all-patients");
 			} else {
 				if (response.message) {
 					notifyUser(response.message, "error");
@@ -180,8 +186,8 @@ class AddPatient extends React.Component {
 						<HomeAddressInfo countries={this.state.countries} />
 						<SymptomsInfo data={[]} />
 						<Identification removeIdentifierDocInline={() => { }} identifier_doc={this.state.identifierDoc} countries={this.state.countries} setIdentifierDocUpload={() => { }} />
-						<TestType data={this.state.patient} changeFormFieldValue={this.onChangeFormFieldValue} setPricingId={this.setPricingId} setPricingArray={this.setPricingArray} setLoading={this.setLoading} />
-						{/* <PaymentInfo paymentDone={false} data={this.state.formdata} setTransactionId={this.setTransactionId} pricingId={this.state.pricingId} pricingArray={this.state.pricingArray} onSubmit={this.handleSubmit} setLoading={this.setLoading}/> */}
+						<TestType data={this.state.patient} changeFormFieldValue={this.onChangeFormFieldValue} setPricingId={this.setPricingId} setPricingArray={this.setPricingArray} setLoading={this.setLoading} setLabAssigned={(lab_id) => this.setState({labAssigned: lab_id })}/>
+						<PaymentInfo paymentDone={false} data={this.state.formdata} setTransactionId={this.setTransactionId} pricingId={this.state.pricingId} pricingArray={this.state.pricingArray} onSubmit={this.handleSubmit} setLoading={this.setLoading}/>
 						{/* <Row>
 							<Col>
 								<Form.Item>

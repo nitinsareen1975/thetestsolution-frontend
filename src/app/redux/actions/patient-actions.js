@@ -65,3 +65,9 @@ export function savePatientResults(patientId, data) {
     return await API.savePatientResults(patientId, data);
   };
 }
+
+export function getTestTypeMethodsForPatient(patientId) {
+  return async function (dispatch, getState) {
+    return await API.getTestTypeMethodsForPatient(patientId);
+  };
+}

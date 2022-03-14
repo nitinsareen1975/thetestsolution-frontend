@@ -9,6 +9,7 @@ import AddPatient  from "../components/lab-admin/manage-patients/add.jsx";
 import EditPatient  from "../components/lab-admin/manage-patients/edit.jsx";
 import CheckInList  from "../components/lab-admin/manage-patients/checkedin.jsx";
 import PendingResults  from "../components/lab-admin/manage-patients/pending-results.jsx";
+import CompletedResults  from "../components/lab-admin/manage-patients/completed.jsx";
 import MyAccount from "../components/my-account/profile.jsx";
 import ChangePassword from "../components/my-account/change-password.jsx";
 import LabSettings from "../components/lab-admin/settings/settings.jsx";
@@ -50,6 +51,10 @@ const routes = [
   {
     path: "patients/pending-results",
     component: PendingResults
+  },
+  {
+    path: "patients/completed",
+    component: CompletedResults
   },
   {
     path: "account",

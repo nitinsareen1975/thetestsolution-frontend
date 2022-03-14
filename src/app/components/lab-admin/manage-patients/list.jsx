@@ -84,13 +84,24 @@ class AllPatients extends Component {
         title: "Scheduled Date/Time",
         dataIndex: "scheduled_date",
         render: (_text, row) => (
-          <span>{row.scheduled_date}<br></br>{moment(row.scheduled_time).format("hh:mm a")}</span>
+          <span>{moment(row.scheduled_date).format("MM/DD/YYYY")}<br></br>{moment(row.scheduled_time).format("hh:mm a")}</span>
         )
       },
       {
+        title: "Test Selected",
+        dataIndex: "test_type_name"
+      },
+      {
+        title: "Test Price",
+        dataIndex: "retail_price",
+        render: (_text, row) => (
+          <span>{row.currency+""+row.retail_price}</span>
+        )
+      },
+      /* {
         title: "Confirmation Code",
         dataIndex: "confirmation_code"
-      },
+      }, */
       {
         title: "Actions",
         rowKey: "action",

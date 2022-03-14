@@ -45,6 +45,12 @@ const getPatientReport = (data) => {
 const getPatientReportPDF = (data) => {
   return Axios.post("/global/get-patient-report-pdf", data, undefined);
 };
+const getTestTypeMethodsForPatient = (patientId) => {
+  return Axios.get("/api/test-type-methods-for-patient/"+patientId, undefined, undefined);
+};
+const getPaymentMethods = (data) => {
+  return Axios.get("/api/payment-methods", data, undefined);
+};
 export default {
   getPatients,
   addPatient,
@@ -60,5 +66,7 @@ export default {
   getCompletedPatients,
   validateDOB,
   getPatientReport,
-  getPatientReportPDF
+  getPatientReportPDF,
+  getTestTypeMethodsForPatient,
+  getPaymentMethods
 };

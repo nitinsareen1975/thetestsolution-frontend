@@ -89,7 +89,7 @@ class AllPatients extends Component {
         title: "Scheduled Date/Time",
         dataIndex: "scheduled_date",
         render: (_text, row) => (
-          <span>{row.scheduled_date}<br></br>{moment(row.scheduled_time).format("hh:mm a")}</span>
+          <span>{moment(row.scheduled_date).format("MM/DD/YYYY")}<br></br>{moment(row.scheduled_time).format("hh:mm a")}</span>
         )
       },
       {

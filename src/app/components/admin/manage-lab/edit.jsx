@@ -62,12 +62,10 @@ class EditLab extends React.Component {
       lab.data.tests_available = lab.data.tests_available.split(",");
     }
     var _testTypes = await this.props.getTestTypes({});
-    var _pricing = await this.props.getLabPricing(this.props.match.params.id);
     this.setState({
       loading: false,
       countries: _countries,
       lab: lab.data,
-      lab_pricing: _pricing.status === true ? _pricing.data : [],
       testTypes: _testTypes.data,
       logo: (lab.data.logo && lab.data.logo != null) ? Config.DASHBOARD_URL + lab.data.logo : this.state.logo,
       location: {
@@ -114,17 +112,6 @@ class EditLab extends React.Component {
     }
     await this.props.updateLab(this.props.match.params.id, args).then(async (response) => {
       if (response.status && response.status === true) {
-        if (data.lab_pricing && data.lab_pricing.length > 0) {
-          await this.props.updateLabPricing(this.props.match.params.id, { pricing: data.lab_pricing }).then(res => {
-            if (!res.status || res.status === false) {
-              if (res.message) {
-                notifyUser(res.message, "error");
-              } else {
-                notifyUser("Pricing was not updated!", "error");
-              }
-            }
-          });
-        }
         notifyUser(response.message, "success");
         this.props.history.push("../../labs");
         this.setState({ loading: false });
@@ -177,10 +164,6 @@ class EditLab extends React.Component {
     });
   }
 
-  onValuesChange = (changedFields, allFields) => {
-    this.setState({ lab_pricing: allFields.lab_pricing })
-  }
-
   setLatLong = (cords, locationObj) => {
     var _cords = this.state.location;
     if (cords && cords !== null && cords !== undefined) {
@@ -203,10 +186,6 @@ class EditLab extends React.Component {
 
   render() {
     const { formLayout } = this.state;
-    var lab_pricing = this.state.lab_pricing;
-    if (lab_pricing.length > 0 && typeof lab_pricing[0] === "undefined") {
-      lab_pricing = [];
-    }
     const formItemLayout =
       formLayout === "horizontal"
         ? {
@@ -371,7 +350,7 @@ class EditLab extends React.Component {
                       label="Onboarding Date"
                       name="date_incorporated"
                     >
-                      <DatePicker />
+                      <DatePicker format={"MM/DD/YYYY"} />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -510,101 +489,7 @@ class EditLab extends React.Component {
                     </Form.Item>
                   </Col>
                 </Row>
-                <Row gutter={24}>
-                  <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                    <Typography.Title level={4}>Add Price & Test Type</Typography.Title>
-                  </Col>
-                </Row>
-                <hr />
-                <Row>
-                  <Col>
-                    <Form.List name="lab_pricing" initialValue={lab_pricing}>
-                      {(fields, { add, remove }) => (
-                        <>
-                          {fields.map(({ key, name, ...restField }) => (
-                            <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-
-
-                              <Form.Item
-                                {...restField}
-                                name={[name, 'test_type']}
-                                style={{ width: 180 }}
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: <IntlMessages id="admin.input.required" />,
-                                  },
-                                ]}
-                              >
-                                <Select placeholder="Type Of Test">
-                                  {this.state.testTypes.map(test => {
-                                    var optDisabled = false;
-                                    /* if (lab_pricing.length > 0) {
-                                      lab_pricing.map(i => {
-                                        if (typeof i !== "undefined" && typeof i.test_type !== "undefined" && i.test_type == test.id.toString()) {
-                                          optDisabled = true;
-                                        }
-                                      });
-                                    } */
-                                    return <Option key={test.id} value={test.id} disabled={optDisabled}>{test.name}</Option>
-                                  })}
-                                </Select>
-                              </Form.Item>
-
-                              <Form.Item
-                                {...restField}
-                                name={[name, 'price']}
-                                style={{ width: 100 }}
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: <IntlMessages id="admin.input.required" />,
-                                  }
-                                ]}
-                              >
-                                <Input
-                                  style={{ width: "100%" }}
-                                  placeholder="Price per test"
-                                />
-                              </Form.Item>
-
-                              <Form.Item
-                                {...restField}
-                                name={[name, 'test_label']}
-                                style={{ width: 200 }}
-                              >
-                                <Input placeholder="Test Label" />
-                              </Form.Item>
-
-                              <Form.Item
-                                {...restField}
-                                name={[name, 'test_duration']}
-                                style={{ width: 200 }}
-                              >
-                                <Input placeholder="Test Duration (e.g. 1 Hours, 30 Minutes)" />
-                              </Form.Item>
-
-                              <Form.Item
-                                {...restField}
-                                name={[name, 'test_codes']}
-                                style={{ width: 200 }}
-                              >
-                                <Input placeholder="Test Code" />
-                              </Form.Item>
-
-                              <MinusCircleOutlined onClick={() => remove(name)} />
-                            </Space>
-                          ))}
-                          <Form.Item>
-                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                              Add Pricing
-                            </Button>
-                          </Form.Item>
-                        </>
-                      )}
-                    </Form.List>
-                  </Col>
-                </Row>
+                
                 <Row gutter={24}>
                   <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                     <Typography.Title level={4}>Location</Typography.Title>

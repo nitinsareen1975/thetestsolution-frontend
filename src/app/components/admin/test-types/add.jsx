@@ -19,7 +19,7 @@ import {
   Select
 } from "antd";
 import IntlMessages from "../../../services/intlMesseges";
-import { ArrowLeftOutlined, PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, PlusOutlined, LinkOutlined } from "@ant-design/icons";
 const { Option } = Select;
 class AddTestType extends React.Component {
   formRef = React.createRef();
@@ -27,12 +27,17 @@ class AddTestType extends React.Component {
     loading: true,
     dataLoaded: false,
     test_type: {},
-    test_type_methods: []
+    test_type_methods: [],
+    test_type_names: []
   };
 
   async componentDidMount() {
+    var test_type_methods = await this.props.getTestTypeMethods();
+    var test_type_names = await this.props.getTestTypeNames({});
     this.setState({
       loading: false,
+      test_type_methods: test_type_methods.data,
+      test_type_names: test_type_names.data,
       dataLoaded: true
     });
   }
@@ -41,17 +46,6 @@ class AddTestType extends React.Component {
     this.setState({ loading: true });
     this.props.addTestType(data).then(async (response) => {
       if (response.status && response.status === true) {
-        if (data.test_type_methods && data.test_type_methods.length > 0) {
-          await this.props.updateTestTypeMethods(response.data.id, { methods: data.test_type_methods }).then(res => {
-            if (!res.status || res.status === false) {
-              if (res.message) {
-                notifyUser(res.message, "error");
-              } else {
-                notifyUser("Observation definition was not updated!", "error");
-              }
-            }
-          });
-        }
         notifyUser(response.message, "success");
         this.props.history.push("../test-types");
         this.setState({ loading: false });
@@ -69,10 +63,6 @@ class AddTestType extends React.Component {
       });
   };
 
-  onValuesChange = (changedFields, allFields) => {
-    this.setState({ test_type_methods: allFields.test_type_methods })
-  }
-
   render() {
     const { formLayout } = this.state;
     const formItemLayout =
@@ -82,15 +72,12 @@ class AddTestType extends React.Component {
           wrapperCol: { span: 14 },
         }
         : null;
-    var test_type_methods = this.state.test_type_methods;
-    if (test_type_methods.length > 0 && typeof test_type_methods[0] === "undefined") {
-      test_type_methods = [];
-    }
+
     return (
       <div>
         <Row gutter={24}>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <Typography.Title level={4}>Add Test Type</Typography.Title>
+            <Typography.Title level={4}>Add Test</Typography.Title>
           </Col>
 
           <Col
@@ -121,7 +108,7 @@ class AddTestType extends React.Component {
                   <Form.Item
                     {...formItemLayout}
                     name="name"
-                    label="Test Type Name"
+                    label="TestName"
                     rules={[
                       {
                         whitespace: true,
@@ -134,6 +121,31 @@ class AddTestType extends React.Component {
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="test_type"
+                    label="Type"
+                    rules={[
+                      {
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      }
+                    ]}
+                  >
+                    <Select
+                      style={{ width: "100%" }}
+                    >
+                      {this.state.test_type_names.map(function (item) {
+                        return (
+                          <Option key={item.id.toString()} value={item.id.toString()}>
+                            {item.name}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                {/* <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
                     name="test_procedure"
@@ -162,8 +174,8 @@ class AddTestType extends React.Component {
                   >
                     <Input />
                   </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                </Col> */}
+                {/* <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
                     name="testing_platform"
@@ -178,8 +190,6 @@ class AddTestType extends React.Component {
                     <Input />
                   </Form.Item>
                 </Col>
-              </Row>
-              <Row gutter={24}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -209,82 +219,7 @@ class AddTestType extends React.Component {
                   >
                     <Input />
                   </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="loinc"
-                    label="LOINC"
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="test_type"
-                    label="Test Type"
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={24}>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="fi_test_name"
-                    label="FI Test Name"
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="fi_test_type"
-                    label="FI Test Type"
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="fi_model"
-                    label="FI Model or Component"
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="estimated_hours"
-                    label="Estimated Time "
-                    style={{ float: 'left', marginRight: "5px" }}
-                  >
-                    <InputNumber min={0} defaultValue="00" max={59} style={{ width: 60 }} />
-                  </Form.Item>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="estimated_minutes"
-                    label=" (HH:MM:SS)"
-                    style={{ float: 'left', width: 95 }}
-                  >
-                    <InputNumber min={0} defaultValue="00" max={59} style={{ width: 60 }} />
-                  </Form.Item>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="estimated_seconds"
-                    label=" "
-                    style={{ float: 'left' }}
-                  >
-                    <InputNumber min={0} defaultValue="00" max={59} style={{ width: 60 }} />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={24}>
+                </Col> */}
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -311,6 +246,82 @@ class AddTestType extends React.Component {
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
+                    name="loinc"
+                    label="LOINC"
+                    rules={[
+                      {
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      }
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="fi_test_name"
+                    label="FI Test Name"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="fi_test_type"
+                    label="FI Test Type"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="fi_model"
+                    label="FI Model or Component"
+                    rules={[
+                      {
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      }
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                {/* <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="estimated_hours"
+                    label="Estimated Time "
+                    style={{ float: 'left', marginRight: "5px" }}
+                  >
+                    <InputNumber min={0} defaultValue="00" max={59} style={{ width: 60 }} />
+                  </Form.Item>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="estimated_minutes"
+                    label=" (HH:MM:SS)"
+                    style={{ float: 'left', width: 95 }}
+                  >
+                    <InputNumber min={0} defaultValue="00" max={59} style={{ width: 60 }} />
+                  </Form.Item>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="estimated_seconds"
+                    label=" "
+                    style={{ float: 'left' }}
+                  >
+                    <InputNumber min={0} defaultValue="00" max={59} style={{ width: 60 }} />
+                  </Form.Item>
+                </Col> */}
+
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
                     label="Units"
                     name="units"
                   >
@@ -331,8 +342,7 @@ class AddTestType extends React.Component {
                     </Select>
                   </Form.Item>
                 </Col>
-              </Row>
-              <Row gutter={24}>
+
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -369,8 +379,7 @@ class AddTestType extends React.Component {
                     <Input />
                   </Form.Item>
                 </Col>
-              </Row>
-              <Row gutter={24}>
+
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -392,8 +401,8 @@ class AddTestType extends React.Component {
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
-                    label="Status"
-                    name="status"
+                    label="Is rapid test?"
+                    name="is_rapid_test"
                   >
                     <Switch
                       checkedChildren={"Active"}
@@ -402,62 +411,59 @@ class AddTestType extends React.Component {
                     />
                   </Form.Item>
                 </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="Status"
+                    name="status"
+                  >
+                    <Switch
+                      checkedChildren={"Active"}
+                      unCheckedChildren={"Inactive"}
+                    />
+                  </Form.Item>
+                </Col>
               </Row>
               <Row gutter={24}>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                  <Typography.Title level={4}>Observation Definitions</Typography.Title>
+                  <Typography.Title level={4}>
+                    Observation Definitions
+                    <Button type="link" onClick={() => this.props.history.push("../test-type-methods")} icon={<LinkOutlined />}>Manage Definitions</Button>
+                  </Typography.Title>
                 </Col>
               </Row>
               <hr />
               <Row>
-                <Col>
-                  <Form.List name="test_type_methods" initialValue={test_type_methods}>
-                    {(fields, { add, remove }) => (
-                      <>
-                        {fields.map(({ key, name, ...restField }) => (
-                          <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-
-                            <Form.Item
-                              {...restField}
-                              name={[name, 'name']}
-                              style={{ width: 300 }}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: <IntlMessages id="admin.input.required" />,
-                                }
-                              ]}
-                            >
-                              <Input
-                                style={{ width: "100%" }}
-                                placeholder="Display Name"
-                              />
-                            </Form.Item>
-                            <Form.Item
-                              {...restField}
-                              name={[name, 'code']}
-                              style={{ width: 300 }}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: <IntlMessages id="admin.input.required" />,
-                                }
-                              ]}
-                            >
-                              <Input placeholder="Code" />
-                            </Form.Item>
-
-                            <MinusCircleOutlined onClick={() => remove(name)} />
-                          </Space>
-                        ))}
-                        <Form.Item>
-                          <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                            Add Definition
-                          </Button>
-                        </Form.Item>
-                      </>
-                    )}
-                  </Form.List>
+                <Col xs={24}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="Specimen Collection Methods"
+                    name="observation_methods"
+                    rules={[
+                      {
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      }
+                    ]}
+                  >
+                    <Select
+                      mode="multiple"
+                      showSearch
+                      size="large"
+                      filterOption={(input, option) =>
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
+                      style={{ width: "100%" }}
+                    >
+                      {this.state.test_type_methods.map(function (item) {
+                        return (
+                          <Option key={item.id} value={item.id}>
+                            {item.name} ({item.code})
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </Form.Item>
                 </Col>
               </Row>
               <Row>
