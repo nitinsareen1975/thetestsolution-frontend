@@ -254,7 +254,7 @@ class AddLab extends React.Component {
                   <Form.Item
                     {...formItemLayout}
                     name="concerned_person_name"
-                    label="Concerned Person Name"
+                    label="Medical/Laboratory Director"
                     rules={[
                       {
                         whitespace: true,
@@ -266,9 +266,23 @@ class AddLab extends React.Component {
                     <Input />
                   </Form.Item>
                 </Col>
-              </Row>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="npi"
+                    label="NPI"
+                    rules={[
+                      {
+                        whitespace: true,
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      }
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col> 
 
-              <Row gutter={24}>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -318,11 +332,9 @@ class AddLab extends React.Component {
                     label="Onboarding Date"
                     name="date_incorporated"
                   >
-                    <DatePicker format={"MM/DD/YYYY"}/>
+                    <DatePicker format={"MM/DD/YYYY"} />
                   </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={24}>
+                </Col> 
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -368,9 +380,7 @@ class AddLab extends React.Component {
                       unCheckedChildren={"No"}
                     />
                   </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={24}>
+                </Col> 
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -406,9 +416,7 @@ class AddLab extends React.Component {
                   >
                     <Input />
                   </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={24}>
+                </Col> 
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -423,7 +431,7 @@ class AddLab extends React.Component {
                     >
                       {this.state.countries.map(function (item) {
                         return (
-                          <Option key={item.id} value={item.id}>
+                          <Option key={item.id.toString()} value={item.id.toString()}>
                             {item.name}
                           </Option>
                         );

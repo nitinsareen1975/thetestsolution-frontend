@@ -7,8 +7,10 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
 } from '@ant-design/icons';
+import Config from "../../../../config";
 const AdminHeader = ({ ...props }) => {
   var user = JSON.parse(localStorage.getItem("user"));
+  var CanEditSettings = (Config.LabAdminRoles.indexOf(user.roles) > -1) ? true : false;
   const menu = (
     <Menu>
       <Menu.Item key="lab-account" icon={<SettingOutlined />}>
@@ -16,11 +18,11 @@ const AdminHeader = ({ ...props }) => {
           My Account
         </a>
       </Menu.Item>
-      <Menu.Item key="lab-settings" icon={<ToolOutlined />}>
+      {CanEditSettings ? (<Menu.Item key="lab-settings" icon={<ToolOutlined />}>
         <a onClick={() => props.history.push("/lab/settings")}>
           Lab Settings
         </a>
-      </Menu.Item>
+      </Menu.Item>) : "" }
       <Menu.Item key="lab-account-changepassword" icon={<UnlockOutlined />}>
         <a onClick={() => props.history.push("/lab/account/change-password")}>
           Change Password

@@ -102,7 +102,7 @@ class CheckedinList extends Component {
         title: "Test Price",
         dataIndex: "retail_price",
         render: (_text, row) => (
-          <span>{row.currency+""+row.retail_price}</span>
+          <span>{row.is_lab_collected == 1 ? "Lab Collected" : row.currency+""+row.retail_price}</span>
         )
       },
       {

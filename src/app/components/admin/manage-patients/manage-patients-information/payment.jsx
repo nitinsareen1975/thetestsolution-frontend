@@ -121,8 +121,8 @@ const output = ({ ...props }) => {
 											} else {
 												return <Radio.Button key={price.id} value={price.id}>
 													<div className="radio-test-price">
-														<div className="pricing-title">&nbsp;</div>
-														<div className="pricing-amount" style={{ fontSize: 30 }}>
+														<div className="pricing-title" style={{ height: 15 }}>&nbsp;</div>
+														<div className="pricing-amount" style={{ fontSize: 24 }}>
 															{price.name}
 														</div>
 														<div className="pricing-results">Results in {price.test_duration}</div>
@@ -135,7 +135,7 @@ const output = ({ ...props }) => {
 								: <Alert message="Pricing not setup, please contact support." type="error" />}
 						</Col>
 					</Row>
-					<Row gutter={15}>
+					{/* <Row gutter={15}>
 						<Col xs={24} md={6}>
 							<Form.Item name="payment_provider" label="Payment Provider Name" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
 								<Input placeholder="For example: Stripe, Paypal etc." disabled />
@@ -165,7 +165,7 @@ const output = ({ ...props }) => {
 								</Form.Item>
 							</Col>
 						}
-					</Row>
+					</Row> */}
 				</>
 			)
 			:
@@ -193,8 +193,8 @@ const output = ({ ...props }) => {
 													} else {
 														return <Radio.Button key={price.id} value={price.id}>
 															<div className="radio-test-price">
-																<div className="pricing-title">&nbsp;</div>
-																<div className="pricing-amount" style={{ fontSize: 30 }}>
+																<div className="pricing-title" style={{ height: 15 }}>&nbsp;</div>
+																<div className="pricing-amount" style={{ fontSize: 24 }}>
 																	{price.name}
 																</div>
 																<div className="pricing-results">Results in {price.test_duration}</div>
@@ -207,7 +207,7 @@ const output = ({ ...props }) => {
 										: <Alert message="Pricing not setup, please contact support." type="error" />}
 								</Col>
 							</Row>
-							<Row gutter={15}>
+							{/* <Row gutter={15}>
 								<Col xs={24} md={6}>
 									<Form.Item name="payment_provider" label="Payment Provider Name" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
 										<Select
@@ -228,7 +228,7 @@ const output = ({ ...props }) => {
 										<Input placeholder="Transaction ID generated after payment" />
 									</Form.Item>
 								</Col>
-							</Row>
+							</Row> */}
 						</>
 						: ""
 					}

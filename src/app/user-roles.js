@@ -2,20 +2,21 @@ export default{
     userRoles: {
         'Administrator':{
             url:"/admin",
-    
+        },
+        'Lab Admin':{
+            url: "/lab",
         },
         'Doctor':{
             url:"/lab",
-    
         },
         'Nurse':{
-            url:"/user",
+            url:"/lab",
         },
         'Medical Assistant':{
-            url:"/user",
+            url:"/lab",
         },
         'Clerk':{
-            url:"/user",
+            url:"/lab",
         },
         'Patient':{
             url:"/user",
@@ -24,20 +25,21 @@ export default{
     types: {
         'Administrator':{
             url:"/admin",
-    
+        },
+        'Lab Admin':{
+            url: "/lab",
         },
         'Doctor':{
             url:"/lab",
-    
         },
         'Nurse':{
-            url:"/user",
+            url:"/lab",
         },
         'Medical Assistant':{
-            url:"/user",
+            url:"/lab",
         },
         'Clerk':{
-            url:"/user",
+            url:"/lab",
         },
         'Patient':{
             url:"/user",

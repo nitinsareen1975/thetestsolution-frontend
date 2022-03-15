@@ -280,7 +280,7 @@ class LabSettings extends React.Component {
                       <Input />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  {/* <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
                       name="concerned_person_name"
@@ -295,10 +295,8 @@ class LabSettings extends React.Component {
                     >
                       <Input />
                     </Form.Item>
-                  </Col>
-                </Row>
-
-                <Row gutter={24}>
+                  </Col> */}
+                  
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -357,8 +355,7 @@ class LabSettings extends React.Component {
                       <DatePicker />
                     </Form.Item>
                   </Col>
-                </Row>
-                <Row gutter={24}>
+                  
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -407,8 +404,7 @@ class LabSettings extends React.Component {
                       />
                     </Form.Item>
                   </Col>
-                </Row>
-                <Row gutter={24}>
+                  
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -445,8 +441,7 @@ class LabSettings extends React.Component {
                       <Input />
                     </Form.Item>
                   </Col>
-                </Row>
-                <Row gutter={24}>
+                  
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -461,7 +456,7 @@ class LabSettings extends React.Component {
                       >
                         {this.state.countries.map(function (item) {
                           return (
-                            <Option key={item.id} value={item.id}>
+                            <Option key={item.id.toString()} value={item.id.toString()}>
                               {item.name}
                             </Option>
                           );
@@ -492,8 +487,7 @@ class LabSettings extends React.Component {
                       />
                     </Form.Item>
                   </Col>
-                </Row>
-                <Row gutter={24}>
+                  
                   <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                     <Typography.Title level={4}>Location</Typography.Title>
                   </Col>

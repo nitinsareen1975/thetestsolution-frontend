@@ -74,7 +74,7 @@ export default {
       path: "/lab",
       component: LabAdmin,
       exact: false,
-      roles: ["Lab Admin", "Doctor"],
+      roles: ["Lab Admin", "Doctor", "Nurse", "Medical Assistant", "Clerk"],
       status: 200
     }
   ],

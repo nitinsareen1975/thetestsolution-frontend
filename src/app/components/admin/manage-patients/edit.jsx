@@ -106,8 +106,9 @@ class EditPatient extends React.Component {
       test_type: data.test_type,
       pricing_id: this.state.pricingId,
       zip: data.zip,
-      transaction_id: data.transaction_id ? data.transaction_id : UserService.getRandomString(24, data.email),
-      confirmation_code: data.confirmation_code
+      transaction_id: data.transaction_id ? data.transaction_id : this.state.patient.transaction_id,
+      confirmation_code: data.confirmation_code,
+      is_lab_collected: this.state.patient.is_lab_collected
     };
     if (typeof this.state.identifierDocUpload !== "undefined" && this.state.identifierDocUpload !== null && typeof this.state.identifierDocUpload !== "string" && this.state.identifierDocUpload.name) {
       const formData = new FormData();

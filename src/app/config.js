@@ -8,5 +8,7 @@ module.exports = {
   StripeAPIKey: AppConfig && AppConfig.StripeAPIKey ? AppConfig.StripeAPIKey : "",
   StripeSecretKey: AppConfig && AppConfig.StripeSecretKey ? AppConfig.StripeSecretKey : "",
   StripeAccountId: AppConfig && AppConfig.StripeAccountId ? AppConfig.StripeAccountId : "",
-  AllowedAPIHosts: AppConfig && AppConfig.AllowedAPIHosts ? AppConfig.AllowedAPIHosts : ""
+  AllowedAPIHosts: AppConfig && AppConfig.AllowedAPIHosts ? AppConfig.AllowedAPIHosts : "",
+  AdminRoles: AppConfig && AppConfig.AdminRoles ? AppConfig.AdminRoles : ["Administrator"],
+  LabAdminRoles: AppConfig && AppConfig.LabAdminRoles ? AppConfig.LabAdminRoles : ["Lab Admin"]
 };

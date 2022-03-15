@@ -163,34 +163,34 @@ const adminOptions = [{
 const labAdminOptions = [{
     key: "/lab",
     label: "Dashboard",
-    roles: ["Doctor"],
+    roles: ["Lab Admin", "Doctor", "Nurse", "Medical Assistant", "Clerk"],
     leftIcon: <DashboardOutlined />
   },
   {
     key: "/lab/patients",
     label: "Manage Patients",
     leftIcon: <AimOutlined />,
-    roles: ["Doctor"],
+    roles: ["Lab Admin", "Doctor", "Nurse", "Medical Assistant", "Clerk"],
     children: [
       {
         key: "/lab/patients",
         label: "Scheduled List",
-        roles: ["Doctor"]
+        roles: ["Lab Admin", "Doctor", "Nurse", "Medical Assistant", "Clerk"]
       },
       {
         key: "/lab/patients/checkedin",
         label: "CheckedIn List",
-        roles: ["Doctor"]
+        roles: ["Lab Admin", "Doctor", "Nurse", "Medical Assistant", "Clerk"]
       },
       {
         key: "/lab/patients/pending-results",
         label: "Pending Results",
-        roles: ["Doctor"]
+        roles: ["Lab Admin", "Doctor", "Nurse", "Medical Assistant", "Clerk"]
       },
       {
         key: "/lab/patients/completed",
         label: "Completed",
-        roles: ["Doctor"]
+        roles: ["Lab Admin", "Doctor", "Nurse", "Medical Assistant", "Clerk"]
       },
       {
         key: "--hr--"
@@ -198,7 +198,7 @@ const labAdminOptions = [{
       {
         key: "/lab/patients/add",
         label: "Create New Patient",
-        roles: ["Doctor"]
+        roles: ["Lab Admin", "Doctor", "Nurse", "Medical Assistant", "Clerk"]
       }
     ]
   },
@@ -206,17 +206,17 @@ const labAdminOptions = [{
     key: "/lab/users",
     label: "Manage Users",
     leftIcon: <UserOutlined />,
-    roles: ["Doctor"],
+    roles: ["Lab Admin"],
     children: [
       {
         key: "/lab/users",
         label: "Manage Users",
-        roles: ["Doctor"]
+        roles: ["Lab Admin"]
       },
       {
         key: "/lab/users/add",
         label: "Add new user",
-        roles: ["Doctor"]
+        roles: ["Lab Admin"]
       }
     ]
   },
@@ -224,17 +224,12 @@ const labAdminOptions = [{
     key: "/lab/reports",
     label: "Reports",
     leftIcon: <FileSearchOutlined />,
-    roles: ["Doctor"],
+    roles: ["Lab Admin", "Doctor", "Nurse", "Medical Assistant", "Clerk"],
     children: [
-      /* {
-        key: "/lab/reports/test-results",
-        label: "Completed Results",
-        roles: ["Doctor"]
-      }, */
       {
         key: "/lab/reports/all",
         label: "All Reports",
-        roles: ["Doctor"]
+        roles: ["Lab Admin", "Doctor", "Nurse", "Medical Assistant", "Clerk"]
       }
     ]
   }

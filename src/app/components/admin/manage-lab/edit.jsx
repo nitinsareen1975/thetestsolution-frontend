@@ -280,7 +280,7 @@ class EditLab extends React.Component {
                     <Form.Item
                       {...formItemLayout}
                       name="concerned_person_name"
-                      label="Concerned Person Name"
+                      label="Medical/Laboratory Director"
                       rules={[
                         {
                           whitespace: true,
@@ -292,9 +292,23 @@ class EditLab extends React.Component {
                       <Input />
                     </Form.Item>
                   </Col>
-                </Row>
-
-                <Row gutter={24}>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item
+                      {...formItemLayout}
+                      name="npi"
+                      label="NPI"
+                      rules={[
+                        {
+                          whitespace: true,
+                          required: true,
+                          message: <IntlMessages id="admin.input.required" />,
+                        }
+                      ]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -353,8 +367,7 @@ class EditLab extends React.Component {
                       <DatePicker format={"MM/DD/YYYY"} />
                     </Form.Item>
                   </Col>
-                </Row>
-                <Row gutter={24}>
+                  
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -403,8 +416,7 @@ class EditLab extends React.Component {
                       />
                     </Form.Item>
                   </Col>
-                </Row>
-                <Row gutter={24}>
+                  
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -441,8 +453,7 @@ class EditLab extends React.Component {
                       <Input />
                     </Form.Item>
                   </Col>
-                </Row>
-                <Row gutter={24}>
+                  
                   <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item
                       {...formItemLayout}
@@ -457,7 +468,7 @@ class EditLab extends React.Component {
                       >
                         {this.state.countries.map(function (item) {
                           return (
-                            <Option key={item.id} value={item.id}>
+                            <Option key={item.id.toString()} value={item.id.toString()}>
                               {item.name}
                             </Option>
                           );
