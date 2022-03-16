@@ -6,8 +6,8 @@ const uploadIdentifierDoc = (key, data) => {
 const resendConfirmationEmail = (code) => {
   return Axios.get("/global/resend-confirmation-email/"+code+"/", undefined, undefined);
 };
-const getDashboardStats = () => {
-  return Axios.get("/global/get-dashboard-stats", undefined, undefined);
+const getDashboardStats = (data) => {
+  return Axios.get("/global/get-dashboard-stats", data, undefined);
 };
 export default {
   uploadIdentifierDoc,

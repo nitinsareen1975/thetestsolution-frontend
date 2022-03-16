@@ -11,7 +11,8 @@ const AdminDashboard = ({ ...props }) => {
   const [totalAppointmentsPastWeek, setTotalAppointmentsPastWeek] = useState(0);
   useEffect(async () => {
     setSubmitted(true);
-    await GlobalAPI.getDashboardStats().then(resp => {
+    var lab = JSON.parse(localStorage.getItem("lab"));
+    await GlobalAPI.getDashboardStats({lab_id: lab.id }).then(resp => {
       if (resp.status && resp.status === true) {
         setStats(resp.data);
       } else {
@@ -191,6 +192,25 @@ const AdminDashboard = ({ ...props }) => {
       ),
     },
   ];
+  const SalesByTestTypesColumns = [
+    {
+      title: 'Sales by Test Type',
+      render: (_text, row) => <div>{row.test_type}</div>,
+      width: "50%"
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>This Week</div>,
+      render: (_text, row) => <div style={{ textAlign: "right" }}>${row.sales_this_week}</div>
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>This Month</div>,
+      render: (_text, row) => <div style={{ textAlign: "right" }}>${row.sales_this_month}</div>
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>This Year</div>,
+      render: (_text, row) => <div style={{ textAlign: "right" }}>${row.sales_this_year}</div>
+    }
+  ];
 
   return (
     <Spin spinning={submitted}>
@@ -316,10 +336,17 @@ const AdminDashboard = ({ ...props }) => {
           </Row>
           <Row gutter={24} style={{ marginBottom: "24px", }}>
             <Col xs={24} sm={24}>
-              <Card className="appointment-table" title="Latest Appointments" bordered={false}>
-                <Table pagination={false} columns={LatestAppointments} dataSource={stats.latest_appointments} />
+              <Card className="appointment-table" bordered={false} style={{ paddingBottom: 15 }}>
+                <Table pagination={false} columns={SalesByTestTypesColumns} dataSource={stats.sales_by_test_types} />
+              </Card>
+            </Col>
+          </Row>
+          <Row gutter={24} style={{ marginBottom: "24px", }}>
+            <Col xs={24} sm={24}>
+              <Card className="appointment-table" title="Scheduled/Upcoming Appointments" bordered={false}>
+                <Table pagination={false} columns={LatestAppointments} dataSource={stats.latest_appointments} size="small" />
                 <div style={{ textAlign: "right", marginTop: 15, marginBottom: 15 }}>
-                  <Button type="primary" onClick={() => props.history.push("./admin/all-patients", { progress_status: "1" })}>
+                  <Button type="primary" onClick={() => props.history.push("./lab/patients", { progress_status: "1" })}>
                     View All Appointments
                   </Button>
                 </div>

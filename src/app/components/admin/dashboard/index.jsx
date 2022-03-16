@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import { Pie, measureTextWidth, Column } from "@ant-design/plots";
-import { Card, Row, Col, Table, Space, Button, Tooltip, Spin } from "antd";
+import { Card, Row, Col, Table, Space, Button, Tooltip, Spin, List } from "antd";
 import { TeamOutlined, EyeOutlined, LinkOutlined, ExperimentOutlined, FieldTimeOutlined, CheckCircleOutlined, AimOutlined } from "@ant-design/icons";
 import GlobalAPI from "../../../redux/api/global-api";
 import moment from "moment";
@@ -13,7 +13,6 @@ const AdminDashboard = ({ ...props }) => {
     setSubmitted(true);
     await GlobalAPI.getDashboardStats().then(resp => {
       if (resp.status && resp.status === true) {
-        console.log("resp:", resp);
         setStats(resp.data);
       } else {
         if (resp.message) {
@@ -29,7 +28,7 @@ const AdminDashboard = ({ ...props }) => {
   }, []);
 
   const AppointmentsPast2Weeks = () => {
-    var startDate = moment().subtract(6, 'days');
+    var startDate = moment().subtract(13, 'days');
     var endDate = moment();
     var data = [];
     var now = startDate.clone();
@@ -75,7 +74,7 @@ const AdminDashboard = ({ ...props }) => {
         },
       },
     };
-    return <Column style={{ height: 340 }} {...config} />;
+    return <Column style={{ height: 315 }} {...config} />;
   };
   const TotalTestByTop5Labs = () => {
     function renderStatistic(containerWidth, text, style) {
@@ -185,12 +184,31 @@ const AdminDashboard = ({ ...props }) => {
         <Space size="middle">
           <Tooltip title="View Details">
             <Button onClick={() => window.open("./admin/patients/edit/" + record.id)} >
-              <LinkOutlined />
+              <EyeOutlined />
             </Button>
           </Tooltip>
         </Space>
       ),
     },
+  ];
+  const SalesByTestTypesColumns = [
+    {
+      title: 'Sales by Test Type',
+      render: (_text, row) => <div>{row.test_type}</div>,
+      width: "50%"
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>This Week</div>,
+      render: (_text, row) => <div style={{ textAlign: "right" }}>${row.sales_this_week}</div>
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>This Month</div>,
+      render: (_text, row) => <div style={{ textAlign: "right" }}>${row.sales_this_month}</div>
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>This Year</div>,
+      render: (_text, row) => <div style={{ textAlign: "right" }}>${row.sales_this_year}</div>
+    }
   ];
 
   return (
@@ -318,20 +336,53 @@ const AdminDashboard = ({ ...props }) => {
           </Row>
           <Row gutter={24} style={{ marginBottom: "24px", }}>
             <Col xs={16} sm={16}>
-              <Card title={<span>Appointments Past Week ({totalAppointmentsPastWeek})</span>} bordered={true}>
+              <Card title={<span>Appointments Past 2 Weeks ({totalAppointmentsPastWeek})</span>} bordered={true}>
                 <AppointmentsPast2Weeks />
               </Card>
             </Col>
-            <Col xs={8} sm={8}>
-              <Card title="Total Tests by Top 5 Labs" bordered={false}>
-                <TotalTestByTop5Labs />
+            <Col xs={8} sm={8} className="medium-padding">
+              <Card title="Total Orders" bordered={false}>
+                {/* <TotalTestByTop5Labs /> */}
+                <List 
+                  size="small"
+                  bordered={false}
+                  dataSource={stats.total_sales_data}
+                  renderItem={item => (
+                    <List.Item>
+                      <div style={{ float: "left" }}>{item.duration}</div>
+                      <div style={{ float: "right" }}><strong>{item.total_orders}</strong></div>
+                    </List.Item>
+                  )}
+                />
+              </Card>
+              <br />
+              <Card title="Total Sales" bordered={false}>
+                {/* <TotalTestByTop5Labs /> */}
+                <List 
+                  size="small"
+                  bordered={false}
+                  dataSource={stats.total_sales_data}
+                  renderItem={item => (
+                    <List.Item>
+                      <div style={{ float: "left" }}>{item.duration}</div>
+                      <div style={{ float: "right" }}><strong>${item.total_sales}</strong></div>
+                    </List.Item>
+                  )}
+                />
               </Card>
             </Col>
           </Row>
           <Row gutter={24} style={{ marginBottom: "24px", }}>
             <Col xs={24} sm={24}>
-              <Card className="appointment-table" title="Latest Appointments" bordered={false}>
-                <Table pagination={false} columns={LatestAppointments} dataSource={stats.latest_appointments} />
+              <Card className="appointment-table" bordered={false} style={{ paddingBottom: 15 }}>
+                <Table pagination={false} columns={SalesByTestTypesColumns} dataSource={stats.sales_by_test_types} />
+              </Card>
+            </Col>
+          </Row>
+          <Row gutter={24} style={{ marginBottom: "24px", }}>
+            <Col xs={24} sm={24}>
+              <Card className="appointment-table" title="Scheduled/Upcoming Appointments" bordered={false}>
+                <Table pagination={false} columns={LatestAppointments} dataSource={stats.latest_appointments} size="small" />
                 <div style={{ textAlign: "right", marginTop: 15, marginBottom: 15 }}>
                   <Button type="primary" onClick={() => props.history.push("./admin/all-patients", { progress_status: "1" })}>
                     View All Appointments
