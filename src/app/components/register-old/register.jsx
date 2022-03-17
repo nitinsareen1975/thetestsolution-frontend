@@ -25,14 +25,14 @@ class Register extends Component {
       current: 0,
       steps: [
         {
-          title: "Schedule Appointment",
-          icon: <ScheduleOutlined />,
-          content: Schedule,
-        },
-        {
-          title: "Contact Information",
+          title: "Information",
           icon: <InfoCircleOutlined />,
           content: PersonalInformation,
+        },
+        {
+          title: "Schedule",
+          icon: <ScheduleOutlined />,
+          content: Schedule,
         },
         {
           title: "Payment Details",
@@ -59,6 +59,7 @@ class Register extends Component {
 
   submitStep = (data) => {
     var mergedData = { ...data, ...this.state.data };
+    mergedData.lab_assigned = data.lab_assigned;
     this.setState({
       data: mergedData
     }, () => {
@@ -112,40 +113,20 @@ class Register extends Component {
         }
       });
     }
-    var self = this;
     this.setState({ submitted: true });
     await this.props.registerPatient(args).then((response) => {
-      if (response.status && response.status === true) {
-        notifyUser(response.message, "success");
-        this.setState({
-          data: { ...args, ...this.state.data },
-          submitted: false
-        }, () => {
-          var historyArgs = {
-            confirmation_code: self.state.data.confirmation_code,
-            lab_assigned: self.state.data.lab_assigned,
-            firstname: self.state.data.firstname,
-            lastname: self.state.data.lastname,
-            scheduled_time: self.state.data.scheduled_time,
-            scheduled_date: self.state.data.scheduled_date
-          }
-          var qstr = [];
-          for (var p in historyArgs){
-            if (historyArgs.hasOwnProperty(p)) {
-              qstr.push(encodeURIComponent(p) + "=" + encodeURIComponent(historyArgs[p]));
-            }
-          }
-          self.props.history.push("/thank-you?"+qstr.join("&"));
-        });
-      } else {
-        if (response.message) {
-          notifyUser(response.message, "error");
+        if (response.status && response.status === true) {
+          notifyUser(response.message, "success");
+          this.setState({ data: { ...args, ...this.state.data }, submitted: false, paymentDone: true });
         } else {
-          notifyUser("Unknown error. Please try again!", "error");
+          if (response.message) {
+            notifyUser(response.message, "error");
+          } else {
+            notifyUser("Unknown error. Please try again!", "error");
+          }
+          this.setState({ submitted: false });
         }
-        this.setState({ submitted: false });
-      }
-    })
+      })
       .catch((err) => {
         this.setState({ submitted: false });
       });
@@ -184,7 +165,7 @@ class Register extends Component {
                     <div className="form-column">
                       <div className="form-column-inner" style={{ maxWidth: '100%' }}>
                         {this.state.paymentDone === true ?
-                          <Success {...this.props} formdata={this.state.data} />
+                          <Success {...this.props} formdata={this.state.data}/>
                           : <>
                             <Steps current={current} className="form-type">
                               {steps.map(item => (

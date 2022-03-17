@@ -20,7 +20,7 @@ const output = ({ ...props }) => {
 
 	useEffect(async () => {
 		var args = {
-			filters: { is_walkin_price: 0 },
+			filters: {is_walkin_price:0},
 			pagination: {},
 			sorter: { column: "name", order: "asc" }
 		}
@@ -33,8 +33,8 @@ const output = ({ ...props }) => {
 		var url_string = window.location.href;
 		var url = new URL(url_string);
 		var urlpricing = url.searchParams.get("pricing");
-		if (urlpricing != null && urlpricing != "") {
-			formRef.current.setFieldsValue({ 'pricing_id': urlpricing });
+		if(urlpricing != null && urlpricing != ""){
+			formRef.current.setFieldsValue({'pricing_id': urlpricing });
 			setPricingId(urlpricing);
 		}
 	}, []);
@@ -133,49 +133,44 @@ const output = ({ ...props }) => {
 	return <div id="paymentForm">
 		<Spin spinning={false}>
 			<Form ref={formRef} layout="vertical" initialValues={props.data}>
-				<div className="form-column">
-					<div className="form-column-inner" style={{ maxWidth: '100%' }}>
-						<h2>Payment details</h2>
-						<hr className="title-hr" />
-						<Row gutter={15}>
+				<h2 className="form-section-title">Payment details</h2>
+				<Row gutter={15}>
+					<Col xs={24}>
+						{pricing.length > 0 ?
+							<Form.Item name="pricing_id" label="Select Pricing" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+								<Radio.Group className="radio-test-price-wrapper" value={pricingId} onChange={() => setPricingState()}>
+									{pricing.map(price => {
+										return <Radio.Button key={price.id.toString()} value={price.id.toString()}>
+											<div className="radio-test-price">
+												<div className="pricing-title">{price.name}</div>
+												<div className="pricing-amount">
+													<span className="pricing-amount-currency">$</span>
+													{price.retail_price}
+												</div>
+												<div className="pricing-results">Results in {price.test_duration}</div>
+											</div>
+										</Radio.Button>
+									})}
+								</Radio.Group>
+							</Form.Item>
+							: <Alert message="Pricing not setup, please contact support." type="error" />}
+					</Col>
+				</Row>
+				{pricing.length > 0 ?
+					<Elements stripe={stripePromise}>
+						<CheckoutForm setFormSubmitting={(value) => setSubmitting(value)} />
+					</Elements>
+					:
+					<>
+						<Row style={{ marginTop: '10px' }} gutter={15}>
 							<Col xs={24}>
-								{pricing.length > 0 ?
-									<Form.Item name="pricing_id" label="Select Pricing" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-										<Radio.Group className="radio-test-price-wrapper" value={pricingId} onChange={() => setPricingState()}>
-											{pricing.map(price => {
-												return <Radio.Button key={price.id.toString()} value={price.id.toString()}>
-													<div className="radio-test-price">
-														<div className="pricing-title">{price.name}</div>
-														<div className="pricing-amount">
-															<span className="pricing-amount-currency">$</span>
-															{price.retail_price}
-														</div>
-														<div className="pricing-results">Results in {price.test_duration}</div>
-													</div>
-												</Radio.Button>
-											})}
-										</Radio.Group>
-									</Form.Item>
-									: <Alert message="Pricing not setup, please contact support." type="error" />}
+								<Button onClick={props.parentPrev}>
+									Previous
+								</Button>
 							</Col>
 						</Row>
-						{pricing.length > 0 ?
-							<Elements stripe={stripePromise}>
-								<CheckoutForm setFormSubmitting={(value) => setSubmitting(value)} />
-							</Elements>
-							:
-							<>
-								<Row style={{ marginTop: '10px' }} gutter={15}>
-									<Col xs={24}>
-										<Button onClick={props.parentPrev}>
-											Previous
-										</Button>
-									</Col>
-								</Row>
-							</>
-						}
-					</div>
-				</div>
+					</>
+				}
 			</Form>
 		</Spin>
 	</div>

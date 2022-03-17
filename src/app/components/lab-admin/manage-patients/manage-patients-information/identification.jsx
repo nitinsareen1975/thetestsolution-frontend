@@ -41,7 +41,7 @@ const output = ({ ...props }) => {
 		<hr />
 		<Row gutter={15}>
 			<Col xs={24} sm={24} md={12} lg={6} xl={6}>
-				<Form.Item name="identifier_type" label="ID Type" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+				<Form.Item name="identifier_type" label="ID Type" >
 					<Select placeholder="ID Type">
 						<Select.Option value="Driver License">Driver License</Select.Option>
 						<Select.Option value="Passport">Passport</Select.Option>
@@ -49,12 +49,12 @@ const output = ({ ...props }) => {
 				</Form.Item>
 			</Col>
 			<Col xs={24} sm={24} md={12} lg={6} xl={6}>
-				<Form.Item name="identifier" label="ID Number" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+				<Form.Item name="identifier" label="ID Number" >
 					<Input placeholder="ID Number" />
 				</Form.Item>
 			</Col>
 			<Col xs={24} sm={24} md={12} lg={6} xl={6}>
-				<Form.Item name="identifier_country" label="ID Country" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+				<Form.Item name="identifier_country" label="ID Country" >
 					<Select
 						showSearch
 						filterOption={(input, option) =>

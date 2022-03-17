@@ -35,7 +35,7 @@ const output = ({ ...props }) => {
                     </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item name="race" label="Race" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+                    <Form.Item name="race" label="Race" >
                         <Select placeholder="Race">
                             <Select.Option value="White">White</Select.Option>
                             <Select.Option value="Black">Black</Select.Option>

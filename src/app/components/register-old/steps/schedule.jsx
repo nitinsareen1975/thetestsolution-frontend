@@ -59,63 +59,58 @@ const output = ({ ...props }) => {
 		if (typeof lab_assigned !== "undefined" && lab_assigned !== null && parseInt(lab_assigned) > 0) {
 			setNextBtnVisible(true);
 		}
-		if(props.data && typeof props.data.lab_assigned !== "undefined" && props.data.lab_assigned > 0){
-			findLab();
-		}
 	}, []);
 	return <Spin spinning={submitting}>
 		<Form ref={formRef} layout="vertical" onFinish={(values) => props.submitStep(values)} initialValues={props.data}>
-			<div className="form-column">
-				<div className="form-column-inner" style={{ maxWidth: '100%' }}>
-					<h2>Schedule your appointment</h2>
-					<hr className="title-hr" />
-					<Row gutter={15}>
-						<Col xs={24} md={8}>
-							<Form.Item name="scheduled_date" label="Date of Appointment" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-								<DatePicker placeholder="Date Of Appointment" disabledDate={(current) => moment() >= current} />
-							</Form.Item>
-						</Col>
-						<Col xs={24} md={8}>
-							<Form.Item name="scheduled_time" label="Time of Appointment" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-								<TimePicker use12Hours disabledHours={() => [21, 22, 23, 24, 1, 2, 3, 4, 5, 6, 7]} minuteStep={5} format="h:mm a" placeholder="Time Of Appointment" />
-							</Form.Item>
-						</Col>
-						<Col xs={24} md={8}>
-							<Form.Item name="zip_finder" label="Zip Code" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-								<Input placeholder="Zip Code" />
-							</Form.Item>
-						</Col>
-					</Row>
-					{labs.length > 0 ?
-						<Row style={{ marginBottom: 10 }}>
-							<Col xs={24}>
-								<label style={{ color: "#cb0019" }}>{nearByText}</label>
-								<Form.Item name="lab_assigned" label="Select a Lab" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-									<Radio.Group onChange={onSelectLab}>
-										{labs.map(lab => {
-											return <div className="lab-row" style={{ padding: 5 }}>
-												<Radio key={lab.id} value={lab.id}>{lab.name} ({lab.street}, {lab.city}, {lab.state}, {lab.zip})</Radio>
-											</div>
-										})}
-									</Radio.Group>
-								</Form.Item>
-							</Col>
-						</Row>
-						: ""}
-					<Row gutter={15}>
-						<Col xs={24}>
-							<div className="steps-action">
-								<Button style={{ margin: '0 8px', opacity: (nextBtnVisible === true) ? 1 : 0 }} type="primary" htmlType="submit">
-									Next
-								</Button>
-								<Button style={{ margin: '0 8px', float: "right" }} type="primary" onClick={findLab}>
-									Find Nearby Lab
-								</Button>
-							</div>
-						</Col>
-					</Row>
-				</div>
-			</div>
+			<h2 className="form-section-title">Schedule your appointment</h2>
+			<Row gutter={15}>
+				<Col xs={24} md={8}>
+					<Form.Item name="scheduled_date" label="Date of Appointment" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+						<DatePicker placeholder="Date Of Appointment"  disabledDate={(current) => moment()  >= current} />
+					</Form.Item>
+				</Col>
+				<Col xs={24} md={8}>
+					<Form.Item name="scheduled_time" label="Time of Appointment" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+						<TimePicker use12Hours disabledHours={() => [21, 22, 23, 24, 1, 2, 3, 4, 5, 6, 7]} minuteStep={5} format="h:mm a" placeholder="Time Of Appointment" />
+					</Form.Item>
+				</Col>
+				<Col xs={24} md={8}>
+					<Form.Item name="zip_finder" label="Zip Code" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+						<Input placeholder="Zip Code" />
+					</Form.Item>
+				</Col>
+			</Row>
+			{labs.length > 0 ?
+				<Row style={{ marginBottom: 10 }}>
+					<Col xs={24}>
+						<label style={{ color: "#cb0019" }}>{nearByText}</label>
+						<Form.Item name="lab_assigned" label="Select a Lab" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+							<Radio.Group onChange={onSelectLab}>
+								{labs.map(lab => {
+									return <div className="lab-row" style={{ padding: 5 }}>
+										<Radio key={lab.id} value={lab.id}>{lab.name} ({lab.street}, {lab.city}, {lab.state}, {lab.zip})</Radio>
+									</div>
+								})}
+							</Radio.Group>
+						</Form.Item>
+					</Col>
+				</Row>
+				: ""}
+			<Row gutter={15}>
+				<Col xs={24}>
+					<div className="steps-action">
+						<Button onClick={props.parentPrev}>
+							Previous
+						</Button>
+						<Button style={{ margin: '0 8px', opacity: (nextBtnVisible === true) ? 1 : 0 }} type="primary" htmlType="submit">
+							Next
+						</Button>
+						<Button style={{ margin: '0 8px', float: "right" }} type="primary" onClick={findLab}>
+							Find Nearby Lab
+						</Button>
+					</div>
+				</Col>
+			</Row>
 		</Form>
 	</Spin>
 }

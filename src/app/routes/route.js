@@ -9,6 +9,7 @@ import LabAdmin from "../components/lab-admin/lab-admin.jsx";
 import PatientReport from "../components/patient-report/view.jsx";
 import PatientForm from "../components/patient-form/view.jsx";
 import PatientReportLogin from "../components/patient-report/index.jsx";
+import Success from "../components/register/steps/success.jsx";
 export default {
   routes: [
     {
@@ -59,6 +60,11 @@ export default {
     {
       path: "/patient-report/:patientId",
       component: PatientReportLogin,
+      exact: true
+    },
+    {
+      path: "/thank-you",
+      component: Success,
       exact: true
     }
   ],
