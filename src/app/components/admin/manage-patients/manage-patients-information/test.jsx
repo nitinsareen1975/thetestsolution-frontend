@@ -3,6 +3,7 @@ import { Col, Form, Radio, Row, Typography, DatePicker, TimePicker, Alert, Selec
 import IntlMessages from "../../../../services/intlMesseges";
 import * as UserService from "../../../../services/user-service";
 import LabAPI from "../../../../redux/api/lab-api";
+import moment from "moment";
 const { Option } = Select;
 const output = ({ ...props }) => {
     const [labs, setLabs] = useState([]);
