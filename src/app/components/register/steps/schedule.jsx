@@ -51,7 +51,11 @@ const output = ({ ...props }) => {
 			setSubmitting(false);
 		});
 	}
-	const onSelectLab = () => {
+	const onSelectLab = (e) => {
+		var selectedLab = labs.find(l => parseInt(l.id) === parseInt(e.target.value));
+		if(typeof selectedLab !== "undefined" && typeof selectedLab.name !== "undefined"){
+			props.saveSelectedLabName(selectedLab.name);
+		}
 		setNextBtnVisible(true);
 	}
 	useEffect(() => {
@@ -91,7 +95,7 @@ const output = ({ ...props }) => {
 							<Col xs={24}>
 								<label style={{ color: "#cb0019" }}>{nearByText}</label>
 								<Form.Item name="lab_assigned" label="Select a Lab" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-									<Radio.Group onChange={onSelectLab}>
+									<Radio.Group onChange={e => onSelectLab(e)}>
 										{labs.map(lab => {
 											return <div className="lab-row" style={{ padding: 5 }}>
 												<Radio key={lab.id} value={lab.id}>{lab.name} ({lab.street}, {lab.city}, {lab.state}, {lab.zip})</Radio>

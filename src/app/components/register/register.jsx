@@ -16,6 +16,7 @@ import Schedule from "./steps/schedule.jsx";
 import Payment from "./steps/payment.jsx";
 import Success from "./steps/success.jsx";
 import * as UserService from "../../services/user-service";
+import Config from "../../config";
 const { Step } = Steps;
 
 class Register extends Component {
@@ -43,7 +44,8 @@ class Register extends Component {
       submitted: false,
       data: [],
       countries: [],
-      paymentDone: false
+      paymentDone: false,
+      selectedLabName: "Florida"
     };
   }
 
@@ -123,11 +125,11 @@ class Register extends Component {
         }, () => {
           var historyArgs = {
             confirmation_code: self.state.data.confirmation_code,
-            lab_assigned: self.state.data.lab_assigned,
+            lab_assigned: self.state.selectedLabName,
             firstname: self.state.data.firstname,
             lastname: self.state.data.lastname,
-            scheduled_time: self.state.data.scheduled_time,
-            scheduled_date: self.state.data.scheduled_date
+            scheduled_time: moment(self.state.data.scheduled_time).format("MM/DD/YYYY"),
+            scheduled_date: moment(self.state.data.scheduled_date).format("HH:mm A")
           }
           var qstr = [];
           for (var p in historyArgs){
@@ -135,7 +137,8 @@ class Register extends Component {
               qstr.push(encodeURIComponent(p) + "=" + encodeURIComponent(historyArgs[p]));
             }
           }
-          self.props.history.push("/thank-you?"+qstr.join("&"));
+          //self.props.history.push("/thank-you?"+qstr.join("&"));
+          window.location = Config.WEB_URL+"thank-you?"+qstr.join("&");
         });
       } else {
         if (response.message) {
@@ -160,6 +163,10 @@ class Register extends Component {
     var _current = this.state.current;
     this.setState({ current: _current - 1 });
   };
+
+  saveSelectedLabName = (labName) => {
+    this.setState({ selectedLabName: labName });
+  }
 
   render() {
     const { current, steps, submitted } = this.state;
@@ -192,7 +199,8 @@ class Register extends Component {
                               ))}
                             </Steps>
                             <div className="steps-content">
-                              <StepsComponent
+                              <StepsComponent 
+                                saveSelectedLabName={this.saveSelectedLabName}
                                 countries={this.state.countries}
                                 submitStep={this.submitStep}
                                 handleSubmit={this.handleSubmit}

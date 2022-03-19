@@ -156,7 +156,7 @@ const output = ({ ...props }) => {
 											})}
 										</Radio.Group>
 									</Form.Item>
-									: <Alert message="Pricing not setup, please contact support." type="error" />}
+									: ""}
 							</Col>
 						</Row>
 						{pricing.length > 0 ?
