@@ -14,6 +14,8 @@ import SymptomsInfo from "../steps/information/symptoms-info.jsx";
 import Identification from "../steps/information/identification.jsx";
 import TestInfo from "../steps/information/test.jsx";
 import IntlMessages from "../../../services/intlMesseges";
+import stripeBadge from "../../../assets/images/stripe-badge-white.png";
+import stripeBadge2 from "../../../assets/images/stripe-badge-white-2.jpg";
 
 const { Step } = Steps;
 
@@ -112,7 +114,7 @@ class PersonalInfo extends Component {
           <Col xs={24} md={24} className="step-form">
             <Row className="form-row">
               <Col xs={24}>
-                <Form layout="vertical" onFinish={(values) => this.submitStep(values)} initialValues={this.props.data}>
+                <Form layout="vertical" onFinish={(values) => this.submitStep(values)} initialValues={this.props.data} size="large">
                   <div className="form-column">
                     <div className="form-column-inner" style={{ maxWidth: '100%' }}>
                       <h2>Personal Information</h2>
@@ -252,6 +254,10 @@ class PersonalInfo extends Component {
                               Next
                             </Button>
                           </div>
+                        </Row>
+                        <Row>
+                          <img className="stripiBadge" src={stripeBadge} alt="Badge" />
+                          <img className="stripiBadge" src={stripeBadge2} alt="Badge" />
                         </Row>
                       </div>
                     </div>
