@@ -56,7 +56,7 @@ const output = ({ ...props }) => {
 	const onSelectLab = (e) => {
 		var selectedLab = labs.find(l => parseInt(l.id) === parseInt(e.target.value));
 		if(typeof selectedLab !== "undefined" && typeof selectedLab.name !== "undefined"){
-			props.saveSelectedLabName(selectedLab.name);
+			props.saveSelectedLabName(selectedLab.name+' ('+selectedLab.city+', '+selectedLab.state+')');
 		}
 		setNextBtnVisible(true);
 	}
