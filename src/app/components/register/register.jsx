@@ -121,7 +121,6 @@ class Register extends Component {
         notifyUser(response.message, "success");
         this.setState({
           data: { ...args, ...this.state.data },
-          submitted: false
         }, () => {
           var historyArgs = {
             confirmation_code: self.state.data.confirmation_code,
@@ -129,7 +128,7 @@ class Register extends Component {
             firstname: self.state.data.firstname,
             lastname: self.state.data.lastname,
             scheduled_time: moment(self.state.data.scheduled_time).format("MM/DD/YYYY"),
-            scheduled_date: moment(self.state.data.scheduled_date).format("HH:mm A")
+            scheduled_date: moment(self.state.data.scheduled_date).format("hh:mm A")
           }
           var qstr = [];
           for (var p in historyArgs){
