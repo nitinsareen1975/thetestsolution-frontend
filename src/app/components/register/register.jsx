@@ -15,6 +15,8 @@ import moment from "moment";
 import Schedule from "./steps/schedule.jsx";
 import Payment from "./steps/payment.jsx";
 import Success from "./steps/success.jsx";
+import TeleHeader from "./header-footer/header.jsx";
+import TeleFooter from "./header-footer/footer.jsx";
 import * as UserService from "../../services/user-service";
 import Config from "../../config";
 const { Step } = Steps;
@@ -172,6 +174,7 @@ class Register extends Component {
     const StepsComponent = steps[current].content;
     return (
       <Spin size="large" spinning={submitted}>
+        <TeleHeader />
         {/* <header className="register-header">
           <Row>
             <Col xs={24}>
@@ -219,6 +222,7 @@ class Register extends Component {
             </Row>
           </div>
         </section>
+        <TeleFooter />
       </Spin>
     );
   }
