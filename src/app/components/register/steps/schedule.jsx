@@ -5,6 +5,8 @@ import LabAPI from "../../../redux/api/lab-api";
 import Config from "../../../config";
 import Axios from "axios";
 import moment from "moment";
+import stripeBadge from "../../../assets/images/stripe-badge-white.png";
+import stripeBadge2 from "../../../assets/images/stripe-badge-white-2.jpg";
 const output = ({ ...props }) => {
 	const formRef = useRef();
 	const [labs, setLabs] = useState([]);
@@ -68,7 +70,7 @@ const output = ({ ...props }) => {
 		}
 	}, []);
 	return <Spin spinning={submitting}>
-		<Form ref={formRef} layout="vertical" onFinish={(values) => props.submitStep(values)} initialValues={props.data}>
+		<Form ref={formRef} layout="vertical" onFinish={(values) => props.submitStep(values)} initialValues={props.data} size="large">
 			<div className="form-column">
 				<div className="form-column-inner" style={{ maxWidth: '100%' }}>
 					<h2>Schedule your appointment</h2>
@@ -109,14 +111,18 @@ const output = ({ ...props }) => {
 					<Row gutter={15}>
 						<Col xs={24}>
 							<div className="steps-action">
-								<Button style={{ margin: '0 8px', opacity: (nextBtnVisible === true) ? 1 : 0 }} type="primary" htmlType="submit">
+								<Button style={{ margin: '0 8px', display: (nextBtnVisible === true) ? 'inline-Block' : 'none' }} type="primary" htmlType="submit">
 									Next
 								</Button>
-								<Button style={{ margin: '0 8px', float: "right" }} type="primary" onClick={findLab}>
+								<Button type="primary" onClick={findLab}>
 									Find Nearby Lab
 								</Button>
 							</div>
 						</Col>
+					</Row>
+					<Row>
+						<img className="stripiBadge" src={stripeBadge} alt="Badge" />
+						<img className="stripiBadge" src={stripeBadge2} alt="Badge" />
 					</Row>
 				</div>
 			</div>

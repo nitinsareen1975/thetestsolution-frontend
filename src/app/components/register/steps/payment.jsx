@@ -6,6 +6,8 @@ import * as UserService from "../../../services/user-service";
 import { loadStripe } from '@stripe/stripe-js';
 import Config from "../../../config";
 import Axios from "../../../services/axios-service";
+import stripeBadge from "../../../assets/images/stripe-badge-white.png";
+import stripeBadge2 from "../../../assets/images/stripe-badge-white-2.jpg";
 import {
 	CardElement,
 	Elements,
@@ -177,6 +179,10 @@ const output = ({ ...props }) => {
 					</div>
 				</div>
 			</Form>
+			<Row>
+				<img className="stripiBadge" src={stripeBadge} alt="Badge" />
+				<img className="stripiBadge" src={stripeBadge2} alt="Badge" />
+			</Row>
 		</Spin>
 	</div>
 }
