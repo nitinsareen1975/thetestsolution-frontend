@@ -7,6 +7,8 @@ import Axios from "axios";
 import moment from "moment";
 import stripeBadge from "../../../assets/images/stripe-badge-white.png";
 import stripeBadge2 from "../../../assets/images/stripe-badge-white-2.jpg";
+import { AimOutlined } from '@ant-design/icons';
+
 const output = ({ ...props }) => {
 	const formRef = useRef();
 	const [labs, setLabs] = useState([]);
@@ -55,8 +57,8 @@ const output = ({ ...props }) => {
 	}
 	const onSelectLab = (e) => {
 		var selectedLab = labs.find(l => parseInt(l.id) === parseInt(e.target.value));
-		if(typeof selectedLab !== "undefined" && typeof selectedLab.name !== "undefined"){
-			props.saveSelectedLabName(selectedLab.name+' ('+selectedLab.city+', '+selectedLab.state+')');
+		if (typeof selectedLab !== "undefined" && typeof selectedLab.name !== "undefined") {
+			props.saveSelectedLabName(selectedLab.name + ' (' + selectedLab.city + ', ' + selectedLab.state + ')');
 		}
 		setNextBtnVisible(true);
 	}
@@ -65,10 +67,60 @@ const output = ({ ...props }) => {
 		if (typeof lab_assigned !== "undefined" && lab_assigned !== null && parseInt(lab_assigned) > 0) {
 			setNextBtnVisible(true);
 		}
-		if(props.data && typeof props.data.lab_assigned !== "undefined" && props.data.lab_assigned > 0){
+		if (props.data && typeof props.data.lab_assigned !== "undefined" && props.data.lab_assigned > 0) {
 			findLab();
 		}
 	}, []);
+
+	const detectLoction = () => {
+		navigator.geolocation.getCurrentPosition(async (position) => {
+			setSubmitting(true);
+			var geocodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + position.coords.latitude + "," + position.coords.longitude + "&key=" + Config.GoogleMapsAPIkey + "&sensor=true";
+			await Axios.get(geocodeUrl).then(async (response) => {
+				console.log("RF:", response)
+				if (response.data && response.data.results && response.data.results.length > 0) {
+					var zipcode = null;
+					let foundzip = response.data.results[0].address_components.find(r => r.types.indexOf("postal_code") > -1);
+					if (foundzip && foundzip.short_name) {
+						zipcode = foundzip.short_name.trim();
+					}
+					console.log("zipcode:", zipcode)
+					if (zipcode != null) {
+						formRef.current.setFieldsValue({ zip_finder: zipcode });
+					}
+
+					var scheduledDate = formRef.current.getFieldValue('scheduled_date');
+					var scheduledTime = formRef.current.getFieldValue('scheduled_time');
+					if (scheduledDate != null && scheduledTime != null && zipcode != null) {
+						var latlng = response.data.results[0].geometry.location;
+						var args = {
+							filters: {},
+							pagination: {},
+							sorter: { column: "name", order: "asc" }
+						}
+						args.filters = {
+							lat: latlng.lat,
+							lng: latlng.lng
+						}
+						await LabAPI.getGlobalLabs(args).then(resp => {
+							if (resp.status && resp.status === true) {
+								if (typeof resp.type !== "undefined" && resp.type == "nearby") {
+									setNearByText("");
+								} else {
+									setNearByText("No nearby labs were found. Please try to modify your search or choose one lab from the list below according to your convenience.");
+								}
+								setLabs(resp.data);
+								setSubmitting(false);
+							}
+						});
+					} else {
+						setSubmitting(false);
+					}
+				}
+			});
+		});
+	};
+
 	return <Spin spinning={submitting}>
 		<Form ref={formRef} layout="vertical" onFinish={(values) => props.submitStep(values)} initialValues={props.data} size="large">
 			<div className="form-column">
@@ -87,9 +139,14 @@ const output = ({ ...props }) => {
 							</Form.Item>
 						</Col>
 						<Col xs={24} md={8}>
-							<Form.Item name="zip_finder" label="Zip Code" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+							<Form.Item name="zip_finder" label="Zip Code" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]} style={{ marginBottom: 10 }}>
 								<Input placeholder="Zip Code" />
 							</Form.Item>
+							<div style={{ width: "100%" }}>
+								<div style={{ float: "right" }}>Not sure?
+									<Button size="small" type="link" icon={<AimOutlined />} onClick={() => detectLoction()}>Detect my Location</Button>
+								</div>
+							</div>
 						</Col>
 					</Row>
 					{labs.length > 0 ?
