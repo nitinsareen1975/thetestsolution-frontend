@@ -35,6 +35,13 @@ import EditTestTypeMethod  from "../components/admin/test-type-methods/edit.jsx"
 import ManageTestResultTypes from "../components/admin/test-result-types/list.jsx";
 import AddTestResultType from "../components/admin/test-result-types/add.jsx";
 import EditTestResultType from "../components/admin/test-result-types/edit.jsx";
+import GroupEvents from "../components/admin/group-concierge/all-group-events.jsx";
+import EditGroupEvent from "../components/admin/group-concierge/edit-group-event.jsx";
+import AddGroupEvent from "../components/admin/group-concierge/add-group-event.jsx";
+import GroupPatients from "../components/admin/group-concierge/all-group-patients.jsx";
+import EditGroupPatient from "../components/admin/group-concierge/edit-group-patient.jsx";
+import AddGroupPatient from "../components/admin/group-concierge/add-group-patient.jsx";
+import ConciergeResults from "../components/admin/group-concierge/concierge-results.jsx";
 
 const routes = [
   {
@@ -168,6 +175,34 @@ const routes = [
   {
     path: "test-result-types/edit/:id",
     component: EditTestResultType
+  },
+  {
+    path: "group-concierge/group-events",
+    component: GroupEvents
+  },
+  {
+    path: "group-concierge/group-events/edit/:id",
+    component: EditGroupEvent
+  },
+  {
+    path: "group-concierge/add-group-event",
+    component: AddGroupEvent
+  },
+  {
+    path: "group-concierge/group-patients",
+    component: GroupPatients
+  },
+  {
+    path: "group-concierge/group-patients/edit/:id",
+    component: EditGroupPatient
+  },
+  {
+    path: "group-concierge/add-group-patient",
+    component: AddGroupPatient
+  },
+  {
+    path: "group-concierge/concierge-results",
+    component: ConciergeResults
   }
 ];
 

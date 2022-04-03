@@ -77,14 +77,12 @@ const output = ({ ...props }) => {
 			setSubmitting(true);
 			var geocodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + position.coords.latitude + "," + position.coords.longitude + "&key=" + Config.GoogleMapsAPIkey + "&sensor=true";
 			await Axios.get(geocodeUrl).then(async (response) => {
-				console.log("RF:", response)
 				if (response.data && response.data.results && response.data.results.length > 0) {
 					var zipcode = null;
 					let foundzip = response.data.results[0].address_components.find(r => r.types.indexOf("postal_code") > -1);
 					if (foundzip && foundzip.short_name) {
 						zipcode = foundzip.short_name.trim();
 					}
-					console.log("zipcode:", zipcode)
 					if (zipcode != null) {
 						formRef.current.setFieldsValue({ zip_finder: zipcode });
 					}

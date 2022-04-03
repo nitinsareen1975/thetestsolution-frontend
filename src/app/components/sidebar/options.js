@@ -7,7 +7,7 @@ import {
   AimOutlined,
   FileSearchOutlined,
   CreditCardOutlined,
-  DeploymentUnitOutlined
+  GroupOutlined
 } from '@ant-design/icons';
 
 const adminOptions = [{
@@ -21,6 +21,34 @@ const adminOptions = [{
     label: "View All Patients",
     roles: ["Administrator"],
     leftIcon: <AimOutlined />
+  },
+  {
+    key: "/admin/group-concierge",
+    label: "Group Concierge",
+    roles: ["Administrator"],
+    leftIcon: <GroupOutlined />,
+    children: [
+      {
+        key: "/admin/group-concierge/group-events",
+        label: "All Events",
+        roles: ["Administrator"]
+      },
+      {
+        key: "/admin/group-concierge/add-group-event",
+        label: "Add New Group Event",
+        roles: ["Administrator"]
+      },
+      {
+        key: "/admin/group-concierge/group-patients",
+        label: "Pre-registration List",
+        roles: ["Administrator"]
+      },
+      {
+        key: "/admin/group-concierge/concierge-results",
+        label: "Concierge Results",
+        roles: ["Administrator"]
+      }
+    ]
   },
   {
     key: "/admin/labs",

@@ -7,9 +7,12 @@ import ServerError from "../components/common/500.jsx";
 import Register from "../components/register/register.jsx";
 import LabAdmin from "../components/lab-admin/lab-admin.jsx";
 import PatientReport from "../components/patient-report/view.jsx";
+import GroupPatientReport from "../components/group-patient-report/view.jsx";
 import PatientForm from "../components/patient-form/view.jsx";
 import PatientReportLogin from "../components/patient-report/index.jsx";
 import Success from "../components/register/steps/success.jsx";
+import PreRegistrationQrcode from "../components/pre-registration-qrcode/index.jsx";
+import EventPreRegister from "../components/event-pre-register/index.jsx";
 export default {
   routes: [
     {
@@ -65,6 +68,21 @@ export default {
     {
       path: "/thank-you",
       component: Success,
+      exact: true
+    },
+    {
+      path: "/group-patient-report/:patientId/:code",
+      component: GroupPatientReport,
+      exact: true
+    },
+    {
+      path: "/pre-registration-qrcode/:eventId",
+      component: PreRegistrationQrcode,
+      exact: true
+    },
+    {
+      path: "/event-pre-register/:eventId",
+      component: EventPreRegister,
       exact: true
     }
   ],

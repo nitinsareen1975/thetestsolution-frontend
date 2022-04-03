@@ -10,5 +10,6 @@ module.exports = {
   StripeAccountId: AppConfig && AppConfig.StripeAccountId ? AppConfig.StripeAccountId : "",
   AllowedAPIHosts: AppConfig && AppConfig.AllowedAPIHosts ? AppConfig.AllowedAPIHosts : "",
   AdminRoles: AppConfig && AppConfig.AdminRoles ? AppConfig.AdminRoles : ["Administrator"],
-  LabAdminRoles: AppConfig && AppConfig.LabAdminRoles ? AppConfig.LabAdminRoles : ["Lab Admin"]
+  LabAdminRoles: AppConfig && AppConfig.LabAdminRoles ? AppConfig.LabAdminRoles : ["Lab Admin"],
+  customerServiceNumber: AppConfig && AppConfig.customerServiceNumber ? AppConfig.customerServiceNumber : "786-301-7481"
 };

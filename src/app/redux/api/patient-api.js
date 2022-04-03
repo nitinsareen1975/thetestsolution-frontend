@@ -45,6 +45,9 @@ const getPatientReport = (data) => {
 const getPatientReportPDF = (data) => {
   return Axios.post("/global/get-patient-report-pdf", data, undefined);
 };
+const getGroupPatientReportPDF = (data) => {
+  return Axios.post("/global/get-group-patient-report-pdf", data, undefined);
+};
 const getTestTypeMethodsForPatient = (patientId) => {
   return Axios.get("/api/test-type-methods-for-patient/"+patientId, undefined, undefined);
 };
@@ -70,6 +73,7 @@ export default {
   validateDOB,
   getPatientReport,
   getPatientReportPDF,
+  getGroupPatientReportPDF,
   getTestTypeMethodsForPatient,
   getPaymentMethods,
   isWalkinPatient
