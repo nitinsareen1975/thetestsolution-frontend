@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, DatePicker, Form, Typography, Row, Select } from "antd";
+import { Col, DatePicker, Form, Typography, Row, Select, Radio } from "antd";
 import IntlMessages from "../../../../services/intlMesseges";
 const output = ({ ...props }) => {
     return <div>
@@ -45,6 +45,51 @@ const output = ({ ...props }) => {
                             <Select.Option value="Other">Other</Select.Option>
                             <Select.Option value="Unknown">Unknown</Select.Option>
                         </Select>
+                    </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item name="pregnent" label="Pregnent?" >
+                        <Radio.Group>
+                            <Radio key="yes" value="Yes">Yes</Radio>
+                            <Radio key="no" value="No">No</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item name="AbnormalFlag" label="Is Abnormal?" >
+                        <Radio.Group>
+                            <Radio key="yes" value="Yes">Yes</Radio>
+                            <Radio key="no" value="No">No</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item name="FirstTestForCondition" label="First Test For Condition?" >
+                        <Radio.Group>
+                            <Radio key="yes" value="Yes">Yes</Radio>
+                            <Radio key="no" value="No">No</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item name="EmployedInHealthCare" label="Employed In Health Care?" >
+                        <Radio.Group>
+                            <Radio key="yes" value="Yes">Yes</Radio>
+                            <Radio key="no" value="No">No</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item name="Symptomatic" label="Symptomatic?" >
+                        <Radio.Group>
+                            <Radio key="yes" value="Yes">Yes</Radio>
+                            <Radio key="no" value="No">No</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item name="DateOfSymptomOnset" label="Date Of Symptom Onset?" >
+                        <DatePicker  />
                     </Form.Item>
                 </Col>
             </Row>

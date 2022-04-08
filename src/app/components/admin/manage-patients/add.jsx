@@ -91,12 +91,20 @@ class AddPatient extends React.Component {
 			scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD HH:mm:ss"),
 			state: data.state,
 			street: data.street,
+			street2: data.street2,
 			test_type: data.test_type,
 			zip: data.zip,
 			pricing_id: data.pricing_id,
 			transaction_id: "lab_collected",
 			payment_provider: data.payment_provider,
 			is_lab_collected: 1,
+			ssn: data.ssn,
+			AbnormalFlag: data.AbnormalFlag,
+			FirstTestForCondition: data.FirstTestForCondition,
+			EmployedInHealthCare: data.EmployedInHealthCare,
+			Symptomatic: data.Symptomatic,
+			DateOfSymptomOnset: moment(data.DateOfSymptomOnset).format("YYYY-MM-DD"),
+			pregnent: data.pregnent,
 			confirmation_code: UserService.getRandomString(24, data.email)
 		};
 		if (typeof data.identifier_doc !== "undefined" && typeof data.identifier_doc.file !== "undefined" && data.identifier_doc.file !== null && typeof data.identifier_doc.file !== "string" && data.identifier_doc.file.name) {

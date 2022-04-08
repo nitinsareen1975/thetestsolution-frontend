@@ -36,6 +36,11 @@ const output = ({ ...props }) => {
                         <Input placeholder="Phone Number" />
                     </Form.Item>
                 </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                    <Form.Item name="ssn" label="Social Security Number">
+                        <Input placeholder="SSNumber" />
+                    </Form.Item>
+                </Col>
             </Row>
         </div>
 }

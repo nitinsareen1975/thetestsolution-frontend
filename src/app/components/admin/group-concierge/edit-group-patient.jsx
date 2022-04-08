@@ -51,6 +51,9 @@ class EditGroupPatient extends React.Component {
     if (_patient.data.dob != null) {
       _patient.data.dob = moment(_patient.data.dob);
     }
+    if (_patient.data.DateOfSymptomOnset != null) {
+      _patient.data.DateOfSymptomOnset = moment(_patient.data.DateOfSymptomOnset);
+    }
     var _countries = [];
     if (typeof this.props.countries === "undefined" || this.props.countries.length <= 0) {
       _countries = await this.props.getCountries();
@@ -71,6 +74,7 @@ class EditGroupPatient extends React.Component {
   }
 
   handleSubmit = async (data) => {
+    console.log("St:", this.state)
     if (this.state.labAssigned <= 0 || this.state.groupAssigned <= 0) {
       message.error("Please choose an event.");
       return false;
@@ -109,12 +113,20 @@ class EditGroupPatient extends React.Component {
       scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD HH:mm:ss"),
       state: data.state,
       street: data.street,
+      street2: data.street2,
       test_type: data.test_type,
       pricing_id: this.state.pricingId,
       zip: data.zip,
       transaction_id: data.transaction_id ? data.transaction_id : this.state.patient.transaction_id,
       confirmation_code: data.confirmation_code,
       is_lab_collected: this.state.patient.is_lab_collected,
+      ssn: data.ssn,
+      AbnormalFlag: data.AbnormalFlag,
+			FirstTestForCondition: data.FirstTestForCondition,
+			EmployedInHealthCare: data.EmployedInHealthCare,
+			Symptomatic: data.Symptomatic,
+			DateOfSymptomOnset: moment(data.DateOfSymptomOnset).format("YYYY-MM-DD"),
+      pregnent: data.pregnent,
       progress_status: data.progress_status
     };
     if (typeof this.state.identifierDocUpload !== "undefined" && this.state.identifierDocUpload !== null && typeof this.state.identifierDocUpload !== "string" && this.state.identifierDocUpload.name) {

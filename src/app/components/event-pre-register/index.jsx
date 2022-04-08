@@ -81,6 +81,7 @@ class EventPreRegister extends Component {
       scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD HH:mm:ss"),
       state: data.state,
       street: data.street,
+      street2: data.street2,
       pricing_id: data.pricing_id,
       zip: data.zip,
       transaction_id: data.transaction_id,
@@ -224,8 +225,13 @@ class EventPreRegister extends Component {
                   <hr />
                   <Row gutter={24}>
                     <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                      <Form.Item name="street" label="Street" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-                        <Input placeholder="Street" />
+                      <Form.Item name="street" label="Address line 1" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
+                        <Input placeholder="Address line 1" />
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                      <Form.Item name="street2" label="Address line 2">
+                        <Input placeholder="Address line 2" />
                       </Form.Item>
                     </Col>
                     <Col xs={24} sm={24} md={6} lg={6} xl={6}>

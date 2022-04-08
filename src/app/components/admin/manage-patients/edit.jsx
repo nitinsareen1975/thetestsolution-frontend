@@ -54,6 +54,9 @@ class EditPatient extends React.Component {
     if (_patient.data.dob != null) {
       _patient.data.dob = moment(_patient.data.dob);
     }
+    if (_patient.data.DateOfSymptomOnset != null) {
+      _patient.data.DateOfSymptomOnset = moment(_patient.data.DateOfSymptomOnset);
+    }
     this.setState({
       loading: false,
       patient: (_patient.status == true) ? _patient.data : {},
@@ -103,11 +106,19 @@ class EditPatient extends React.Component {
       scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD HH:mm:ss"),
       state: data.state,
       street: data.street,
+      street2: data.street2,
       test_type: data.test_type,
       pricing_id: this.state.pricingId,
       zip: data.zip,
       transaction_id: data.transaction_id ? data.transaction_id : this.state.patient.transaction_id,
       confirmation_code: data.confirmation_code,
+      ssn: data.ssn,
+      AbnormalFlag: data.AbnormalFlag,
+			FirstTestForCondition: data.FirstTestForCondition,
+			EmployedInHealthCare: data.EmployedInHealthCare,
+			Symptomatic: data.Symptomatic,
+			DateOfSymptomOnset: moment(data.DateOfSymptomOnset).format("YYYY-MM-DD"),
+      pregnent: data.pregnent,
       is_lab_collected: this.state.patient.is_lab_collected
     };
     if (typeof this.state.identifierDocUpload !== "undefined" && this.state.identifierDocUpload !== null && typeof this.state.identifierDocUpload !== "string" && this.state.identifierDocUpload.name) {

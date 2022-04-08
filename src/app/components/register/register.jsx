@@ -102,6 +102,7 @@ class Register extends Component {
       scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD HH:mm:ss"),
       state: data.state,
       street: data.street,
+      street2: data.street2,
       pricing_id: data.pricing_id,
       zip: data.zip,
       transaction_id: data.transaction_id,

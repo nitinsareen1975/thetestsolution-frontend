@@ -250,38 +250,6 @@ class AddLab extends React.Component {
                     <Input />
                   </Form.Item>
                 </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="concerned_person_name"
-                    label="Medical/Laboratory Director"
-                    rules={[
-                      {
-                        whitespace: true,
-                        required: true,
-                        message: <IntlMessages id="admin.input.required" />,
-                      }
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                  <Form.Item
-                    {...formItemLayout}
-                    name="npi"
-                    label="NPI"
-                    rules={[
-                      {
-                        whitespace: true,
-                        required: true,
-                        message: <IntlMessages id="admin.input.required" />,
-                      }
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col> 
 
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
@@ -334,7 +302,7 @@ class AddLab extends React.Component {
                   >
                     <DatePicker format={"MM/DD/YYYY"} />
                   </Form.Item>
-                </Col> 
+                </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -380,12 +348,21 @@ class AddLab extends React.Component {
                       unCheckedChildren={"No"}
                     />
                   </Form.Item>
-                </Col> 
+                </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
-                    label="Street"
+                    label="Address Line 1"
                     name="street"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="Address Line 2"
+                    name="street2"
                   >
                     <Input />
                   </Form.Item>
@@ -416,7 +393,7 @@ class AddLab extends React.Component {
                   >
                     <Input />
                   </Form.Item>
-                </Col> 
+                </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item
                     {...formItemLayout}
@@ -461,6 +438,105 @@ class AddLab extends React.Component {
                   </Form.Item>
                 </Col>
               </Row>
+
+              <Row gutter={24}>
+                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                  <Typography.Title level={4}>Facility Provider</Typography.Title>
+                </Col>
+              </Row>
+              <hr />
+              <Row gutter={24}>
+
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="npi"
+                    label="NPI"
+                    rules={[
+                      {
+                        whitespace: true,
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      }
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="First Name"
+                    name="provider_firstname"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="Last Name"
+                    name="provider_lastname"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="Phone Number"
+                    name="provider_phone"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="Address Line 1"
+                    name="provider_address1"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="Address Line 2"
+                    name="provider_address2"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="City"
+                    name="provider_city"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="State"
+                    name="provider_state"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    label="ZIP"
+                    name="provider_zip"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+              </Row>
+
               <Row gutter={24}>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                   <Typography.Title level={4}>Location</Typography.Title>

@@ -259,6 +259,15 @@ class AddTestType extends React.Component {
                     <Input />
                   </Form.Item>
                 </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="loinc_desc"
+                    label="LOINC Description"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
 
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <Form.Item

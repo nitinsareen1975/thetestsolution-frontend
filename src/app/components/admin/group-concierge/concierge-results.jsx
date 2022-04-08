@@ -21,7 +21,7 @@ import {
 } from "antd";
 import { notifyUser } from "../../../services/notification-service";
 import IntlMessages from "../../../services/intlMesseges";
-import { CloseOutlined, SearchOutlined, ArrowLeftOutlined, DownloadOutlined, ExportOutlined, EditOutlined } from '@ant-design/icons';
+import { CloseOutlined, SearchOutlined, ArrowLeftOutlined, DownloadOutlined, FileTextOutlined, FileExcelOutlined, EditOutlined } from '@ant-design/icons';
 import moment from "moment";
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -370,6 +370,10 @@ class ConciergeResults extends Component {
 					var temp_link = document.createElement('a');
 					temp_link.download = filename;
 					var url = window.URL.createObjectURL(CSVFile);
+					if(format == 'xls'){
+						//resultFile = new Blob([response.data.file_content], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+						url = response.data.file_content;
+					}
 					temp_link.href = url;
 					temp_link.style.display = "none";
 					document.body.appendChild(temp_link);
@@ -515,8 +519,21 @@ class ConciergeResults extends Component {
 								onClick={() => this.exportData("csv")}
 								style={{ marginLeft: 5 }}
 							>
-								<ExportOutlined />
+								<FileTextOutlined />
 								Export to CSV
+							</Button>
+						</Tooltip>
+						<Tooltip title={<span>Export {(Object.keys(this.state.customFilters).length > 0 || Object.keys(this.state.filters).length > 0 ? "filtered" : "all")} data to Excel (xlsx)</span>}>
+							<Button
+								disabled={!(this.state.data.length > 0)}
+								type="default"
+								className="right-fl"
+								htmlType="button"
+								onClick={() => this.exportData("xls")}
+								style={{ marginLeft: 5 }}
+							>
+								<FileExcelOutlined />
+								Export to Excel (xlsx)
 							</Button>
 						</Tooltip>
 					</Col>
