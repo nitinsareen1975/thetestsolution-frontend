@@ -104,6 +104,8 @@ class Register extends Component {
       street: data.street,
       street2: data.street2,
       pricing_id: data.pricing_id,
+      FirstTestForCondition: data.FirstTestForCondition,
+      EmployedInHealthCare: data.EmployedInHealthCare,
       zip: data.zip,
       transaction_id: data.transaction_id,
       confirmation_code: UserService.getRandomString(24, data.email)

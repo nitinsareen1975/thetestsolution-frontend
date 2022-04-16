@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { notifyUser } from "../../../services/notification-service";
 import * as UserActions from "../../../redux/actions/user-actions";
-import { Button, Col, Form, Row, Spin, Steps, Input, Select, InputNumber } from "antd";
+import { Button, Col, Form, Row, Spin, Steps, Input, Select, InputNumber, Radio } from "antd";
 import { UserOutlined, SolutionOutlined, HomeOutlined, ContactsOutlined, DeploymentUnitOutlined, ExceptionOutlined, ExperimentOutlined } from '@ant-design/icons';
 import Waiver from "../steps/information/waiver.jsx";
 import ContactInfo from "../steps/information/contact-info.jsx";
@@ -196,6 +196,22 @@ class PersonalInfo extends Component {
                                 <Select.Option value="No Response">No Response</Select.Option>
                                 <Select.Option value="Unknown">Unknown</Select.Option>
                               </Select>
+                            </Form.Item>
+                          </Col>
+                          <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                            <Form.Item name="FirstTestForCondition" label="First Test For Condition?" >
+                              <Radio.Group>
+                                <Radio key="yes" value="Yes">Yes</Radio>
+                                <Radio key="no" value="No">No</Radio>
+                              </Radio.Group>
+                            </Form.Item>
+                          </Col>
+                          <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                            <Form.Item name="EmployedInHealthCare" label="Employed In Health Care?" >
+                              <Radio.Group>
+                                <Radio key="yes" value="Yes">Yes</Radio>
+                                <Radio key="no" value="No">No</Radio>
+                              </Radio.Group>
                             </Form.Item>
                           </Col>
                         </Row>

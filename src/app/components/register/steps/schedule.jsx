@@ -142,7 +142,7 @@ const output = ({ ...props }) => {
 							</Form.Item>
 							<div style={{ width: "100%" }}>
 								<div style={{ float: "right" }}>Not sure?
-									<Button size="small" type="link" icon={<AimOutlined />} onClick={() => detectLoction()}>Detect my Location</Button>
+									<Button size="small" type="link" onClick={() => detectLoction()}><AimOutlined style={{ marginTop: "4px", float: "left" }}/>Detect my Location</Button>
 								</div>
 							</div>
 						</Col>

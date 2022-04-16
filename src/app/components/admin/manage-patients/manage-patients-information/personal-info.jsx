@@ -56,14 +56,6 @@ const output = ({ ...props }) => {
                     </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-                    <Form.Item name="AbnormalFlag" label="Is Abnormal?" >
-                        <Radio.Group>
-                            <Radio key="yes" value="Yes">Yes</Radio>
-                            <Radio key="no" value="No">No</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-                </Col>
-                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item name="FirstTestForCondition" label="First Test For Condition?" >
                         <Radio.Group>
                             <Radio key="yes" value="Yes">Yes</Radio>

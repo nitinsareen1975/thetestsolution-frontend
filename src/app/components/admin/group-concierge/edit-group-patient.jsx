@@ -121,7 +121,6 @@ class EditGroupPatient extends React.Component {
       confirmation_code: data.confirmation_code,
       is_lab_collected: this.state.patient.is_lab_collected,
       ssn: data.ssn,
-      AbnormalFlag: data.AbnormalFlag,
 			FirstTestForCondition: data.FirstTestForCondition,
 			EmployedInHealthCare: data.EmployedInHealthCare,
 			Symptomatic: data.Symptomatic,

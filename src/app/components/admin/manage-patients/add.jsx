@@ -99,7 +99,6 @@ class AddPatient extends React.Component {
 			payment_provider: data.payment_provider,
 			is_lab_collected: 1,
 			ssn: data.ssn,
-			AbnormalFlag: data.AbnormalFlag,
 			FirstTestForCondition: data.FirstTestForCondition,
 			EmployedInHealthCare: data.EmployedInHealthCare,
 			Symptomatic: data.Symptomatic,

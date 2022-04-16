@@ -113,7 +113,6 @@ class EditPatient extends React.Component {
       transaction_id: data.transaction_id ? data.transaction_id : this.state.patient.transaction_id,
       confirmation_code: data.confirmation_code,
       ssn: data.ssn,
-      AbnormalFlag: data.AbnormalFlag,
 			FirstTestForCondition: data.FirstTestForCondition,
 			EmployedInHealthCare: data.EmployedInHealthCare,
 			Symptomatic: data.Symptomatic,
