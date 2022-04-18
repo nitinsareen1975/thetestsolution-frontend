@@ -1,6 +1,7 @@
 import React from "react";
 import { Col, DatePicker, Form, Typography, Row, Select, Radio } from "antd";
 import IntlMessages from "../../../../services/intlMesseges";
+import MaskedInput from 'antd-mask-input';
 const output = ({ ...props }) => {
     return <div>
             <Row gutter={24}>
@@ -21,7 +22,7 @@ const output = ({ ...props }) => {
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item name="dob" label="Birthday" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-                        <DatePicker placeholder="Date Of Birth" />
+                        <MaskedInput mask="11/11/1111" placeholder="MM/DD/YYYY"/>
                     </Form.Item>
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -81,7 +82,7 @@ const output = ({ ...props }) => {
                 </Col>
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                     <Form.Item name="DateOfSymptomOnset" label="Date Of Symptom Onset?" >
-                        <DatePicker  />
+                        <MaskedInput mask="11/11/1111" placeholder="MM/DD/YYYY"/>
                     </Form.Item>
                 </Col>
             </Row>

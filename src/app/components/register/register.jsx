@@ -75,7 +75,7 @@ class Register extends Component {
     var args = {
       city: data.city,
       country: data.country,
-      dob: moment(data.dob).format("YYYY-MM-DD"),
+      dob: moment(data.dob, 'MM/DD/YYYY').format("YYYY-MM-DD"),
       email: data.email,
       ethnicity: data.ethnicity,
       firstname: data.firstname,
@@ -98,7 +98,7 @@ class Register extends Component {
       middlename: data.middlename,
       phone: data.phone,
       race: data.race,
-      scheduled_date: moment(data.scheduled_date).format("YYYY-MM-DD"),
+      scheduled_date: moment(data.scheduled_date, 'MM/DD/YYYY').format("YYYY-MM-DD"),
       scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD HH:mm:ss"),
       state: data.state,
       street: data.street,

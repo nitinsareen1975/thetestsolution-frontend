@@ -346,7 +346,7 @@ class CheckedinList extends Component {
       if (typeof formvalues.specimen_type !== "undefined") {
         _specimen_type = formvalues.specimen_type;
         _specimen_collection_method = formvalues.specimen_collection_method;
-        _AccessionNumber = formvalues.AccessionNumber;
+        _AccessionNumber = "1";
         _SpecimenSourceCode = formvalues.SpecimenSourceCode;
       }
       this.setState({ modalLoading: true });
@@ -464,13 +464,6 @@ class CheckedinList extends Component {
               <Row>
                 <Col style={{ width: '100%' }}>
                   <Form.Item label={<strong style={{ fontSize: 14 }}>Type of Specimen</strong>} name="specimen_type">
-                    <Input />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col style={{ width: '100%' }}>
-                  <Form.Item label={<strong style={{ fontSize: 14 }}>Accession Number</strong>} name="AccessionNumber">
                     <Input />
                   </Form.Item>
                 </Col>

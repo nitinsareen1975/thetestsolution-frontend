@@ -27,6 +27,7 @@ import IntlMessages from "../../../services/intlMesseges";
 import { ArrowLeftOutlined, UploadOutlined, SaveOutlined, DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
 import moment from "moment";
 import Config from "../../../config";
+import MaskedInput from 'antd-mask-input';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
@@ -58,7 +59,7 @@ class EditGroupEvent extends React.Component {
     var _labs = await this.props.getLabs({});
     var _event = await this.props.getGroupEvent(this.props.match.params.id);
     if (_event.data.event_date != null) {
-      _event.data.event_date = moment(_event.data.event_date);
+      _event.data.event_date = moment(_event.data.event_date).format("MM/DD/YYYY");
     }
     if (_event.data.event_time != null) {
       _event.data.event_time = moment(_event.data.event_time);
@@ -77,7 +78,7 @@ class EditGroupEvent extends React.Component {
 
   handleSubmit = async (data) => {
     if (typeof data.event_date !== "undefined") {
-      data.event_date = moment(data.event_date).format("YYYY-MM-DD");
+      data.event_date = moment(data.event_date, 'MM/DD/YYYY').format("YYYY-MM-DD");
     }
     if (typeof data.event_time !== "undefined") {
       data.event_time = moment(data.event_time).format("YYYY-MM-DD HH:mm");
@@ -234,7 +235,7 @@ class EditGroupEvent extends React.Component {
                         }
                       ]}
                     >
-                      <DatePicker format={"MM/DD/YYYY"} />
+                      <MaskedInput mask="11/11/1111" placeholder="MM/DD/YYYY"/>
                     </Form.Item>
                   </Col>
                   <Col xs={24} sm={12} md={6} lg={6} xl={6}>

@@ -8,6 +8,7 @@ import moment from "moment";
 import stripeBadge from "../../../assets/images/stripe-badge-white.png";
 import stripeBadge2 from "../../../assets/images/stripe-badge-white-2.jpg";
 import { AimOutlined } from '@ant-design/icons';
+import MaskedInput from 'antd-mask-input';
 
 const output = ({ ...props }) => {
 	const formRef = useRef();
@@ -128,7 +129,7 @@ const output = ({ ...props }) => {
 					<Row gutter={15}>
 						<Col xs={24} md={8}>
 							<Form.Item name="scheduled_date" label="Date of Appointment" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
-								<DatePicker placeholder="Date Of Appointment" disabledDate={(current) => current && current < moment().subtract(1, 'days').endOf('day')} />
+								<MaskedInput mask="11/11/1111" placeholder="MM/DD/YYYY"/>
 							</Form.Item>
 						</Col>
 						<Col xs={24} md={8}>

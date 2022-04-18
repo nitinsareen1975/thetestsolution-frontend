@@ -43,16 +43,16 @@ class EditGroupPatient extends React.Component {
 
     var _patient = await this.props.getGroupPatient(this.props.match.params.id);
     if (_patient.data.scheduled_date != null) {
-      _patient.data.scheduled_date = moment(_patient.data.scheduled_date);
+      _patient.data.scheduled_date = moment(_patient.data.scheduled_date).format("MM/DD/YYYY");
     }
     if (_patient.data.scheduled_time != null) {
       _patient.data.scheduled_time = moment(_patient.data.scheduled_time);
     }
     if (_patient.data.dob != null) {
-      _patient.data.dob = moment(_patient.data.dob);
+      _patient.data.dob = moment(_patient.data.dob).format("MM/DD/YYYY");
     }
     if (_patient.data.DateOfSymptomOnset != null) {
-      _patient.data.DateOfSymptomOnset = moment(_patient.data.DateOfSymptomOnset);
+      _patient.data.DateOfSymptomOnset = moment(_patient.data.DateOfSymptomOnset).format("MM/DD/YYYY");
     }
     var _countries = [];
     if (typeof this.props.countries === "undefined" || this.props.countries.length <= 0) {
@@ -74,7 +74,6 @@ class EditGroupPatient extends React.Component {
   }
 
   handleSubmit = async (data) => {
-    console.log("St:", this.state)
     if (this.state.labAssigned <= 0 || this.state.groupAssigned <= 0) {
       message.error("Please choose an event.");
       return false;
@@ -87,7 +86,7 @@ class EditGroupPatient extends React.Component {
       group_id: this.state.groupAssigned,
       city: data.city,
       country: data.country,
-      dob: moment(data.dob).format("YYYY-MM-DD"),
+      dob: moment(data.dob, 'MM/DD/YYYY').format("YYYY-MM-DD"),
       email: data.email,
       ethnicity: data.ethnicity,
       firstname: data.firstname,
@@ -109,7 +108,7 @@ class EditGroupPatient extends React.Component {
       middlename: data.middlename,
       phone: data.phone,
       race: data.race,
-      scheduled_date: moment(data.scheduled_date).format("YYYY-MM-DD"),
+      scheduled_date: moment(data.scheduled_date, 'MM/DD/YYYY').format("YYYY-MM-DD"),
       scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD HH:mm:ss"),
       state: data.state,
       street: data.street,
@@ -124,7 +123,7 @@ class EditGroupPatient extends React.Component {
 			FirstTestForCondition: data.FirstTestForCondition,
 			EmployedInHealthCare: data.EmployedInHealthCare,
 			Symptomatic: data.Symptomatic,
-			DateOfSymptomOnset: moment(data.DateOfSymptomOnset).format("YYYY-MM-DD"),
+			DateOfSymptomOnset: moment(data.DateOfSymptomOnset, 'MM/DD/YYYY').format("YYYY-MM-DD"),
       pregnent: data.pregnent,
       progress_status: data.progress_status
     };

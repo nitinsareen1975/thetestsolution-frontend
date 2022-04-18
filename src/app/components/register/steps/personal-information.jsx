@@ -16,6 +16,7 @@ import TestInfo from "../steps/information/test.jsx";
 import IntlMessages from "../../../services/intlMesseges";
 import stripeBadge from "../../../assets/images/stripe-badge-white.png";
 import stripeBadge2 from "../../../assets/images/stripe-badge-white-2.jpg";
+import MaskedInput from 'antd-mask-input';
 
 const { Step } = Steps;
 
@@ -178,14 +179,7 @@ class PersonalInfo extends Component {
                           <Col xs={24} sm={8} md={6}>
                             <Form.Item name="dob" label="Birthday" rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]}>
                               {/* <DatePicker placeholder="Date Of Birth" disabledDate={(current) => moment().add(-16, 'years')  <= current} /> */}
-                              <InputNumber
-                                controls={false}
-                                formatter={value => this.formatDOB(value)}
-                                parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                                placeholder="YYYY-MM-DD"
-                                style={{ width: '100%' }}
-                                maxLength={10}
-                              />
+                              <MaskedInput mask="11/11/1111" placeholder="MM/DD/YYYY"/>
                             </Form.Item>
                           </Col>
                           <Col xs={24} sm={8} md={6}>

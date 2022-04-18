@@ -65,7 +65,7 @@ class AddPatient extends React.Component {
 		var args = {
 			city: data.city,
 			country: data.country,
-			dob: moment(data.dob).format("YYYY-MM-DD"),
+			dob: moment(data.dob, 'MM/DD/YYYY').format("YYYY-MM-DD"),
 			email: data.email,
 			ethnicity: data.ethnicity,
 			firstname: data.firstname,
@@ -87,7 +87,7 @@ class AddPatient extends React.Component {
 			middlename: data.middlename,
 			phone: data.phone,
 			race: data.race,
-			scheduled_date: moment(data.scheduled_date).format("YYYY-MM-DD"),
+			scheduled_date: moment(data.scheduled_date, 'MM/DD/YYYY').format("YYYY-MM-DD"),
 			scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD HH:mm:ss"),
 			state: data.state,
 			street: data.street,
@@ -102,7 +102,7 @@ class AddPatient extends React.Component {
 			FirstTestForCondition: data.FirstTestForCondition,
 			EmployedInHealthCare: data.EmployedInHealthCare,
 			Symptomatic: data.Symptomatic,
-			DateOfSymptomOnset: moment(data.DateOfSymptomOnset).format("YYYY-MM-DD"),
+			DateOfSymptomOnset: moment(data.DateOfSymptomOnset, 'MM/DD/YYYY').format("YYYY-MM-DD"),
 			pregnent: data.pregnent,
 			confirmation_code: UserService.getRandomString(24, data.email)
 		};

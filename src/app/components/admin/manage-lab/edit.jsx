@@ -25,6 +25,7 @@ import { PlusOutlined, ArrowLeftOutlined, UploadOutlined, DeleteOutlined, SaveOu
 import moment from "moment";
 import Config from "../../../config";
 import Locator from "./locator.jsx";
+import MaskedInput from 'antd-mask-input';
 
 const { Option } = Select;
 
@@ -56,7 +57,7 @@ class EditLab extends React.Component {
     }
     var lab = await this.props.getLab(this.props.match.params.id);
     if (lab.data.date_incorporated != null) {
-      lab.data.date_incorporated = moment(lab.data.date_incorporated);
+      lab.data.date_incorporated = moment(lab.data.date_incorporated).format("MM/DD/YYYY");
     }
     if (lab.data.tests_available != null) {
       lab.data.tests_available = lab.data.tests_available.split(",");
@@ -78,7 +79,7 @@ class EditLab extends React.Component {
 
   handleSubmit = async (data) => {
     if (typeof data.date_incorporated !== "undefined") {
-      data.date_incorporated = moment(data.date_incorporated).format("YYYY-MM-DD");
+      data.date_incorporated = moment(data.date_incorporated, 'MM/DD/YYYY').format("YYYY-MM-DD");
     }
     if (typeof data.tests_available !== "undefined") {
       data.tests_available = data.tests_available.join(",");
@@ -332,7 +333,7 @@ class EditLab extends React.Component {
                       label="Onboarding Date"
                       name="date_incorporated"
                     >
-                      <DatePicker format={"MM/DD/YYYY"} />
+                      <MaskedInput mask="11/11/1111" placeholder="MM/DD/YYYY"/>
                     </Form.Item>
                   </Col>
 

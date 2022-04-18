@@ -30,6 +30,7 @@ import Config from "../../../config";
 import Axios from "../../../services/axios-service";
 import { loadStripe } from '@stripe/stripe-js';
 import { CardElement, Elements, ElementsConsumer } from '@stripe/react-stripe-js';
+import MaskedInput from 'antd-mask-input';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
@@ -93,7 +94,7 @@ class AddGroupEvent extends React.Component {
       };
 
       if (typeof data.event_date !== "undefined") {
-        data.event_date = moment(data.event_date).format("YYYY-MM-DD HH:mm");
+        data.event_date = moment(data.event_date, 'MM/DD/YYYY').format("YYYY-MM-DD HH:mm");
       }
       if (typeof data.event_time !== "undefined") {
         data.event_time = moment(data.event_time).format("YYYY-MM-DD HH:mm");
@@ -244,7 +245,7 @@ class AddGroupEvent extends React.Component {
                             }
                           ]}
                         >
-                          <DatePicker format={"MM/DD/YYYY"} />
+                          <MaskedInput mask="11/11/1111" placeholder="MM/DD/YYYY"/>
                         </Form.Item>
                       </Col>
                       <Col xs={24} sm={12} md={6} lg={6} xl={6}>

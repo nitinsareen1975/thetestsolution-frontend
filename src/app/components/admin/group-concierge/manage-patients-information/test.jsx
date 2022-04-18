@@ -4,6 +4,8 @@ import IntlMessages from "../../../../services/intlMesseges";
 import * as UserService from "../../../../services/user-service";
 import GroupConciergeAPI from "../../../../redux/api/group-concierge-api";
 import moment from "moment";
+import MaskedInput from 'antd-mask-input';
+
 const { Option } = Select;
 const output = ({ ...props }) => {
     const [events, setEvents] = useState([]);
@@ -66,7 +68,7 @@ const output = ({ ...props }) => {
         <Row gutter={15}>
             <Col xs={24} md={8}>
                 <Form.Item name="scheduled_date" label="Date of Appointment"/*  rules={[{ required: true, message: <IntlMessages id="admin.input.required" /> }]} */>
-                    <DatePicker placeholder="Date Of Appointment" disabledDate={(current) => current && current < moment().subtract(1, 'days').endOf('day')}/>
+                    <MaskedInput mask="11/11/1111" placeholder="MM/DD/YYYY"/>
                 </Form.Item>
             </Col>
             <Col xs={24} md={8}>
