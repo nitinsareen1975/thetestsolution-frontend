@@ -175,7 +175,7 @@ const AdminDashboard = ({ ...props }) => {
     },
     {
       title: 'Scheduled Date/Time',
-      render: (_text, row) => <div>{row.scheduled_date} {moment(row.scheduled_time).format("HH:MM A")}</div>,
+      render: (_text, row) => <div>{moment(row.scheduled_date).format("MM/DD/YYYY")} {moment(row.scheduled_time).format("HH:MM A")}</div>,
     },
     {
       title: 'Action',

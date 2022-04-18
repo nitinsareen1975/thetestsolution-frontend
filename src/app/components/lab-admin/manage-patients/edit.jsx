@@ -116,7 +116,7 @@ class EditPatient extends React.Component {
 			FirstTestForCondition: data.FirstTestForCondition,
 			EmployedInHealthCare: data.EmployedInHealthCare,
 			Symptomatic: data.Symptomatic,
-			DateOfSymptomOnset: moment(data.DateOfSymptomOnset, 'MM/DD/YYYY').format("YYYY-MM-DD"),
+			DateOfSymptomOnset: moment(data.DateOfSymptomOnset, 'MM/DD/YYYY').isValid() ? moment(data.DateOfSymptomOnset, 'MM/DD/YYYY').format("YYYY-MM-DD") : null,
       pregnent: data.pregnent,
       is_lab_collected: this.state.patient.is_lab_collected
     };

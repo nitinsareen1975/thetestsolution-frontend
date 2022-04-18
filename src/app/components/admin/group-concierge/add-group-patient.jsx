@@ -90,7 +90,7 @@ class AddGroupPatient extends React.Component {
 			middlename: data.middlename,
 			phone: data.phone,
 			race: data.race,
-			scheduled_date: moment(data.scheduled_date, 'MM/DD/YYYY').format("YYYY-MM-DD"),
+			scheduled_date: moment(data.scheduled_date, 'MM/DD/YYYY').isValid() ? moment(data.scheduled_date, 'MM/DD/YYYY').format("YYYY-MM-DD") : null,
 			scheduled_time: moment(data.scheduled_time).format("YYYY-MM-DD HH:mm:ss"),
 			state: data.state,
 			street: data.street,
@@ -106,7 +106,7 @@ class AddGroupPatient extends React.Component {
 			FirstTestForCondition: data.FirstTestForCondition,
 			EmployedInHealthCare: data.EmployedInHealthCare,
 			Symptomatic: data.Symptomatic,
-			DateOfSymptomOnset: moment(data.DateOfSymptomOnset, 'MM/DD/YYYY').format("YYYY-MM-DD"),
+			DateOfSymptomOnset: moment(data.DateOfSymptomOnset, 'MM/DD/YYYY').isValid() ? moment(data.DateOfSymptomOnset, 'MM/DD/YYYY').format("YYYY-MM-DD") : null,
 			pregnent: data.pregnent,
 			confirmation_code: UserService.getRandomString(24, data.email)
 		};

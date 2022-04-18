@@ -98,7 +98,7 @@ class AddPatient extends React.Component {
 			FirstTestForCondition: data.FirstTestForCondition,
 			EmployedInHealthCare: data.EmployedInHealthCare,
 			Symptomatic: data.Symptomatic,
-			DateOfSymptomOnset: moment(data.DateOfSymptomOnset, 'MM/DD/YYYY').format("YYYY-MM-DD"),
+			DateOfSymptomOnset: moment(data.DateOfSymptomOnset, 'MM/DD/YYYY').isValid() ? moment(data.DateOfSymptomOnset, 'MM/DD/YYYY').format("YYYY-MM-DD") : null,
 			pregnent: data.pregnent,
 			confirmation_code: UserService.getRandomString(24, data.email)
 		};
