@@ -56,10 +56,16 @@ class ManageTestTypeMethods extends Component {
         ...this.getColumnSearchProps("name")
       },
       {
-        title: "SNOMED",
+        title: "SNOMED (Specimen Source Code)",
         dataIndex: "code",
         filteredValue: this.getSelectedFilterValue('code'),
         ...this.getColumnSearchProps("code")
+      },
+      {
+        title: "Specimen Type",
+        dataIndex: "specimen_type",
+        filteredValue: this.getSelectedFilterValue('specimen_type'),
+        ...this.getColumnSearchProps("specimen_type")
       },
       {
         title: "Status",

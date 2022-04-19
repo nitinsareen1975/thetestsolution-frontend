@@ -116,13 +116,22 @@ class AddTestTypeMethod extends React.Component {
                   <Form.Item
                     {...formItemLayout}
                     name="code"
-                    label="SNOMED"
+                    label="SNOMED (Specimen Source Code)"
                     rules={[
                       {
                         required: true,
                         message: <IntlMessages id="admin.input.required" />,
                       }
                     ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="specimen_type"
+                    label="Specimen Type"
                   >
                     <Input />
                   </Form.Item>

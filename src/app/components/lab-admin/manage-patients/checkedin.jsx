@@ -338,25 +338,19 @@ class CheckedinList extends Component {
     var patients_statuses = this.props.patient_status_list;
     if (patients_statuses.length > 0) {
       var statusObj = patients_statuses.find(i => i.code == 'pending-results');
-      var _specimen_type = "";
       var _specimen_collection_method = "";
       var _AccessionNumber = "";
-      var _SpecimenSourceCode = "";
       var formvalues = this.sampleForm.current.getFieldsValue();
-      if (typeof formvalues.specimen_type !== "undefined") {
-        _specimen_type = formvalues.specimen_type;
+      if (typeof formvalues.specimen_collection_method !== "undefined") {
         _specimen_collection_method = formvalues.specimen_collection_method;
         _AccessionNumber = "1";
-        _SpecimenSourceCode = formvalues.SpecimenSourceCode;
       }
       this.setState({ modalLoading: true });
       var args = {
         progress_status: statusObj.id,
-        specimen_type: _specimen_type,
         specimen_collection_method: _specimen_collection_method,
         specimen_collection_date: moment().format("YYYY-MM-DD"),
-        AccessionNumber: _AccessionNumber,
-        SpecimenSourceCode: _SpecimenSourceCode
+        AccessionNumber: _AccessionNumber
       };
       await this.props.updatePatient(this.state.checkInPatientId, args).then(response => {
         if (response.status && response.status == true) {
@@ -458,20 +452,6 @@ class CheckedinList extends Component {
                         );
                       })}
                     </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col style={{ width: '100%' }}>
-                  <Form.Item label={<strong style={{ fontSize: 14 }}>Type of Specimen</strong>} name="specimen_type">
-                    <Input />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col style={{ width: '100%' }}>
-                  <Form.Item label={<strong style={{ fontSize: 14 }}>Specimen Source Code</strong>} name="SpecimenSourceCode">
-                    <Input />
                   </Form.Item>
                 </Col>
               </Row>
