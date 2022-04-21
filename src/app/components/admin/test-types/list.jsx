@@ -72,8 +72,8 @@ class ManageTestTypes extends Component {
         dataIndex: "fi_model"
       },
       {
-        title: "Gender",
-        dataIndex: "gender"
+        title: "FI Test Name",
+        dataIndex: "fi_test_name"
       },
       {
         title: "Is Rapid Test",

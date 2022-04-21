@@ -436,6 +436,82 @@ class AddTestType extends React.Component {
                   </Form.Item>
                 </Col>
               </Row>
+
+              <Row gutter={24}>
+                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                  <Typography.Title level={5}>
+                    CSV Fields
+                  </Typography.Title>
+                </Col>
+              </Row>
+              <hr />
+              <Row gutter={24}>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="test_type_csv"
+                    label="Type - CSV"
+                    rules={[
+                      {
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      }
+                    ]}
+                  >
+                    <Select
+                      style={{ width: "100%" }}
+                    >
+                      {this.state.test_type_names.map(function (item) {
+                        return (
+                          <Option key={item.id.toString()} value={item.id.toString()}>
+                            {item.name}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="loinc_csv"
+                    label="LOINC - CSV"
+                    rules={[
+                      {
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      }
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="fi_test_name_csv"
+                    label="FI Test Name - CSV"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+                  <Form.Item
+                    {...formItemLayout}
+                    name="fi_model_csv"
+                    label="FI Model or Component - CSV"
+                    rules={[
+                      {
+                        required: true,
+                        message: <IntlMessages id="admin.input.required" />,
+                      }
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+              </Row>
+
               <Row gutter={24}>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                   <Typography.Title level={4}>
