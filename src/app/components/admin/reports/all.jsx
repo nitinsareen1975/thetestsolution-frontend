@@ -487,7 +487,7 @@ class Reports extends Component {
 							<ArrowLeftOutlined />
 							<IntlMessages id="admin.userlisting.back" />
 						</Button>
-						<Tooltip title={<span>Export {(Object.keys(this.state.customFilters).length > 0 || Object.keys(this.state.filters).length > 0 ? "filtered" : "all")} data to CSV</span>}>
+						<Tooltip title={<span>Export {(Object.keys(this.state.customFilters).length > 0 || Object.keys(this.state.filters).length > 0 ? "filtered" : "all")} data to Manual Upload format</span>}>
 							<Button
 								disabled={!(this.state.data.length > 0)}
 								type="default"
@@ -497,20 +497,20 @@ class Reports extends Component {
 								style={{ marginLeft: 5 }}
 							>
 								<FileTextOutlined />
-								Export to CSV
+								Manual Upload
 							</Button>
 						</Tooltip>
-						<Tooltip title={<span>Export {(Object.keys(this.state.customFilters).length > 0 || Object.keys(this.state.filters).length > 0 ? "filtered" : "all")} data to Excel (xlsx)</span>}>
+						<Tooltip title={<span>Export {(Object.keys(this.state.customFilters).length > 0 || Object.keys(this.state.filters).length > 0 ? "filtered" : "all")} data to Auto ELR format</span>}>
 							<Button
 								disabled={!(this.state.data.length > 0)}
 								type="default"
 								className="right-fl"
 								htmlType="button"
-								onClick={() => this.exportData("xls")}
+								onClick={() => this.exportData("autoelr")}
 								style={{ marginLeft: 5 }}
 							>
 								<FileExcelOutlined />
-								Export to Excel (xlsx)
+								Auto ELR
 							</Button>
 						</Tooltip>
 					</Col>
